@@ -7,13 +7,13 @@
 #include <QDirIterator>
 #include <QTextCodec>
 #include <QProcess>
-MediaUpdate::MediaUpdate(DataBase *data, QObject *parent)
-    : QObject(parent),mDataBase(data)
+MediaUpdate::MediaUpdate( QObject *parent)
+    : QObject(parent)
 {
 
     mWatcher=new QFileSystemWatcher;
     // mWatcher->addPath("/media/Data/Music");
-     //! [create-objs]
+    //! [create-objs]
     player = new QMediaPlayer(this);
     connect(player, SIGNAL(metaDataChanged()), SLOT(metaDataChanged()));
 
@@ -25,48 +25,37 @@ MediaUpdate::MediaUpdate(DataBase *data, QObject *parent)
     playlist->setCurrentIndex(0);
 
     // thread
-    mThread=new Thread(data);
+    mThread=new Thread;
     connect(mThread,SIGNAL(removelast()),this,SLOT(removelast()));
     connect(mThread,SIGNAL(finished())         ,this,SLOT(startNewThread()));
     //    connect(mThread,SIGNAL(terminated(QString)),this,SIGNAL(updateThumbnail(QString)));
 
-//    QFile file(D_CACHE+"/Directory");
-//    if (file.open(QFile::ReadOnly )){
-//    QTextStream textStream(&file);
-//    textStream.setCodec(QTextCodec::codecForName("UTF-8"));
-//    QString line ;//premier line;
+    //    QFile file(D_CACHE+"/Directory");
+    //    if (file.open(QFile::ReadOnly )){
+    //    QTextStream textStream(&file);
+    //    textStream.setCodec(QTextCodec::codecForName("UTF-8"));
+    //    QString line ;//premier line;
 
-//    while   (!textStream.atEnd()) {
-//        line = textStream.readLine().trimmed();
-//        mWatcher->addPath(line.trimmed());
-//    }
-//}
-chargeDirectoryWatcher();
-qDebug()<<mWatcher->directories();
-connect(mWatcher,&QFileSystemWatcher::directoryChanged,this,&MediaUpdate::directoryChanged);
+    //    while   (!textStream.atEnd()) {
+    //        line = textStream.readLine().trimmed();
+    //        mWatcher->addPath(line.trimmed());
+    //    }
+    //}
+
+    // تحميل المجلدات المستخدمة لمراقبنها في حالة التغير
+    chargeDirectoryWatcher();
+    //qDebug()<<mWatcher->directories();
+    connect(mWatcher,&QFileSystemWatcher::directoryChanged,this,&MediaUpdate::directoryChanged);
 
 }
+
 
 MediaUpdate::~MediaUpdate()
 {
 
 }
-QStringList supportedMimeTypes()
-{
-    return  QStringList()<<"*.mp4"<<"*.wmv"<<"*.avi"<<"*.ogv"<<"*.mov"
-                        <<"*.mp3"<<"*.ogg"<<"*.wma"<<"*.wav"<<"*.aac"
-                       <<"*.opus"<<"*.amr"<<"*.m4a";
-}
 
-void MediaUpdate::directoryChanged(const QString &path)
-{
-
-    //TODO ADD Message for Adding dir Updat
-    qDebug()<<" MediaUpdate::directoryChanged ::: "<<path;
-   updateDirectory(path);
-emit dirNidUpdate(path);
-}
-
+//--------------------------------------------------------------------
 void MediaUpdate::chargeDirectoryWatcher()
 {
     QSettings settings;
@@ -81,12 +70,82 @@ void MediaUpdate::chargeDirectoryWatcher()
                            QDirIterator::Subdirectories);
         while (itDir.hasNext()) {
             QString dir= itDir.next();
-         //   qDebug()<<"isdir>>>>>>>>>>>>>>>>>>"<<dir;
+            //   qDebug()<<"isdir>>>>>>>>>>>>>>>>>>"<<dir;
             mWatcher->addPath(dir);
         }
     }
 
 }
+
+//--------------------------------------------------------------------
+// الملفات المعتمدة
+QStringList supportedMimeTypes()
+{
+    return  QStringList()<<"*.mp4"<<"*.wmv"<<"*.avi"<<"*.ogv"<<"*.mov"
+                        <<"*.mp3"<<"*.ogg"<<"*.wma"<<"*.wav"<<"*.aac"
+                       <<"*.opus"<<"*.amr"<<"*.m4a";
+}
+
+//--------------------------------------------------------------------
+//  جلب مدة الملف الصوتي من برامج خارجية في حالة عدم تحميله
+QString getDuration(QString filePath)
+{
+    QStringList list2;
+    list2<<"-i"<<filePath;
+    QProcess p;
+    //-------------------------------------------
+    p.start("ffmpeg",list2);
+    if (!p.waitForStarted()) {   return QString() ;  }
+
+    if (!p.waitForFinished()){   return QString();   }
+
+    QString error=p.readAllStandardError();
+
+    if(error.isEmpty())return QString();
+
+    QStringList list=error.split("\n");
+
+    foreach (QString s, list) {
+        if(s.trimmed().startsWith("Duration")){
+            s=s.remove("Duration:");
+            QString name=s.section(",",0,0);
+            return name.section(".",0,0).trimmed();
+
+        }
+
+    }
+    return QString();
+}
+
+//--------------------------------------------------------------------
+void MediaUpdate::directoryChanged(const QString &path)
+{
+    mLisUpdateDirs.append(path);
+
+    //TODO ADD Message for Adding dir Updat
+    //   qDebug()<<" MediaUpdate::directoryChanged ::: "<<path;
+    //  updateDirectory(path);
+    emit dirNidUpdate(true);
+
+
+}
+
+//--------------------------------------------------------------------
+void MediaUpdate::setUpdateDirs(bool update)
+{
+
+    if(!update){
+        mLisUpdateDirs.clear();
+        return;
+    }
+    //---------------------------------------
+    foreach (QString path, mLisUpdateDirs) {
+        updateDirectory(path);
+    }
+    mLisUpdateDirs.clear();
+}
+
+
 //void MediaUpdate::saveDirectory()
 //{
 //    QFile data(D_CACHE+"/Directory");
@@ -100,6 +159,7 @@ void MediaUpdate::chargeDirectoryWatcher()
 //    }
 //}
 
+//--------------------------------------------------------------------
 void MediaUpdate::metaDataChanged()
 {
 
@@ -119,39 +179,40 @@ void MediaUpdate::metaDataChanged()
         QString album=(player->metaData(QMediaMetaData::AlbumTitle).toString());
         QString mediaSize=(player->metaData(QMediaMetaData::Size).toString());
 
-        QString time=QTime::fromMSecsSinceStartOfDay(QVariant(player->duration()).toInt()).toString();
+        QString duration=QTime::fromMSecsSinceStartOfDay(QVariant(player->duration()).toInt()).toString();
+        if(duration.isEmpty())
+            duration=  getDuration(path).trimmed();
 
-
-     //   qDebug()<<"MediaUpdate"<<title<<"duration:"<<time;
+        //   qDebug()<<"MediaUpdate"<<title<<"duration:"<<time;
         if(artist.isEmpty())artist=albumArtist;
-
+        album=!album.isEmpty() ? album: fi.dir().dirName();
 
         QSettings s(D_CACHE+"/albums",QSettings::IniFormat);
         s.setValue(album,fi.absolutePath());
 
-        //        mDataBase->addNewSong(!title.isEmpty() ? title: fi.fileName(),
-        //                              !artist.isEmpty() ? artist: tr("Unknown"),
-        //                              !album.isEmpty() ? album: fi.dir().dirName(),
-        //                              !genre.isEmpty() ? genre:tr("Unknown") ,
-        //                              path,
-        //                              time!="-1"? time:("00:00")
+        DataBase::addNewSong(!title.isEmpty() ? title: fi.fileName(),
+                             !artist.isEmpty() ? artist: tr("Unknown"),
+                             !album.isEmpty() ? album: fi.dir().dirName(),
+                             !genre.isEmpty() ? genre:tr("Unknown") ,
+                             path,
+                             !duration.isEmpty()? duration:"00:00:00"
 
-        //                              );
+                                                  );
 
-        QVariantMap map;
-        map["title"]=!title.isEmpty() ? title: fi.fileName();
-        map["artist"]=!artist.isEmpty() ? artist: tr("Unknown");
-        map["album"]=!album.isEmpty() ? album: fi.dir().dirName();
-        map["genre"]=!genre.isEmpty() ? genre:tr("Unknown");
-        map["path"]=path;  //TODO FIX URL
-        map["duration"]= time;
-       // Thread
-        updateFile(map,path);
+        //        QVariantMap map;
+        //        map["title"]=!title.isEmpty() ? title: fi.fileName();
+        //        map["artist"]=!artist.isEmpty() ? artist: tr("Unknown");
+        //        map["album"]=!album.isEmpty() ? album: fi.dir().dirName();
+        //        map["genre"]=!genre.isEmpty() ? genre:tr("Unknown");
+        //        map["path"]=path;  //TODO FIX URL
+        //        map["duration"]= time;
+        //       // Thread
+        //        updateFile(map,path);
 
         playlist->next();
 
         emit progressValueChanged(playlist->currentIndex());
-       qApp->processEvents();
+        qApp->processEvents();
         if(playlist->currentIndex()==-1){
             emit updated();
             playlist->clear();
@@ -162,6 +223,7 @@ void MediaUpdate::metaDataChanged()
 
 }
 
+//--------------------------------------------------------------------
 void MediaUpdate::addUpdateDirectory()
 {
     QStringList list;
@@ -195,10 +257,10 @@ void MediaUpdate::addUpdateDirectory()
     }
 }
 
-
+//--------------------------------------------------------------------
 void MediaUpdate::scanDirectory(const QString &path)
 {
-
+    //  مسح المحلدات والمجلدات الفرعية لجلب ملفات
     QDirIterator it(path,supportedMimeTypes(),QDir::Files| QDir::NoDotAndDotDot,
                     QDirIterator::Subdirectories);
 
@@ -212,10 +274,11 @@ void MediaUpdate::scanDirectory(const QString &path)
 
 }
 
+//--------------------------------------------------------------------
 void MediaUpdate::updateDirectory(const QString &dir)
 {
 
-     playlist->clear();
+    playlist->clear();
 
     QDirIterator it(dir,supportedMimeTypes(),QDir::Files| QDir::NoDotAndDotDot );
     while (it.hasNext()) {
@@ -223,8 +286,8 @@ void MediaUpdate::updateDirectory(const QString &dir)
 
         QUrl url(QUrl::fromLocalFile(file));
         playlist->addMedia(url);
-
     }
+
     if(playlist->mediaCount()>0){
         emit  progressMaxChanged(playlist->mediaCount());
         playlist->setCurrentIndex(0);
@@ -232,6 +295,7 @@ void MediaUpdate::updateDirectory(const QString &dir)
 
 }
 
+//--------------------------------------------------------------------
 // add new files to database
 void MediaUpdate::addFiles(const QList<QUrl>urls)
 {
@@ -241,12 +305,14 @@ void MediaUpdate::addFiles(const QList<QUrl>urls)
         qDebug()<<"MediaUpdate adding"<<url;
         playlist->addMedia(url);
     }
+
     if(playlist->mediaCount()>0)
-    playlist->setCurrentIndex(0);
+        playlist->setCurrentIndex(0);
 }
 
-//-----------------THREAD -------------------------
+// ******************** THREAD **************************
 
+//--------------------------------------------------------------------THREAD
 void  MediaUpdate::updateFile(QVariantMap map,const QString &path)
 {
     if(listThread.contains(path))
@@ -257,11 +323,13 @@ void  MediaUpdate::updateFile(QVariantMap map,const QString &path)
     startNewThread();
 }
 
+//--------------------------------------------------------------------THREAD
 void MediaUpdate::removelast(){
     if(listMap.count()>0) listMap.removeLast();
     if(listThread.count()>0) listThread.removeLast();
 }
 
+//--------------------------------------------------------------------THREAD
 void MediaUpdate::startNewThread()
 {
     if(mThread->isRunning())return;
@@ -278,41 +346,15 @@ void MediaUpdate::startNewThread()
     //  emit progressValueChanged(mValue++);
 }
 
-QString getDuration(QString filePath)
-{
-    QStringList list2;
-    list2<<"-i"<<filePath;
-    QProcess p;
-    //-------------------------------------------
-    p.start("ffmpeg",list2);
-    if (!p.waitForStarted()) {   return QString() ;  }
-
-    if (!p.waitForFinished()){   return QString();   }
-
-    QString error=p.readAllStandardError();
-
-    if(error.isEmpty())return QString();
-
-    QStringList list=error.split("\n");
-
-    foreach (QString s, list) {
-        if(s.trimmed().startsWith("Duration")){
-            s=s.remove("Duration:");
-            QString name=s.section(",",0,0);
-            return name.section(".",0,0).trimmed();
-
-        }
-
-    }
-    return QString();
-}
-Thread:: Thread(DataBase *data)
+//--------------------------------------------------------------------THREAD
+Thread:: Thread()
 {
 
-    mDataBase=data;
+    //   mDataBase=data;
 
 }
 
+//--------------------------------------------------------------------THREAD
 void Thread::run()
 {
 
@@ -320,13 +362,13 @@ void Thread::run()
     QString duration=  mMap.value("duration").toString();
     if(duration.isEmpty())
         duration=  getDuration(path).trimmed();
-qDebug()<<duration<<path;
-    mDataBase->  addNewSong(mMap.value("title").toString() ,
-                            mMap.value("artist").toString(),
-                            mMap.value("album").toString() ,
-                            mMap.value("genre").toString() ,
-                            path,
-                            duration );
+    qDebug()<<duration<<path;
+    DataBase::addNewSong(mMap.value("title").toString() ,
+                         mMap.value("artist").toString(),
+                         mMap.value("album").toString() ,
+                         mMap.value("genre").toString() ,
+                         path,
+                         duration );
     //                            mMap.value("icon")  ,
     //                            mMap.value("favo")  ,
     //                            mMap.value("tags")) ;

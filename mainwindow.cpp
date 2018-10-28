@@ -19,16 +19,16 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-    QColor col=this->palette().text().color();
-    QColor coled=this->palette().highlight().color();
-    Tumb::setIconColor(col,coled);
+//    QColor col=this->palette().text().color();
+//    QColor coled=this->palette().highlight().color();
+    //Tumb::setIconColor(col,coled);
 
-//setAnimated(true);
-    mSetting=new Setting;
-    mDataBase=new DataBase;
-    mMyTreeModel=new MyContentModel(mDataBase);
-    mMyListModel=new MyListModel(mSetting,mDataBase);
-    mMediaUpdate=new MediaUpdate(mDataBase);
+    //setAnimated(true);
+  //  mSetting=new Setting;
+    //  mDataBase=new DataBase;
+    mMyTreeModel=new MyContentModel;
+    mMyListModel=new MyListModel;
+    mMediaUpdate=new MediaUpdate;
     mTVContent=new TreeViewContent;
     mListView=new ListView;
     mTVAudio=new TreeViewAudio;
@@ -50,7 +50,7 @@ MainWindow::MainWindow(QWidget *parent) :
     mActSwich->setShortcut(QKeySequence("Ctrl+M"));
     mActSwich->setCheckable(true);
     connect(mActSwich,SIGNAL(triggered(bool)),this,SLOT(switchViewMode(bool)));
-   // addAction(mActSwich);
+    // addAction(mActSwich);
 
     //--  Menu Main
     QMenu *menu=new QMenu;
@@ -102,6 +102,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(mMediaUpdate,&MediaUpdate::updated,               this, &MainWindow::rechargeAlbums);
     connect(mMediaUpdate,&MediaUpdate::progressMaxChanged,    this, &MainWindow::progressShow);
     connect(mMediaUpdate,&MediaUpdate::progressValueChanged,  this, &MainWindow::progressSetValue);
+    connect(mMediaUpdate,&MediaUpdate::dirNidUpdate,          this->ui->widgetMessage, &QWidget::setVisible);
 
     connect(mLIDelegate, &ListItemDelegate::addAlbum,         this, &MainWindow::onAddAlbum);
     connect(mLIDelegate, &ListItemDelegate::playAlbum,        this, &MainWindow::onPlayAlbum);
@@ -117,12 +118,14 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(mTVAudio,    &TreeViewAudio::activated,           this, &MainWindow::treeAudioActivated);
 
     connect(mListView,        &ListView::activated,           this,&MainWindow::listViewActivated);
-    connect(mSliderIconSize,  &QSlider::sliderMoved,          this,&MainWindow::setIconSize);
+    connect(mSliderIconSize,  &QSlider::valueChanged,          this,&MainWindow::setIconSize);
 
-    connect(ui->comboBoxSwichCat,SIGNAL(currentIndexChanged(int)),SLOT(setPathAlbum(int)));
-    connect(mPlayer,SIGNAL(playBackChanged(QString)),ui->statusBar,SLOT(showMessage(QString)));
+    //   connect(this->ui->comboBoxSwichCat,&QComboBox::currentIndexChanged,this,&MainWindow::setPathAlbum);
+    connect(ui->comboBoxSwichCat,SIGNAL(currentIndexChanged(int)),this,SLOT(setPathAlbum(int)));
+    // connect(mPlayer,SIGNAL(playBackChanged(QString)),ui->statusBar,SLOT(showMessage(QString)));
+    connect(mPlayer,     &Player::playBackChanged,            this->ui->statusBar,&QStatusBar::showMessage);
 
-    mDataBase->openDataBase();
+    DataBase::openDataBase();
 
     switchViewMode(false);
 
@@ -168,7 +171,7 @@ void MainWindow::switchViewMode(bool mini)
 void MainWindow::setIconSize(int value)
 {
     mIconSize=value;
-  //  qDebug()<<value;
+    //  qDebug()<<value;
     Tumb::setSize(value);
     mListView->setIconSize(QSize(value,value));
     ui->widgetCurAlbum->setMinimumWidth(value+2);
@@ -179,7 +182,7 @@ void MainWindow::setIconSize(int value)
     ui->labelAlbumImage->resize(value,value);
     ui->labelAlbumImage->adjustSize();
     if(ui->stackedWidgetView->currentWidget()==ui->pageAudio)
-     setlabelImage();
+        setlabelImage();
     // ui->labelAlbumImage->setMinimumSize(value,value);
 }
 MainWindow::~MainWindow()
@@ -233,68 +236,70 @@ void MainWindow::changeStyleSheet()
         return;
 
     mcoloor=col.name()+coled.name();
-    Tumb::setIconColor(col,coled);
-QString leftBorder , rightBorder;
+    //Tumb::setIconColor(col,coled);
+    QString leftBorder , rightBorder;
 
-if(isRightToLeft()){
-    leftBorder="border-top-right-radius: 6px;"
-                "border-bottom-right-radius: 6px;";
-    rightBorder="border-top-left-radius: 6px;"
-                "border-bottom-left-radius: 6px;";
-}else{
-    leftBorder="border-top-left-radius: 6px;"
-                      "border-bottom-left-radius: 6px;";
-    rightBorder="border-top-right-radius: 6px;"
-                       "border-bottom-right-radius: 6px;";
+    if(isRightToLeft()){
+        leftBorder="border-top-right-radius: 6px;"
+                   "border-bottom-right-radius: 6px;";
+        rightBorder="border-top-left-radius: 6px;"
+                    "border-bottom-left-radius: 6px;";
+    }else{
+        leftBorder="border-top-left-radius: 6px;"
+                   "border-bottom-left-radius: 6px;";
+        rightBorder="border-top-right-radius: 6px;"
+                    "border-bottom-right-radius: 6px;";
 
-}
+    }
     QString style=QString("QTreeView{"
-                  "background-color: transparent;"
-            //   "border: 1px solid palette(midlight);"
-            // "border-color: palette(highlight);"
-            "color:palette(window-text);"
-            "}"
-            " QListView{"
-            " background-color: transparent;"
-            " border-color: palette(Window);"
-            "color:palette(window-text);"
-            " }"
-            "QToolButton#PrevButton{"
-            " border: 1px solid palette(shadow);"
-            "%1"
-            "}"
-            "QToolButton#PlayButton{"
-            " border: 1px solid palette(shadow);"
-            "border-left-color:transparent;"
-            "border-right-color:transparent;"
-            "}"
-            "QToolButton#NextButton{"
-            " border: 1px solid palette(shadow);"
-            "%2"
-            "}"
-            "QToolButton#PrevButton:hover,#PlayButton:hover,#NextButton:hover{"
-            "background-color:palette(highlight)"
-            "}"
-            "QToolButton#PrevButton:pressed,#PlayButton:pressed,#NextButton:pressed{"
-            "background-color:palette(shadow)"
-            "}"
-            "QToolButton#VolumeButton ,#tButtonMenu{"
-            "border-radius: 15px;"
-            "width: 30px;"
-            "height:30px;"
-            "max-width: 30px;"
-            " max-height:30px;"
-            "}"
-            "QToolButton#VolumeButton:hover ,#tButtonMenu:hover{"
-            // "border: 1px solid palette(highlight);"
-            "background-color:palette(shadow)"
-            "}"
-            "QToolButton#VolumeButton:pressed ,#tButtonMenu:pressed{"
-            // "border: 1px solid palette(shadow);"
-            "background-color:palette(highlight)"
-            "}").arg(leftBorder).arg(rightBorder);
+                          "background-color: transparent;"
+                          //   "border: 1px solid palette(midlight);"
+                          // "border-color: palette(highlight);"
+                          "color:palette(window-text);"
+                          "}"
+                          " QListView{"
+                          " background-color: transparent;"
+                          " border-color: palette(Window);"
+                          "color:palette(window-text);"
+                          " }"
+                          "QToolButton#PrevButton{"
+                          " border: 1px solid palette(shadow);"
+                          "%1"
+                          "}"
+                          "QToolButton#PlayButton{"
+                          " border: 1px solid palette(shadow);"
+                          "border-left-color:transparent;"
+                          "border-right-color:transparent;"
+                          "}"
+                          "QToolButton#NextButton{"
+                          " border: 1px solid palette(shadow);"
+                          "%2"
+                          "}"
+                          "QToolButton#PrevButton:hover,#PlayButton:hover,#NextButton:hover{"
+                          "background-color:palette(highlight)"
+                          "}"
+                          "QToolButton#PrevButton:pressed,#PlayButton:pressed,#NextButton:pressed{"
+                          "background-color:palette(shadow)"
+                          "}"
+                          "QToolButton#VolumeButton ,#tButtonMenu{"
+                          "border-radius: 15px;"
+                          "width: 30px;"
+                          "height:30px;"
+                          "max-width: 30px;"
+                          " max-height:30px;"
+                          "}"
+                          "QToolButton#VolumeButton:hover ,#tButtonMenu:hover{"
+                          // "border: 1px solid palette(highlight);"
+                          "background-color:palette(shadow)"
+                          "}"
+                          "QToolButton#VolumeButton:pressed ,#tButtonMenu:pressed{"
+                          // "border: 1px solid palette(shadow);"
+                          "background-color:palette(highlight)"
+                          "}").arg(leftBorder).arg(rightBorder);
     //::menu-button
     setStyleSheet(style) ;
+
+
 
     setupIcons();
     mWPlayList->setupIcons();
@@ -346,7 +351,7 @@ void MainWindow::setupIcons()
     ui->tb_addAlbum->    setIcon(Tumb::icon(I_ADD_ALBUM));
     ui->tb_paneContent-> setIcon(Tumb::icon(I_PANE_SHOW));
     ui->tb_panePlaylist->setIcon(Tumb::icon(I_PANE_HIDE));
-ui->tButtonMenu->setIcon(Tumb::icon(I_MENU));
+    ui->tButtonMenu->setIcon(Tumb::icon(I_MENU));
 }
 
 // ------------------------------------------------------
@@ -366,12 +371,12 @@ void MainWindow::progressShow(int max)
 // ------------------------------------------------------
 void MainWindow::on_actionaddDir_triggered()
 {
-//    QString path="/media/Data/Music";
-//    mMediaUpdate->addDirectory(path);
+    //    QString path="/media/Data/Music";
+    //    mMediaUpdate->addDirectory(path);
 
     DialogOptions *dlg=new DialogOptions;
     if(dlg->exec()==QDialog::Accepted){
-       mMediaUpdate->addUpdateDirectory();
+        mMediaUpdate->addUpdateDirectory();
     }
     delete dlg;
 }
@@ -394,8 +399,8 @@ void MainWindow::setPathAlbum(int index)
     case 3:mMyTreeModel->chargeCategory(CAT_ARTIST,CAT_ALBUM);           break;
     case 4:mMyTreeModel->chargeCategory(CAT_GENRE,CAT_ARTIST,CAT_ALBUM); break;
     case 5:mMyTreeModel->chargeCategory(CAT_GENRE,CAT_ALBUM,CAT_ARTIST); break;
-    case 6:mMyTreeModel->chargeCategory(CAT_ARTIST,CAT_NULL); break;
-    case 7:mMyTreeModel->chargeCategory(CAT_ALBUM,CAT_NULL); break;
+    case 6:mMyTreeModel->chargeCategory(CAT_ARTIST,CAT_NULL);            break;
+    case 7:mMyTreeModel->chargeCategory(CAT_ALBUM,CAT_NULL);             break;
 
     default: break;
     }
@@ -426,9 +431,9 @@ void MainWindow::changeStatusPathText()
     int gId=mMap.value(MAP_GID).toInt(); QString gName=mMap.value(MAP_GTITLE);
 
     QFontMetrics fm(this->font());
-    QString gTxt=fm.elidedText(gName,Qt::ElideRight,140);
-    QString pTxt=fm.elidedText(pName,Qt::ElideRight,140);
-    QString nTxt=fm.elidedText(name, Qt::ElideRight,150);
+    QString gTxt=fm.elidedText(gName,Qt::ElideRight,200);
+    QString pTxt=fm.elidedText(pName,Qt::ElideRight,200);
+    QString nTxt=fm.elidedText(name, Qt::ElideRight,200);
 
 
     if(!gName.isEmpty()){
@@ -495,7 +500,7 @@ void MainWindow::treeAudioClicked(const QModelIndex &index)
 
         bool favo   =idx.data(USER_RATED).toBool();
         QString path=mMyListModel->index(index.row(),2).data(Qt::UserRole).toString();
-        if (mDataBase->setFavorite(path,!favo)){
+        if (DataBase::setFavorite(path,!favo)){
             mMyListModel->itemFromIndex(index)->setData(!favo,USER_RATED);
             mMyListModel->itemFromIndex(index)->setIcon(favo ? Tumb::icon(I_START):Tumb::icon(I_STARTED));
             qDebug()<<"mainwindow favorit saved";
@@ -560,7 +565,7 @@ void MainWindow::chargeListItemes()
     int chld=   mMap.value(MAP_CHILD).toInt();  QString path=   mMap.value(MAP_IMG);
     bool isFavo=mMap.value(MAP_IS_FAVO).toInt();
 
-  //  qDebug()<<"album rated"<<isFavo<<id<<chld<<pId<<pName;
+    //  qDebug()<<"album rated"<<isFavo<<id<<chld<<pId<<pName;
 
     if(chld!=CAT_NULL){
         if(isFavo)
@@ -570,6 +575,7 @@ void MainWindow::chargeListItemes()
 
         ui->stackedWidgetView->setCurrentWidget(ui->page_View);
         changeStatusPathText();
+        mMyListModel->sort(0,Qt::AscendingOrder);
         return;
     }
 
@@ -592,9 +598,9 @@ void MainWindow::chargeListItemes()
         mTVAudio->setColumnHidden(3,id!=CAT_ALBUM);
     }
 
-     ui->tb_favoritAlbum->setVisible(id==CAT_ALBUM);
-     ui->tb_imgAlbum->setVisible(!isFavo);
-     setlabelImage();
+    ui->tb_favoritAlbum->setVisible(id==CAT_ALBUM);
+    ui->tb_imgAlbum->setVisible(!isFavo);
+    setlabelImage();
 
     mTVAudio->resizeColumnToContents(2);
     mTVAudio->resizeColumnToContents(5);
@@ -609,7 +615,7 @@ void MainWindow::chargeListItemes()
 
     changeStatusPathText();
 
-    int favo= mSetting->albumIsFavorited(name);
+    int favo= Setting::albumIsFavorited(name);
     ui->tb_favoritAlbum->setChecked(favo);
     ui->tb_favoritAlbum->setIcon(favo ? Tumb::icon(I_STARTED):Tumb::icon(I_START));
 
@@ -657,7 +663,7 @@ void MainWindow::on_tb_favoritAlbum_clicked()
 
     ui->tb_favoritAlbum->setIcon(favo ? Tumb::icon(I_STARTED):Tumb::icon(I_START));
 
-    mSetting->setAlbumFavo(Name,favo);
+    Setting::setAlbumFavo(Name,favo);
 }
 
 // ------------------------------------------------------
@@ -698,11 +704,11 @@ void MainWindow::on_tb_playAlbum_clicked()
 
 void MainWindow::on_tb_imgAlbum_clicked()
 {
-      QString Name=   mMap.value(MAP_TITLE);
-       if(Name==tr("Unknown")) return;
-      int id=   mMap.value(MAP_ID).toInt();
+    QString Name=   mMap.value(MAP_TITLE);
+    if(Name==tr("Unknown")) return;
+    int id=   mMap.value(MAP_ID).toInt();
 
-       changeImageAlbum(id,Name);
+    changeImageAlbum(id,Name);
 
 }
 
@@ -735,7 +741,7 @@ void MainWindow::changeImageAlbum(int id ,const QString Name)
 
     QImage img(fileName);
 
-   img= img.scaled(256,256,Qt::KeepAspectRatio,Qt::SmoothTransformation);
+    img= img.scaled(256,256,Qt::KeepAspectRatio,Qt::SmoothTransformation);
 
     if(id==CAT_ALBUM)
         img.save(D_ALBUM_CACHE+"/"+Name+".jpg","jpg");
@@ -755,7 +761,7 @@ void MainWindow::onFavoritAlbum(int row,bool favo)
     qDebug()<<oldfavo<<favo;
     if(oldfavo==favo)return;
 
-    mSetting->setAlbumFavo(index.data(USER_TITLE).toString(),favo);
+    Setting::setAlbumFavo(index.data(USER_TITLE).toString(),favo);
     mMyListModel->itemFromIndex(index)->setData(favo,USER_RATED);
     qDebug()<<row<<favo;
 
@@ -780,7 +786,7 @@ void MainWindow::onAddAlbum(int row)
 
     if(Name.isEmpty() || Id==-1)return;
 
-    QList<QVariantMap>list = mDataBase->getAlbumUrls(Name,Id,pName,pId,gName,gId);
+    QList<QVariantMap>list = DataBase::getAlbumUrls(Name,Id,pName,pId,gName,gId);
 
     mPlayer->addToPlaylist(list);
 
@@ -806,6 +812,11 @@ void MainWindow::editCurIndex(const QString &path)
 // ------------------------------------------------------
 void MainWindow::on_actionopen_triggered()
 {
+    //    if(DataBase::clearDatabase()){
+    //        setPathAlbum(ui->comboBoxSwichCat->currentIndex());
+    //    }
+    //    return;
+
     DialogOpen *dlg=new DialogOpen(this);
     if(dlg->exec()==QDialog::Accepted){
         bool save=dlg->autoSave(); //TODO :add this to save
@@ -822,3 +833,15 @@ void MainWindow::on_actionopen_triggered()
 }
 
 
+
+void MainWindow::on_tButtonCancelMsg_clicked()
+{
+    mMediaUpdate->setUpdateDirs(false);
+    ui->widgetMessage->setVisible(false);
+}
+
+void MainWindow::on_tButtonOkMsg_clicked()
+{
+    mMediaUpdate->setUpdateDirs(true);
+    ui->widgetMessage->setVisible(false);
+}

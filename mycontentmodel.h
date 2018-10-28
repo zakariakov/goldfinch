@@ -12,7 +12,7 @@ class MyContentModel : public QStandardItemModel
 {
       Q_OBJECT
 public:
-    explicit MyContentModel(DataBase *data, QObject *parent = nullptr);
+    explicit MyContentModel( QObject *parent = nullptr);
 
  QIcon icon(const QModelIndex &index){return item(index.row())->icon();}
 protected:
@@ -23,7 +23,7 @@ protected:
 private:
 
 
-  DataBase *mDataBase;
+ // DataBase *mDataBase;
   //  int  mediaMeyaData;
 //    int  curGroup;
 //     bool isGroup;

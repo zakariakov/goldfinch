@@ -2,8 +2,8 @@
 #include "tumb.h"
 #include <QDebug>
 #include <QSettings>
-MyContentModel::MyContentModel(DataBase *data, QObject *parent) :
-    QStandardItemModel(parent),mDataBase(data)
+MyContentModel::MyContentModel (QObject *parent) :
+    QStandardItemModel(parent)
 {
 
 }
@@ -32,14 +32,14 @@ void MyContentModel::chargeCategory(int root, int child, int children)
     itemAlbum->setData(CAT_ALBUM,USER_CHILD_ID);
     itemAlbum->setIcon(Tumb::icon(I_STARTED));
     itemAlbum->setData(true,USER_FAVORITE);
-    QStringList list=mDataBase->chargeRoot(root);
+    QStringList list=DataBase::chargeRoot(root);
 
     foreach(QString name,list)
     {
 
-
         if(name.isEmpty()||name.isNull())
             continue;
+
         QStandardItem* item = new QStandardItem();
         item->setText(name);
         item->setData(name,USER_TITLE);
@@ -65,16 +65,16 @@ void MyContentModel::chargeCategory(int root, int child, int children)
             item->appendRows(addChilds(name,root,child,children));
 
         }
-   sort(0);
-    }
 
+    }
+ sort(0);
  invisibleRootItem()->insertRow(0,itemAlbum);
  invisibleRootItem()->insertRow(0,itemFavorite);
 }
 
 void MyContentModel::chargeFavoritedAlbum()
 {
-     QStringList list=mDataBase->chargeFavoritedAlbum();
+     QStringList list=DataBase::chargeFavoritedAlbum();
      foreach(QString name,list)
      {
 
@@ -94,9 +94,9 @@ void MyContentModel::chargeFavoritedAlbum()
 
 
 
-    sort(0);
-     }
 
+     }
+  sort(0);
 
 }
 //______________________________________________________________________________________________________CHILDS
@@ -104,7 +104,7 @@ QList<QStandardItem *> MyContentModel::addChilds(QString prentName, int parentCo
 {
 
 
-    QStringList list=mDataBase->chargeChild(child,parentColumn,prentName);
+    QStringList list=DataBase::chargeChild(child,parentColumn,prentName);
     QList<QStandardItem *> items;
     foreach(QString name,list)
     {

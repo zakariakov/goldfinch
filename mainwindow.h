@@ -52,7 +52,7 @@ private:
     //!  حاوي القائمة وادات تجرير القائمة
     WidgetPlayList *mWPlayList;
     //! قاغدة البيانات
-    DataBase *mDataBase;
+ ///   DataBase *mDataBase;
     //! تحرير مظهر الايقونات في معرض القائمة
     ListItemDelegate *mLIDelegate;
     //!
@@ -140,6 +140,8 @@ private slots:
     void on_actionopen_triggered();
 
 
+    void on_tButtonCancelMsg_clicked();
+    void on_tButtonOkMsg_clicked();
 };
 
 #endif // MAINWINDOW_H

@@ -53,7 +53,8 @@ SOURCES += \
     widgetimageinfo.cpp \
     dialogopen.cpp \
     player_adaptor.cpp \
-    dialogoptions.cpp
+    dialogoptions.cpp \
+    slider.cpp
 
 HEADERS += \
         mainwindow.h \
@@ -77,7 +78,8 @@ HEADERS += \
     widgetimageinfo.h \
     dialogopen.h \
     player_adaptor.h \
-    dialogoptions.h
+    dialogoptions.h \
+    slider.h
 
 FORMS += \
         mainwindow.ui \

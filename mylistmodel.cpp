@@ -3,8 +3,8 @@
 #include "tumb.h"
 #include <QSettings>
 #include <QDebug>
-MyListModel::MyListModel(Setting *setting, DataBase *data, QObject *parent) :
-    QStandardItemModel(parent),mSetting(setting),mDataBase(data)
+MyListModel::MyListModel( QObject *parent) :
+    QStandardItemModel(parent)
 {
 
 }
@@ -53,7 +53,7 @@ void MyListModel::chargeCategory(QString curentName, int curent, int child,int p
 
     clear();
 
-    QStringList list=mDataBase->chargeChild(child,curent,curentName,pId,pName);
+    QStringList list=DataBase::chargeChild(child,curent,curentName,pId,pName);
 
     foreach(QString title,list)
     {
@@ -71,8 +71,9 @@ void MyListModel::chargeCategory(QString curentName, int curent, int child,int p
         //! ----------------------* IDITOR *---------------------------//
         item->setData(QVariant::fromValue(Iditoring()),Qt::EditRole);
 
-        int favo=mSetting->albumIsFavorited(title);
-        QString imgPath=mSetting->albumImgPath(title);
+        int favo=Setting::albumIsFavorited(title);
+        QString imgPath=Setting::albumImgPath(title);
+
         //  QString imgPath=s.value(title).toString();
         item->setData(favo,USER_RATED);
         item->setData(imgPath,USER_IMGPATH);
@@ -82,14 +83,14 @@ void MyListModel::chargeCategory(QString curentName, int curent, int child,int p
     }
 
     sort(0);
-
+invisibleRootItem()->sortChildren(0);
 }
 
 void MyListModel::chargeFavoritedAlbum()
 {
       clear();
 
-     QStringList list=mSetting->favoretedAlbum();
+     QStringList list=Setting::favoretedAlbum();
 
      foreach(QString title,list)
      {
@@ -108,8 +109,8 @@ void MyListModel::chargeFavoritedAlbum()
           //! ----------------------* IDITOR *---------------------------//
          item->setData(QVariant::fromValue(Iditoring()),Qt::EditRole);
 
-         bool favo=mSetting->albumIsFavorited(title);
-         QString imgPath=mSetting->albumImgPath(title);
+         bool favo=Setting::albumIsFavorited(title);
+         QString imgPath=Setting::albumImgPath(title);
          //  QString imgPath=s.value(title).toString();
          item->setData(favo,USER_RATED);
          item->setData(imgPath,USER_IMGPATH);
@@ -119,7 +120,7 @@ void MyListModel::chargeFavoritedAlbum()
      }
 
      sort(0);
-
+ invisibleRootItem()->sortChildren(0);
 
 }
 
@@ -132,7 +133,7 @@ void MyListModel::chargeAudios(QString name, int colm,
 
     clear();
 
-    QList<QVariantMap> list=mDataBase->chargeAudios
+    QList<QVariantMap> list=DataBase::chargeAudios
             (name,colm,pName,pColm,pPname,pPcolm);
 
 
@@ -181,8 +182,8 @@ void MyListModel::chargeAudios(QString name, int colm,
                                        <<itemDur
                                        );
     }
-
     sort(0);
+    invisibleRootItem()->sortChildren(0);
 
 }
 

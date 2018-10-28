@@ -4,6 +4,11 @@
 #include <QSqlResult>
 #include <QDebug>
 
+Q_GLOBAL_STATIC(DataBase, DataBaseInstance)
+DataBase *DataBase::instance()
+{
+    return DataBaseInstance();
+}
 DataBase::DataBase(QObject *parent) : QObject(parent)
 {
     db = QSqlDatabase::addDatabase("QSQLITE");
@@ -33,18 +38,18 @@ void DataBase::openDataBase()
     QDir dir;
     dir.mkpath(D_CACHE);
 
-    db.setDatabaseName(D_CACHE+"/library.db");
+   instance()-> db.setDatabaseName(D_CACHE+"/library.db");
 
     QString txt="no database: ";
-    if(!db.open())
+    if(! instance()-> db.open())
     {
-        txt+=db.lastError().text();
+        txt+= instance()-> db.lastError().text();
         qDebug()<<"MyModel::openDataBase()"<<txt;
     }
 
     //! [Set up table  book]
 
-    QSqlQuery query(db);
+    QSqlQuery query( instance()-> db);
 
     //AUTOINCREMENT
     query.exec("CREATE TABLE 'main'.'books' ("
@@ -59,7 +64,20 @@ void DataBase::openDataBase()
                ");");
 
 }
+bool  DataBase::clearDatabase()
+{
+     QSqlQuery query(instance()->db);
+    QString  txt="DROP TABLE books";
+    if(query.exec(txt)){
+        openDataBase();
+        return true;
+    } else{
+        qDebug()<<query.lastError().text();
+    }
+    return false;
+}
 //_____________________________________________________________________
+/*
 void  DataBase::updateExistingSong(const QString &title,
                                    const QString &artist,
                                    const QString &album,
@@ -87,7 +105,7 @@ void  DataBase::updateExistingSong(const QString &title,
 
 
 }
-
+*/
 //_____________________________________________________________________
 int  DataBase::checkSongInfo(const QString &title,   const QString &artist,
                              const QString &album,   const QString &genre,
@@ -96,10 +114,12 @@ int  DataBase::checkSongInfo(const QString &title,   const QString &artist,
 
     QString   txt=QString("select * from books WHERE path='%1'")
             .arg(inTxt(path));
-    QSqlQuery query(db);
+    QSqlQuery query(instance()->db);
     query.exec(txt);
+
     while(query.next())
     {
+
         QString _title= query.value(CAT_TITLE).toString();
         if(!title.isEmpty() &&_title!=title)    return DATA_NIDUPDATE;
 
@@ -124,12 +144,21 @@ int  DataBase::checkSongInfo(const QString &title,   const QString &artist,
 
     return DATA_NOEXIST;
 }
-
+void DataBase::removeSong(const QString &path)
+{
+    //----------------------------------------------------------2
+    QString text=QString("DELETE FROM books WHERE path='%1'")
+            .arg(path);
+ QSqlQuery query(instance()->db);
+    query.exec(text);
+}
 //_____________________________________________________________________
 void  DataBase::addNewSong(const QString &title,   const QString &artist,
                            const QString &album,   const QString &genre,
                            const QString &path, const QString &duration)
 {
+
+    if(path.isEmpty()) return;
 
     int ret=checkSongInfo(title,artist,album, genre, path,duration);
 
@@ -149,7 +178,7 @@ void  DataBase::addNewSong(const QString &title,   const QString &artist,
     }
 
 
-    QSqlQuery query(db);
+    QSqlQuery query(instance()->db);
 
     /******************************************************************
    *
@@ -196,7 +225,7 @@ bool DataBase::updateSong(const QString &title,   const QString &artist,
             .arg(COLM_DURATION).arg(duration.trimmed()) /*9=10*/
             .arg(inTxt(path)) /*11*/;
 
-    QSqlQuery query(db);
+    QSqlQuery query(instance()->db);
     // qDebug()<<txt;
     if(query.exec(txt))
         return true;
@@ -217,7 +246,7 @@ bool DataBase::setFavorite(const QString &path,bool value)
             .arg(QString::number(value))  /*1=2*/
             .arg(inTxt(path)); /*3=4*/;
     // qDebug()<<txt;
-    QSqlQuery query(db);
+    QSqlQuery query(instance()->db);
     if(query.exec(txt))
         return true;
 
@@ -228,12 +257,12 @@ bool DataBase::setFavorite(const QString &path,bool value)
 
 QStringList  DataBase::chargeRoot(int colm)
 {
-    QSqlQuery query;
+    QSqlQuery query(instance()->db);
 
     QString column=colString(colm);
 
 
-    query.exec(QString("SELECT DISTINCT %1 FROM books").arg(column));
+    query.exec(QString("SELECT DISTINCT %1 FROM books  WHERE path IS NOT NULL").arg(column));
     QStringList list;
     while(query.next())
     {
@@ -269,8 +298,8 @@ QStringList  DataBase::chargeFavoritedAlbum()
 }
 //-----------------------------------------------------------
 QStringList  DataBase::chargeChild(int colm,
-                                   int pColm,QString pName,
-                                   int pPColm,QString pPName)
+                                   int pColm,const QString &pName,
+                                   int pPColm,const QString &pPName)
 {
 
     QString column=colString(colm);
@@ -279,11 +308,11 @@ QStringList  DataBase::chargeChild(int colm,
 
     QString txt;
     if(pPColumn.isEmpty()|| pPName.isEmpty()){
-        txt=QString("select DISTINCT %1 from books WHERE %2='%3'").arg(column)
+        txt=QString("select DISTINCT %1 from books WHERE %2='%3'  AND path IS NOT NULL").arg(column)
                 .arg(pColumn).arg(inTxt(pName));
 
     }else{
-        txt=QString("select DISTINCT %1 from books WHERE %2='%3' AND %4='%5'").arg(column)
+        txt=QString("select DISTINCT %1 from books WHERE %2='%3' AND %4='%5'  AND path IS NOT NULL").arg(column)
                 .arg(pColumn).arg(inTxt(pName)).arg(pPColumn).arg(inTxt(pPName));
 
     }
@@ -324,13 +353,13 @@ QList<QVariantMap> DataBase::chargeAudios(QString name,
 
 
     if(pName.isEmpty())
-        txt=QString("select * from books WHERE %1='%2'" )
+        txt=QString("select * from books WHERE %1='%2'  AND path IS NOT NULL" )
                 .arg(colm_s).arg(inTxt(name));
     else if (pPname.isEmpty())
-        txt=QString("select * from books WHERE %1='%2' AND %3='%4'")
+        txt=QString("select * from books WHERE %1='%2' AND %3='%4'  AND path IS NOT NULL")
                 .arg(colm_s).arg(inTxt(name)).arg(pColm_s).arg(inTxt(pName));
     else
-        txt=QString("select * from books WHERE %1='%2' AND %3='%4' AND %5='%6'")
+        txt=QString("select * from books WHERE %1='%2' AND %3='%4' AND %5='%6' AND path IS NOT NULL")
                 .arg(colm_s).arg(inTxt(name)).arg(pColm_s).arg(inTxt(pName)).arg(pPColm_s).arg(inTxt(pPname));
 
 

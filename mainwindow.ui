@@ -106,12 +106,11 @@
 
   QProgressBar::chunk {
       background-color: palette(highlight);
-  border-radius: 1px;
-     /* width: 20px;*/
-  }</string>
+     border-radius: 1px;
+   }</string>
       </property>
       <property name="value">
-       <number>20</number>
+       <number>50</number>
       </property>
       <property name="textVisible">
        <bool>false</bool>
@@ -127,8 +126,21 @@
        </sizepolicy>
       </property>
       <property name="styleSheet">
-       <string notr="true">background-color: rgb(255, 255, 127);
-color: rgb(19, 24, 34);</string>
+       <string notr="true">QWidget{
+    background-color:palette(highlight);
+    color:palette(highlight-text)
+}
+QToolButton {
+   border-radius:5;
+   border:1px solid transparent;
+	background-color:  palette(highlight);
+}
+
+QToolButton:hover {
+   color: palette(window-text);
+   background-color:  palette(shadow);
+}
+</string>
       </property>
       <layout class="QHBoxLayout" name="horizontalLayout">
        <property name="topMargin">
@@ -145,9 +157,9 @@ color: rgb(19, 24, 34);</string>
         </widget>
        </item>
        <item>
-        <widget class="QToolButton" name="toolButton_2">
+        <widget class="QToolButton" name="tButtonCancelMsg">
          <property name="text">
-          <string>...</string>
+          <string>Cancel</string>
          </property>
          <property name="autoRaise">
           <bool>true</bool>
@@ -155,12 +167,12 @@ color: rgb(19, 24, 34);</string>
         </widget>
        </item>
        <item>
-        <widget class="QToolButton" name="toolButton">
+        <widget class="QToolButton" name="tButtonOkMsg">
          <property name="text">
-          <string>...</string>
+          <string>Update</string>
          </property>
          <property name="autoRaise">
-          <bool>true</bool>
+          <bool>false</bool>
          </property>
         </widget>
        </item>
@@ -339,12 +351,6 @@ color: rgb(19, 24, 34);</string>
                </item>
                <item>
                 <widget class="QLabel" name="labelStatusG">
-                 <property name="maximumSize">
-                  <size>
-                   <width>150</width>
-                   <height>16777215</height>
-                  </size>
-                 </property>
                  <property name="text">
                   <string/>
                  </property>
@@ -352,12 +358,6 @@ color: rgb(19, 24, 34);</string>
                </item>
                <item>
                 <widget class="QLabel" name="labelStatusP">
-                 <property name="maximumSize">
-                  <size>
-                   <width>150</width>
-                   <height>16777215</height>
-                  </size>
-                 </property>
                  <property name="text">
                   <string/>
                  </property>
@@ -365,12 +365,6 @@ color: rgb(19, 24, 34);</string>
                </item>
                <item>
                 <widget class="QLabel" name="labelStatus">
-                 <property name="maximumSize">
-                  <size>
-                   <width>160</width>
-                   <height>16777215</height>
-                  </size>
-                 </property>
                  <property name="text">
                   <string/>
                  </property>

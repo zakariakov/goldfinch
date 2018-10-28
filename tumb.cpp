@@ -5,6 +5,8 @@
 #include <QPainter>
 #include <QApplication>
 #include <QBitmap>
+#include <QPalette>
+
 Q_GLOBAL_STATIC(Tumb, TumbInstance)
 Tumb *Tumb::instance()
 {
@@ -169,44 +171,49 @@ QIcon Tumb::iconColorized(QString file,QColor color)
 
 QIcon Tumb::icon(int name)
 {
-    bool isLeft= QApplication::isLeftToRight();
+  bool isLeft= QApplication::isLeftToRight();
+ QColor color= QApplication::palette().text().color();
+
+
     switch (name) {
-    case I_ARTIST:     return iconColorized(":/icons/artist-16",instance()->m_color);
-    case I_Album:      return iconColorized(":/icons/cover-16",instance()->m_color);
-    case I_Genre:      return iconColorized(":/icons/genre-16",instance()->m_color);
-    case I_PAUSE:      return iconColorized(":/icons/pause",instance()->m_color);
-    case I_ADD:        return iconColorized(":/icons/add",instance()->m_color);
-    case I_ADD_ALBUM:  return iconColorized(":/icons/album-add",instance()->m_color);
-    case I_PANE_HIDE:  return iconColorized(":/icons/pane-hide",instance()->m_color);
-    case I_PANE_SHOW:  return iconColorized(":/icons/pane-show",instance()->m_color);
-    case I_START:      return iconColorized(":/icons/star",instance()->m_color);
-    case I_STARTED:    return iconColorized(":/icons/stared",instance()->m_colorEd);
-    case I_VOLUME:     return iconColorized(":/icons/volume",instance()->m_color);
+    case I_ARTIST:     return iconColorized(":/icons/artist-16",color);
+    case I_Album:      return iconColorized(":/icons/cover-16",color);
+    case I_Genre:      return iconColorized(":/icons/genre-16",color);
+    case I_PAUSE:      return iconColorized(":/icons/pause",color);
+    case I_ADD:        return iconColorized(":/icons/add",color);
+    case I_ADD_ALBUM:  return iconColorized(":/icons/album-add",color);
+    case I_START:      return iconColorized(":/icons/star",color);
+    case I_STARTED:    return iconColorized(":/icons/stared",QApplication::palette().highlight().color());
+    case I_VOLUME:     return iconColorized(":/icons/volume",color);
     case I_VOLUME_OF:  return QIcon(":/icons/volume-off");
-    case I_IMG:        return iconColorized(":/icons/preview",instance()->m_color);
-    case I_LIST_REMOVE:return iconColorized(":/icons/list-remove",instance()->m_color);
-    case I_CLEAN:      return iconColorized(":/icons/cleanup",instance()->m_color);
-    case I_M_SHUFLE:   return iconColorized(":/icons/media-shuffle",instance()->m_color);
-    case I_M_SEQUEN:   return iconColorized(":/icons/media-sequential",instance()->m_color);
-    case I_M_REPEAT:   return iconColorized(":/icons/media-repeat",instance()->m_color);
-    case I_M_REPEAT_ONE:return iconColorized(":/icons/media-repeat-one",instance()->m_color);
-    case I_M_PLAY_ONE: return iconColorized(":/icons/media-paly-one",instance()->m_color);
-    case I_AROW:       return iconColorized(":/icons/arow",instance()->m_color);
-    case I_AROW_RTL:   return iconColorized(":/icons/arow-rtl",instance()->m_color);
-    case I_FAVO:       return iconColorized(":/icons/favo",instance()->m_color);
-    case I_MENU:       return iconColorized(":/icons/menu",instance()->m_color);
-    case I_PROPERTIES: return iconColorized(":/icons/properties",instance()->m_color);
+    case I_IMG:        return iconColorized(":/icons/preview",color);
+    case I_LIST_REMOVE:return iconColorized(":/icons/list-remove",color);
+    case I_CLEAN:      return iconColorized(":/icons/cleanup",color);
+    case I_M_SHUFLE:   return iconColorized(":/icons/media-shuffle",color);
+    case I_M_SEQUEN:   return iconColorized(":/icons/media-sequential",color);
+    case I_M_REPEAT:   return iconColorized(":/icons/media-repeat",color);
+    case I_M_REPEAT_ONE:return iconColorized(":/icons/media-repeat-one",color);
+    case I_M_PLAY_ONE: return iconColorized(":/icons/media-paly-one",color);
+    case I_AROW:       return iconColorized(":/icons/arow",color);
+    case I_AROW_RTL:   return iconColorized(":/icons/arow-rtl",color);
+    case I_FAVO:       return iconColorized(":/icons/favo",color);
+    case I_MENU:       return iconColorized(":/icons/menu",color);
+    case I_PROPERTIES: return iconColorized(":/icons/properties",color);
+    case I_PANE_HIDE:
+        if(isLeft)     return iconColorized(":/icons/pane-hide",color);
+        else           return iconColorized(":/icons/pane-show",color);
+    case I_PANE_SHOW:
+        if(isLeft)     return iconColorized(":/icons/pane-show",color);
+        else           return iconColorized(":/icons/pane-hide",color);
     case I_PLAY:
-         if(isLeft)    return iconColorized(":/icons/play",instance()->m_color);
-         else          return iconColorized(":/icons/play-rtl",instance()->m_color);
+        if(isLeft)     return iconColorized(":/icons/play",color);
+        else           return iconColorized(":/icons/play-rtl",color);
     case I_NEXT:
-        if(isLeft)     return iconColorized(":/icons/next",instance()->m_color);
-        else           return iconColorized(":/icons/prev",instance()->m_color);
+        if(isLeft)     return iconColorized(":/icons/next",color);
+        else           return iconColorized(":/icons/prev",color);
     case I_PREV:
-        if(isLeft)     return iconColorized(":/icons/prev",instance()->m_color);
-        else           return iconColorized(":/icons/next",instance()->m_color);
-
-
+        if(isLeft)     return iconColorized(":/icons/prev",color);
+        else           return iconColorized(":/icons/next",color);
 
     default:  break;
     }

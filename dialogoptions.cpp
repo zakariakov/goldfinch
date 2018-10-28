@@ -53,7 +53,7 @@ void DialogOptions::on_toolButtonAdd_clicked()
     if(dir.isEmpty())return;
 
     QListWidgetItem *item=new QListWidgetItem(dir,ui->listWidget);
-    item->setCheckState(Qt::Unchecked);
+    item->setCheckState(Qt::Checked);
 
 }
 

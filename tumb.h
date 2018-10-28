@@ -50,13 +50,13 @@ public:
 
 public slots:
    static void setSize(int size){instance()->m_size=size;}
-   static void setIconColor(QColor col,QColor coled)
-   {instance()->m_color=col;instance()->m_colorEd=coled;}
+//   static void setIconColor(QColor col,QColor coled)
+//   {instance()->m_color=col;instance()->m_colorEd=coled;}
 private:
      QMap<QString,QString>*mapIcons;
 int m_size;
-QColor m_color;
-QColor m_colorEd;
+//QColor m_color;
+//QColor m_colorEd;
 };
 
 #endif // TUMB_H

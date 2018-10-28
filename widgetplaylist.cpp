@@ -6,70 +6,59 @@
 WidgetPlayList::WidgetPlayList(QWidget *parent) : QWidget(parent)
 {
 
-    //![0]
-    mPlayListView=new QListView;
-    tbRemoveItem=new QToolButton;
-    tbMoveItemUp=new QToolButton;
-    tbMoveItemDown=new QToolButton;
-    tbCleanList=new QToolButton;
-    tbPlayMode=new QToolButton;
-    //![1]
 
+    mPlayListView=  new QListView;
+    tbRemoveItem=   new QToolButton;
+    tbMoveItemUp=   new QToolButton;
+    tbMoveItemDown= new QToolButton;
+    tbCleanList=    new QToolButton;
+    tbPlayMode=     new QToolButton;
 
     mPlayListView->setFrameShape(QFrame::NoFrame);
-    mPlayListView->setIconSize(QSize(12,12));
-
+    mPlayListView->setIconSize(QSize(16,16));
 
     tbRemoveItem->setIconSize(QSize(16,16));
     tbRemoveItem->setAutoRaise(true);
-    //  tbRemoveItem->setIcon(removeIcon);
+    tbRemoveItem->setToolTip(tr("Remove Current "));
     connect(tbRemoveItem,SIGNAL(clicked()),SLOT(rmoveItem()));
 
 
     tbMoveItemUp->setIconSize(QSize(16,16));
     tbMoveItemUp->setAutoRaise(true);
-    //tbMoveItemUp->setIcon(Tumb::icon(I_LIST_REMOVE,col));
     tbMoveItemUp->setArrowType(Qt::UpArrow);
+    tbMoveItemUp->setToolTip(tr("Move Up Current "));
     connect(tbMoveItemUp,SIGNAL(clicked()),SLOT(moveItemUp()));
-
 
     tbMoveItemDown->setIconSize(QSize(16,16));
     tbMoveItemDown->setAutoRaise(true);
-    // tbMoveItemDown->setIcon(Tumb::icon(I_LIST_REMOVE,col));
+    tbMoveItemDown->setToolTip(tr("Move Down Current "));
     tbMoveItemDown->setArrowType(Qt::DownArrow);
     connect(tbMoveItemDown,SIGNAL(clicked()),SLOT(moveItemDown()));
 
-
     tbCleanList->setIconSize(QSize(16,16));
     tbCleanList->setAutoRaise(true);
-    // tbCleanList->setIcon(cleanIcon);
+    tbCleanList->setToolTip(tr("Clear Plylist"));
     connect(tbCleanList,SIGNAL(clicked()),SIGNAL(cleanList()));
-
 
     QMenu *mnuPlayMode=new QMenu;
 
-    actPlayOne=mnuPlayMode->addAction(tr("CurrentItemOnce"));
-    // actPlayOne->setIcon(playoneIcon);
+    actPlayOne=mnuPlayMode->addAction(tr("Current Once"));
     actPlayOne->setData(0);
     connect(actPlayOne,SIGNAL(triggered()),this,SLOT(setPlayMode()));
 
-    actRepeatOne=mnuPlayMode->addAction(tr("CurrentItemInLoop"));
-    //  actRepeatOne->setIcon(repeatoneIcon);
+    actRepeatOne=mnuPlayMode->addAction(tr("Current Loop"));
     actRepeatOne->setData(1);
     connect(actRepeatOne,SIGNAL(triggered()),this,SLOT(setPlayMode()));
 
     actSquent=mnuPlayMode->addAction(tr("Sequential"));
-    // actSquent->setIcon(squentialIcon);
     actSquent->setData(2);
     connect(actSquent,SIGNAL(triggered()),this,SLOT(setPlayMode()));
 
-    actRepeatAlbum=mnuPlayMode->addAction(tr("Loop"));
-    // actRepeatAlbum->setIcon(repaeatAlbumIcon);
+    actRepeatAlbum=mnuPlayMode->addAction(tr("Plylist Loop"));
     actRepeatAlbum->setData(3);
     connect(actRepeatAlbum,SIGNAL(triggered()),this,SLOT(setPlayMode()));
 
     actRandom=mnuPlayMode->addAction(tr("Random"));
-    //  actRandom->setIcon(shufleAlbumIcon);
     actRandom->setData(4);
     connect(actRandom,SIGNAL(triggered()),this,SLOT(setPlayMode()));
 

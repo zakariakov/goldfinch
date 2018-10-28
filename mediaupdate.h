@@ -13,7 +13,7 @@ class Thread : public QThread
     Q_OBJECT
 
 public:
-    Thread(DataBase *data);
+    Thread();
     void setFile(QVariantMap map){mMap=map;}
     QUrl curentPath(){return mUrl;}
 signals:
@@ -36,20 +36,20 @@ class MediaUpdate : public QObject
 {
     Q_OBJECT
 public:
-    explicit MediaUpdate(DataBase *data, QObject *parent = nullptr);
+    explicit MediaUpdate(QObject *parent = nullptr);
   ~MediaUpdate();
 signals:
     void updated();
     void progressMaxChanged(int max);
     void progressValueChanged(int value);
-    void dirNidUpdate(const QString &);
+    void dirNidUpdate(bool);
 public slots:
     void addUpdateDirectory();
     void scanDirectory(const QString &path);
     void updateDirectory(const QString &dir);
     void addFiles(const QList<QUrl>urls);
     void updateFile(QVariantMap map, const QString &path);
-
+void setUpdateDirs(bool update);
 //    void setlistDirs(QStringList list){mLisDirs=list;}
 //    QStringList listDirs(){return mLisDirs;}
 
@@ -57,17 +57,18 @@ private slots:
     void metaDataChanged();
     void chargeDirectoryWatcher();
 void directoryChanged(const QString &path);
+
     //thread
     void startNewThread();
     void removelast();
 private:
     QMediaPlayer *player;
     QMediaPlaylist *playlist;
-    DataBase *mDataBase;
+  //  DataBase *mDataBase;
     Thread   *mThread;
     QList<QUrl> mListMedia;
 
- //   QStringList mLisDirs;
+   QStringList mLisUpdateDirs;
 QFileSystemWatcher *mWatcher;
     //thred
 QList <QVariantMap>listMap;

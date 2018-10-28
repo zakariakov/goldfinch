@@ -29,7 +29,7 @@ header()->setCascadingSectionResizes(true);
 
 //setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 setHeaderHidden(true);
-setEditTriggers(QAbstractItemView::AllEditTriggers);
+setEditTriggers(QAbstractItemView::NoEditTriggers);
 
  connect(this,SIGNAL(customContextMenuRequested(QPoint)),this,SLOT(customContextMenu(QPoint)));
  setContextMenuPolicy(Qt::CustomContextMenu);

@@ -50,8 +50,9 @@
 
 #ifndef PLAYERCONTROLS_H
 #define PLAYERCONTROLS_H
-
+#include "slider.h"
 #include <QMediaPlayer>
+
 #include <QWidget>
 #include <QIcon>
 
@@ -80,13 +81,10 @@ public slots:
     void setState(QMediaPlayer::State state);
     void setVolume(int volume);
 
-
-    void setupIcons();
+     void setupIcons();
     void durationChanged(qint64 duration);
     void positionChanged(qint64 progress);
-    void setPlayEnabled(bool enable);
-    void setPrevEnabled(bool enable);
-    void setNextEnabled(bool enable);
+
 signals:
     void play();
     void pause();
@@ -100,6 +98,10 @@ private slots:
     void playClicked();
     void onVolumeSliderValueChanged();
     void updateDurationInfo(qint64 currentInfo);
+
+//    void setSliderPressed();
+     void setSeeked(int val);
+
 private:
 
 
@@ -109,13 +111,15 @@ private:
     QToolButton *m_previousButton = nullptr;
     QToolButton *m_muteButton = nullptr;
     QAbstractSlider *m_volumeSlider = nullptr;
-    QSlider *m_slider = nullptr;
+    Slider *m_slider = nullptr;
     QLabel *m_labelDuration = nullptr;
     QIcon playIcon;
     QIcon pauseIcon;
     qint64 m_duration;
+
     QMediaPlayer::State m_playerState = QMediaPlayer::StoppedState;
    bool m_playerMuted = false;
+    int m_pos=0;
 };
 
 #endif // PLAYERCONTROLS_H

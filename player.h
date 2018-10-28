@@ -50,7 +50,7 @@
 
 #ifndef PLAYER_H
 #define PLAYER_H
-//#include "playlistview.h"
+#include "playercontrols.h"
 #include "widgetplaylist.h"
 #include <QWidget>
 #include <QMediaPlayer>
@@ -88,7 +88,7 @@ public:
 signals:
 
     void statuInfoChanged(QString );
-    void playBackChanged(QString );
+    void playBackChanged(QString,int=0 );
     void iconsChanged();
     void imageChanged(QImage);
     void titleChanged(QString);
@@ -140,7 +140,7 @@ private:
 
     QMediaPlayer *m_player = nullptr;
     QMediaPlaylist *m_playlist = nullptr;
-
+ PlayerControls *controls;
     PlaylistModel *m_playlistModel = nullptr;
     QListView *m_playlistView ;
     QString m_trackInfo;

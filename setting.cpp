@@ -11,31 +11,41 @@ Setting::Setting(QObject *parent ):
  void Setting::setAlbumFavo(const QString &title,bool favo)
  {
 
-     beginGroup("Favorite");
+      QSettings s(D_CACHE+"/albums",QSettings::IniFormat);
+     s.beginGroup("Favorite");
 
      if(favo)
-         setValue(title,1);
+        s. setValue(title,1);
      else{
-         if(contains(title))
-             remove(title);
+         if(s.contains(title))
+             s.remove(title);
      }
 
-     endGroup();
+     s.endGroup();
  }
 
  bool Setting::albumIsFavorited(const QString &title)
  {
-     beginGroup("Favorite");
-     bool favo=value(title,0).toBool();
-     endGroup();
+      QSettings s(D_CACHE+"/albums",QSettings::IniFormat);
+     s.beginGroup("Favorite");
+     bool favo=s.value(title,0).toBool();
+     s.endGroup();
      return favo;
  }
 
  QStringList  Setting::favoretedAlbum()
  {
+        QSettings s(D_CACHE+"/albums",QSettings::IniFormat);
      QStringList list;
-     beginGroup("Favorite");
-     list= allKeys();
-     endGroup();
+     s.beginGroup("Favorite");
+     list= s.allKeys();
+     s.endGroup();
      return list;
  }
+
+  QString Setting::albumImgPath(const QString &title)
+  {
+        QSettings s(D_CACHE+"/albums",QSettings::IniFormat);
+      return s.value(title).toString();
+
+  }

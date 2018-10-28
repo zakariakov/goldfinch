@@ -9,7 +9,7 @@ class MyListModel : public QStandardItemModel
 {
     Q_OBJECT
 public:
-    MyListModel(Setting *setting, DataBase *data, QObject *parent = nullptr);
+    MyListModel(QObject *parent = nullptr);
 
     void chargeCategory(QString curentName, int curent, int child, int pId, QString pName);
     void chargeAudios(QString name, int colm,
@@ -27,7 +27,7 @@ protected:
 
 private:
     Setting *mSetting;
-    DataBase *mDataBase;
+  //  DataBase *mDataBase;
  //   QList<QStandardItem*>listItem;
 };
 

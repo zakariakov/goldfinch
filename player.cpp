@@ -94,7 +94,7 @@ player_adaptor *mPlayer_adaptor=new player_adaptor(this);
     connect(m_playlistView, &QAbstractItemView::activated, this, &Player::jump);
 
 
-    PlayerControls *controls = new PlayerControls(this);
+    controls = new PlayerControls(this);
     controls->setState(m_player->state());
     controls->setVolume(m_player->volume());
 
@@ -140,9 +140,9 @@ player_adaptor *mPlayer_adaptor=new player_adaptor(this);
         m_playlistView->setEnabled(false);
     }
 
-    openSavedList("playlist");
+ openSavedList("playlist");
   //  controls->setEnabled(false);
-    metaDataChanged();
+  //  metaDataChanged();
 
 }
 
@@ -537,11 +537,13 @@ void Player::openSavedList(QString name)
 
     int idx=settings.value("Index",0).toInt();
     qint64 pos=settings.value("Pos",0).toLongLong();
-
+    qint64 duration=settings.value("Duration",100).toLongLong();
 
     settings.endGroup() ;
     m_playlist->setCurrentIndex(idx);
-    m_player->setPosition(pos);
+    qDebug()<<"player pos"<<pos<<duration;
+
+        m_player->setPosition(pos);
 
 }
 

@@ -17,61 +17,66 @@ class DataBase : public QObject
 public:
     explicit DataBase(QObject *parent = nullptr);
 
+    static DataBase *instance();
     //! فتح قاعدة البيانات
-    void openDataBase();
+    static void openDataBase();
 
 
     //! تحمبل المسارات المقطوعات
-    QList<QVariantMap> chargeAudios(QString name,
-                                              int colm,
-                                              QString pName=QString(),
-                                              int pColm=0,
-                                              QString pPname=QString(),
-                                              int pPcolm=0);
+    static QList<QVariantMap> chargeAudios(QString name,int colm,
+                                           QString pName=QString(),int pColm=0,
+                                           QString pPname=QString(),int pPcolm=0);
+
     //! ارجاع قائمة بالمسارات وعناوين المسارات ان وجدت
-    QList<QVariantMap> getAlbumUrls(QString name,
-                                              int colm,
-                                              QString pName,
-                                              int pColm,
-                                              QString pPname,
-                                              int pPcolm);
+    static QList<QVariantMap> getAlbumUrls(QString name, int colm,
+                                           QString pName, int pColm,
+                                           QString pPname,int pPcolm);
+
 
 signals:
 
 public slots:
+    //! حذف كل البيانات
+    static  bool clearDatabase();
+
     //! اضافة مسار جديد لحغظه في قاعدة البيانلت
-    void  addNewSong(const QString &title,   const QString &artist,
-                           const QString &album,   const QString &genre,
-                           const QString &path, const QString &duration);
+    static void  addNewSong(const QString &title,const QString &artist,
+                            const QString &album,const QString &genre,
+                            const QString &path, const QString &duration);
+    //! حذف مسار من البيانلت
+    static void removeSong(const QString &path);
 
-    void updateExistingSong(const QString &title, const QString &artist,
-                        const QString &album,   const QString &genre,
-                        const QString &path, const QString &duration);
 
-    bool updateSong(const QString &title,   const QString &artist,
-                   const QString &album,   const QString &genre,
-                    const QString &path, const QString &duration);
+    //    void updateExistingSong(const QString &title, const QString &artist,
+    //                        const QString &album,   const QString &genre,
+    //                        const QString &path, const QString &duration);
 
-    bool setFavorite(const QString &path,bool value);
+
+    //! اضافة اةازالة من المفضلة
+    static bool setFavorite(const QString &path,bool value);
 
     //! تحميل المسار الوحيد
-    QStringList chargeRoot(int colm);
+    static  QStringList chargeRoot(int colm);
     //! تحميل الابناء
-    QStringList chargeChild(int colm,int pColm,QString pName,
-                            int pPColm=99,QString pPName=QString());
-
-
-    QStringList  chargeFavoritedAlbum();
+    static QStringList chargeChild(int colm,int pColm,
+                                   const QString &pName,int pPColm=99,
+                                   const QString &pPName=QString());
+    //! تحميل المفضلة
+    static QStringList  chargeFavoritedAlbum();
 
 private:
     //!
-     QSqlDatabase  db;
+    QSqlDatabase  db;
 
 private slots:
-    //!
-  //  int idFromFile(const QString &file);
-    int  checkSongInfo(const QString &title,   const QString &artist,
-                            const QString &album,   const QString &genre,
+    //! النحقق من البيانات
+    static int  checkSongInfo(const QString &title,const QString &artist,
+                              const QString &album,const QString &genre,
+                              const QString &path, const QString &duration);
+
+    //! تحديث بيانات
+    static  bool updateSong(const QString &title,const QString &artist,
+                            const QString &album,const QString &genre,
                             const QString &path, const QString &duration);
 
 };

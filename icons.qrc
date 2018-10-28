@@ -28,8 +28,8 @@
         <file>icons/properties.png</file>
         <file>icons/menu.png</file>
         <file>icons/goldfinch.svg</file>
-        <file>icons/mask.png</file>
         <file>icons/artist.png</file>
         <file>icons/play-rtl.png</file>
+        <file>icons/mask.svg</file>
     </qresource>
 </RCC>

@@ -105,10 +105,11 @@ PlayerControls::PlayerControls(QWidget *parent)
     m_muteButton->setAutoRaise(true);
     connect(m_muteButton, &QAbstractButton::toggled, m_volumeSlider,&QSlider::setVisible);
 
-    m_slider = new QSlider(Qt::Horizontal, this);
+    m_slider = new Slider;
 
     m_labelDuration = new QLabel(this);
     connect(m_slider, &QSlider::sliderMoved, this, &PlayerControls::seek);
+    connect(m_slider, &Slider::seekChanged, this, &PlayerControls::setSeeked);
 
     QBoxLayout *layout = new QHBoxLayout;
     layout->setMargin(0);
@@ -214,6 +215,7 @@ void PlayerControls::durationChanged(qint64 duration)
 void PlayerControls::positionChanged(qint64 progress)
 {
     QVariant value=progress / 1000;
+    m_pos=value.toInt();
     if (!m_slider->isSliderDown())
         m_slider->setValue(value.toInt());
 
@@ -235,6 +237,17 @@ void PlayerControls::updateDurationInfo(qint64 currentInfo)
     m_labelDuration->setText(tStr);
 }
 
-void  PlayerControls::setPlayEnabled(bool enable){m_playButton->setEnabled(enable);}
-void  PlayerControls::setPrevEnabled(bool enable){m_previousButton->setEnabled(enable);}
-void  PlayerControls::setNextEnabled(bool enable){m_nextButton->setEnabled(enable);}
+
+
+
+void PlayerControls:: setSeeked(int val)
+{
+
+    int value=m_pos+val;
+    if(value>m_duration)value=m_duration;
+    if(value<0)value=0;
+
+   emit seek(value);
+}
+
+
