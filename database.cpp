@@ -72,7 +72,7 @@ bool  DataBase::clearDatabase()
         openDataBase();
         return true;
     } else{
-        qDebug()<<query.lastError().text();
+        qDebug()<<"DataBase::clearDatabase::"<<query.lastError().text();
     }
     return false;
 }
@@ -144,13 +144,17 @@ int  DataBase::checkSongInfo(const QString &title,   const QString &artist,
 
     return DATA_NOEXIST;
 }
-void DataBase::removeSong(const QString &path)
+bool DataBase::removeSong(const QString &path)
 {
     //----------------------------------------------------------2
     QString text=QString("DELETE FROM books WHERE path='%1'")
             .arg(path);
  QSqlQuery query(instance()->db);
-    query.exec(text);
+    if(query.exec(text))
+        return true;
+    else
+        qDebug()<<query.lastError().text();
+    return false;
 }
 //_____________________________________________________________________
 void  DataBase::addNewSong(const QString &title,   const QString &artist,

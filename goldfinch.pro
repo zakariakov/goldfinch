@@ -54,7 +54,8 @@ SOURCES += \
     dialogopen.cpp \
     player_adaptor.cpp \
     dialogoptions.cpp \
-    slider.cpp
+    slider.cpp \
+    propertiesfile.cpp
 
 HEADERS += \
         mainwindow.h \
@@ -79,12 +80,14 @@ HEADERS += \
     dialogopen.h \
     player_adaptor.h \
     dialogoptions.h \
-    slider.h
+    slider.h \
+    propertiesfile.h
 
 FORMS += \
         mainwindow.ui \
     dialogopen.ui \
-    dialogoptions.ui
+    dialogoptions.ui \
+    propertiesfile.ui
 
 RESOURCES += \
     icons.qrc

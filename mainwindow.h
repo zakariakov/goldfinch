@@ -135,7 +135,7 @@ private slots:
     //!
     void treeAudioActivated(const QModelIndex &index);
     //!
-    void editCurIndex(const QString &path);
+   // void editCurIndex(const QString &path);
     //!
     void on_actionopen_triggered();
 

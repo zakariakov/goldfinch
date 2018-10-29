@@ -22,6 +22,8 @@ private slots:
 
     void on_buttonBox_accepted();
 
+    void on_checkBoxRemove_toggled(bool checked);
+
 private:
     Ui::DialogOptions *ui;
 };

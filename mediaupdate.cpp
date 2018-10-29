@@ -26,8 +26,10 @@ MediaUpdate::MediaUpdate( QObject *parent)
 
     // thread
     mThread=new Thread;
-    connect(mThread,SIGNAL(removelast()),this,SLOT(removelast()));
-    connect(mThread,SIGNAL(finished())         ,this,SLOT(startNewThread()));
+  //  connect(mThread,SIGNAL(removelast()),this,SLOT(removelast()));
+
+     connect(mThread,SIGNAL(removeKey(QString)),this,SLOT(removelast(QString)));
+     connect(mThread,SIGNAL(finished())         ,this,SLOT(startNewThread()));
     //    connect(mThread,SIGNAL(terminated(QString)),this,SIGNAL(updateThumbnail(QString)));
 
     //    QFile file(D_CACHE+"/Directory");
@@ -66,7 +68,7 @@ void MediaUpdate::chargeDirectoryWatcher()
 
         mWatcher->addPath(path);
 
-        QDirIterator itDir(path,QDir::AllDirs| QDir::NoDotAndDotDot,
+        QDirIterator itDir(path,QDir::AllDirs| QDir::NoDotAndDotDot|QDir::NoSymLinks,
                            QDirIterator::Subdirectories);
         while (itDir.hasNext()) {
             QString dir= itDir.next();
@@ -138,7 +140,9 @@ void MediaUpdate::setUpdateDirs(bool update)
         mLisUpdateDirs.clear();
         return;
     }
-    //---------------------------------------
+
+
+
     foreach (QString path, mLisUpdateDirs) {
         updateDirectory(path);
     }
@@ -180,34 +184,34 @@ void MediaUpdate::metaDataChanged()
         QString mediaSize=(player->metaData(QMediaMetaData::Size).toString());
 
         QString duration=QTime::fromMSecsSinceStartOfDay(QVariant(player->duration()).toInt()).toString();
-        if(duration.isEmpty())
-            duration=  getDuration(path).trimmed();
+//        if(duration.isEmpty())
+//            duration=  getDuration(path).trimmed();
 
         //   qDebug()<<"MediaUpdate"<<title<<"duration:"<<time;
         if(artist.isEmpty())artist=albumArtist;
         album=!album.isEmpty() ? album: fi.dir().dirName();
 
         QSettings s(D_CACHE+"/albums",QSettings::IniFormat);
-        s.setValue(album,fi.absolutePath());
+           s.setValue(album,fi.absolutePath());
 
-        DataBase::addNewSong(!title.isEmpty() ? title: fi.fileName(),
-                             !artist.isEmpty() ? artist: tr("Unknown"),
-                             !album.isEmpty() ? album: fi.dir().dirName(),
-                             !genre.isEmpty() ? genre:tr("Unknown") ,
-                             path,
-                             !duration.isEmpty()? duration:"00:00:00"
+//        DataBase::addNewSong(!title.isEmpty() ? title: fi.fileName(),
+//                             !artist.isEmpty() ? artist: tr("Unknown"),
+//                             !album.isEmpty() ? album: fi.dir().dirName(),
+//                             !genre.isEmpty() ? genre:tr("Unknown") ,
+//                             path,
+//                             !duration.isEmpty()? duration:"00:00:00"
 
-                                                  );
+//                                                  );
 
-        //        QVariantMap map;
-        //        map["title"]=!title.isEmpty() ? title: fi.fileName();
-        //        map["artist"]=!artist.isEmpty() ? artist: tr("Unknown");
-        //        map["album"]=!album.isEmpty() ? album: fi.dir().dirName();
-        //        map["genre"]=!genre.isEmpty() ? genre:tr("Unknown");
-        //        map["path"]=path;  //TODO FIX URL
-        //        map["duration"]= time;
-        //       // Thread
-        //        updateFile(map,path);
+                QVariantMap map;
+                map["title"]=!title.isEmpty() ? title: fi.fileName();
+                map["artist"]=!artist.isEmpty() ? artist: tr("Unknown");
+                map["album"]=!album.isEmpty() ? album: fi.dir().dirName();
+                map["genre"]=!genre.isEmpty() ? genre:tr("Unknown");
+                map["path"]=path;  //TODO FIX URL
+                map["duration"]=duration;
+               // Thread
+                updateFile(map,path);
 
         playlist->next();
 
@@ -228,12 +232,22 @@ void MediaUpdate::addUpdateDirectory()
 {
     QStringList list;
     QSettings settings;
+    settings.sync();
     playlist->clear();
+    //---------------------------------------
+    settings.beginGroup("Options");
+     bool remove=settings.value("Clear",false).toBool();
+     qDebug()<<"MediaUpdate::addUpdateDirectory::Clear"<<remove;
+    if(remove){
+      if(DataBase::clearDatabase())
+        emit updated();
+    }
+    settings.setValue("Clear",false);
+    settings.endGroup();
+    //---------------------------------------
 
     int count = settings.beginReadArray("Directory");
-
     if(count==0){ list.append(D_DMUSIC);  }
-
     for (int i = 0; i < count; ++i) {
         settings.setArrayIndex(i);
         QString dir =settings.value("Dir").toString();
@@ -261,7 +275,7 @@ void MediaUpdate::addUpdateDirectory()
 void MediaUpdate::scanDirectory(const QString &path)
 {
     //  مسح المحلدات والمجلدات الفرعية لجلب ملفات
-    QDirIterator it(path,supportedMimeTypes(),QDir::Files| QDir::NoDotAndDotDot,
+    QDirIterator it(path,supportedMimeTypes(),QDir::Files| QDir::NoDotAndDotDot|QDir::NoSymLinks,
                     QDirIterator::Subdirectories);
 
     while (it.hasNext()) {
@@ -280,7 +294,7 @@ void MediaUpdate::updateDirectory(const QString &dir)
 
     playlist->clear();
 
-    QDirIterator it(dir,supportedMimeTypes(),QDir::Files| QDir::NoDotAndDotDot );
+    QDirIterator it(dir,supportedMimeTypes(),QDir::Files| QDir::NoDotAndDotDot |QDir::NoSymLinks);
     while (it.hasNext()) {
         QString file= it.next();
 
@@ -302,7 +316,7 @@ void MediaUpdate::addFiles(const QList<QUrl>urls)
 
     playlist->clear();
     for (auto &url: urls) {
-        qDebug()<<"MediaUpdate adding"<<url;
+      //  qDebug()<<"MediaUpdate adding"<<url;
         playlist->addMedia(url);
     }
 
@@ -311,36 +325,42 @@ void MediaUpdate::addFiles(const QList<QUrl>urls)
 }
 
 // ******************** THREAD **************************
+//--------------------------------------------------------------------THREAD
+void MediaUpdate::removelast(const QString &key){
+//    if(listMap.count()>0) listMap.removeLast();
+//    if(listThread.count()>0) listThread.removeLast();
+    mMapTread.remove(key);
+}
 
 //--------------------------------------------------------------------THREAD
 void  MediaUpdate::updateFile(QVariantMap map,const QString &path)
 {
-    if(listThread.contains(path))
-        return;
+//    if(listThread.contains(path))
+//        return;
+    if(mMapTread.contains(path))return;
 
-    listThread.append(path);
-    listMap.append(map);
+    mMapTread.insert(path,map);
+    //    listThread.append(path);
+    //    listMap.append(map);
     startNewThread();
 }
 
-//--------------------------------------------------------------------THREAD
-void MediaUpdate::removelast(){
-    if(listMap.count()>0) listMap.removeLast();
-    if(listThread.count()>0) listThread.removeLast();
-}
+
 
 //--------------------------------------------------------------------THREAD
 void MediaUpdate::startNewThread()
 {
     if(mThread->isRunning())return;
 
-    if(listMap.isEmpty())  return;
+    if(mMapTread.isEmpty())  return;
 
-    if(listMap.count()>0){
-        QVariantMap map=listMap.last();
+   // if(listMap.count()>0){
+        //QVariantMap map=listMap.last();
+
+    QVariantMap map=mMapTread.last();
         mThread->setFile(map);
         mThread->start();
-    }
+   // }
 
 
     //  emit progressValueChanged(mValue++);
@@ -362,16 +382,17 @@ void Thread::run()
     QString duration=  mMap.value("duration").toString();
     if(duration.isEmpty())
         duration=  getDuration(path).trimmed();
-    qDebug()<<duration<<path;
+    qDebug()<<"Thread::run()::"<<duration<<path;
     DataBase::addNewSong(mMap.value("title").toString() ,
                          mMap.value("artist").toString(),
                          mMap.value("album").toString() ,
                          mMap.value("genre").toString() ,
                          path,
-                         duration );
+                         !duration.isEmpty()? duration:"00:00:00" );
     //                            mMap.value("icon")  ,
     //                            mMap.value("favo")  ,
     //                            mMap.value("tags")) ;
 
-    emit removelast();
+    emit removeKey(path);
+   // emit removelast();
 }

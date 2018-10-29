@@ -1,23 +1,25 @@
 #include "dialogoptions.h"
 #include "defines.h"
+#include "tumb.h"
 #include "ui_dialogoptions.h"
 #include <QFileDialog>
 #include <QListWidgetItem>
 #include <QSettings>
 #include <QApplication>
-
+#include <QMessageBox>
 DialogOptions::DialogOptions(QWidget *parent) :
     QDialog(parent),
     ui(new Ui::DialogOptions)
 {
     ui->setupUi(this);
+ui->toolButtonAdd->setIcon(Tumb::icon(I_ADD));
+ui->toolButtonRemove->setIcon(Tumb::icon(I_LIST_REMOVE));
 
     QSettings settings;
     int count = settings.beginReadArray("Directory");
 
     if(count==0){
         QListWidgetItem *item=new QListWidgetItem(D_DMUSIC,ui->listWidget);
-
         item->setCheckState(Qt::Checked);
     }
 
@@ -88,6 +90,15 @@ void DialogOptions::on_buttonBox_accepted()
         settings.setValue("Dir", dir);
         settings.setValue("Checked", cheked);
     }
-    settings.endArray();
+      settings.endArray();
+ settings.beginGroup("Options") ;
+ settings.setValue("Clear",ui->checkBoxRemove->isChecked());
+settings.endGroup();
 
+}
+
+void DialogOptions::on_checkBoxRemove_toggled(bool checked)
+{
+    if(checked)
+        QMessageBox::warning(this,tr("Warning"),tr("This process will delete all your data and previous edits"));
 }

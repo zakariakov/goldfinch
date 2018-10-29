@@ -14,11 +14,14 @@ public slots:
     void customContextMenu(QPoint);
 signals:
    void treeAudioClicked(const QModelIndex);
-   void editCurIndex(const QString);
+   void updateCurent();
+//   void editCurIndex(const QString);
 private slots:
     void addCurentToPLaylist();
     void favoriteCurent();
      void editCurent();
+     void fileProperies();
+    void removeFile();
 signals:
     void treewidthChanged(int );
 };

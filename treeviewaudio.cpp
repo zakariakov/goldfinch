@@ -1,9 +1,11 @@
 #include "treeviewaudio.h"
+#include "propertiesfile.h"
+#include "database.h"
 #include <QHeaderView>
 #include <QResizeEvent>
 #include <QDebug>
 #include <QMenu>
-
+#include <QProcess>
 TreeViewAudio::TreeViewAudio()
 {
 setRootIsDecorated(false);
@@ -50,16 +52,19 @@ void TreeViewAudio::resizeEvent(QResizeEvent *event)
 void TreeViewAudio::customContextMenu(QPoint )
 {
 
- QModelIndex idx=   selectionModel()->currentIndex();
- if(!idx.isValid()) return;
+    QModelIndex idx=   selectionModel()->currentIndex();
+    if(!idx.isValid()) return;
 
- QMenu mnu;
- QAction *act=mnu.addAction(tr("Add to playlist"),this,SLOT(addCurentToPLaylist()));
- act=mnu.addAction(tr("Favorite / Unfavorite"),this,SLOT(favoriteCurent()));
- mnu.addSeparator();
- act=mnu.addAction(tr("Edit tags"),this,SLOT(editCurent()));
-
- mnu.exec(QCursor::pos());
+    QMenu mnu;
+    QAction *act=mnu.addAction(tr("Add to playlist"),this,SLOT(addCurentToPLaylist()));
+    act=mnu.addAction(tr("Favorite / Unfavorite"),this,SLOT(favoriteCurent()));
+    mnu.addSeparator();
+    act=mnu.addAction(tr("Edit tags"),this,SLOT(editCurent()));
+    mnu.addSeparator();
+    act=mnu.addAction(tr("Remove"),this,SLOT(removeFile()));
+    mnu.addSeparator();
+    act=mnu.addAction(tr("Properies"),this,SLOT(fileProperies()));
+    mnu.exec(QCursor::pos());
 }
 
 void TreeViewAudio::addCurentToPLaylist()
@@ -88,5 +93,37 @@ void TreeViewAudio::editCurent()
      if(!idx.isValid()) return;
 
     QString path=idx.data(Qt::UserRole).toString();
-    emit editCurIndex(path);
+   // emit editCurIndex(path);
+   // qDebug()<<path;
+    QProcess p;
+    p.startDetached("easytag",QStringList()<<path);
+}
+
+void TreeViewAudio::fileProperies()
+{
+    QVariantMap map;
+    int row=   selectionModel()->currentIndex().row();
+
+    map["Title"]=model()->index(row,2).data().toString();
+    map["Album"]=model()->index(row,3).data().toString();
+    map["Artist"]=model()->index(row,4).data().toString();
+    map["Path"]=model()->index(row,2).data(Qt::UserRole).toString();
+
+    PropertiesFile *dlg=new PropertiesFile;
+    dlg->setInformations(map);
+    dlg->exec();
+    delete dlg;
+
+}
+
+void TreeViewAudio::removeFile()
+{
+    int row=   selectionModel()->currentIndex().row();
+    QModelIndex idx= model()->index(row,2);
+
+    if(!idx.isValid()) return;
+
+    QString path=idx.data(Qt::UserRole).toString();
+    if(DataBase::removeSong(path))
+        emit updateCurent();
 }

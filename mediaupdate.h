@@ -18,6 +18,7 @@ public:
     QUrl curentPath(){return mUrl;}
 signals:
     void removelast();
+    void removeKey(const QString &key);
 protected:
     void run();
 
@@ -60,7 +61,7 @@ void directoryChanged(const QString &path);
 
     //thread
     void startNewThread();
-    void removelast();
+    void removelast(const QString &key);
 private:
     QMediaPlayer *player;
     QMediaPlaylist *playlist;
@@ -72,7 +73,9 @@ private:
 QFileSystemWatcher *mWatcher;
     //thred
 QList <QVariantMap>listMap;
+
 QStringList listThread;
+QMap<QString,QVariantMap> mMapTread;
     int mValue;
 
 

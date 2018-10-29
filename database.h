@@ -44,7 +44,7 @@ public slots:
                             const QString &album,const QString &genre,
                             const QString &path, const QString &duration);
     //! حذف مسار من البيانلت
-    static void removeSong(const QString &path);
+    static bool removeSong(const QString &path);
 
 
     //    void updateExistingSong(const QString &title, const QString &artist,

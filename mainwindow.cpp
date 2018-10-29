@@ -114,7 +114,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
     connect(mTVAudio,    &TreeViewAudio::clicked,             this, &MainWindow::treeAudioClicked);
     connect(mTVAudio,    &TreeViewAudio::treeAudioClicked,    this, &MainWindow::treeAudioClicked);
-    connect(mTVAudio,    &TreeViewAudio::editCurIndex,        this, &MainWindow::editCurIndex);
+    connect(mTVAudio,    &TreeViewAudio::updateCurent,        this, &MainWindow::chargeListItemes);
     connect(mTVAudio,    &TreeViewAudio::activated,           this, &MainWindow::treeAudioActivated);
 
     connect(mListView,        &ListView::activated,           this,&MainWindow::listViewActivated);
@@ -802,12 +802,12 @@ void MainWindow::onPlayAlbum(int row)
 }
 
 // ------------------------------------------------------
-void MainWindow::editCurIndex(const QString &path)
-{
-    qDebug()<<path;
-    QProcess p;
-    p.startDetached("easytag",QStringList()<<path);
-}
+//void MainWindow::editCurIndex(const QString &path)
+//{
+//    qDebug()<<path;
+//    QProcess p;
+//    p.startDetached("easytag",QStringList()<<path);
+//}
 
 // ------------------------------------------------------
 void MainWindow::on_actionopen_triggered()

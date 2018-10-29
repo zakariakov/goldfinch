@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Dialog</string>
+   <string>Options</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
@@ -80,6 +80,16 @@
        <string>Tab 2</string>
       </attribute>
      </widget>
+    </widget>
+   </item>
+   <item>
+    <widget class="QCheckBox" name="checkBoxRemove">
+     <property name="focusPolicy">
+      <enum>Qt::NoFocus</enum>
+     </property>
+     <property name="text">
+      <string>Delete all previous data</string>
+     </property>
     </widget>
    </item>
    <item>
