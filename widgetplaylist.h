@@ -25,8 +25,9 @@ private slots:
     void rmoveItem();
     void moveItemUp();
     void moveItemDown();
-    void setPlayMode();
+    void setPlayMode(QAction *action);
 private:
+
     QToolButton *tbRemoveItem;
     QToolButton *tbMoveItemUp;
     QToolButton *tbMoveItemDown;
@@ -43,7 +44,7 @@ private:
 //    QIcon squentialIcon;
 //    QIcon repaeatAlbumIcon;
 //    QIcon shufleAlbumIcon;
-
+    QActionGroup *actGroup ;
     QAction *actPlayOne;
     QAction *actRepeatOne;
     QAction *actSquent;

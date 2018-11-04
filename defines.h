@@ -9,50 +9,59 @@
 #define D_Picture        QStandardPaths::writableLocation(QStandardPaths::PicturesLocation)
 #define D_DMUSIC        QStandardPaths::writableLocation(QStandardPaths::MusicLocation)
 
-#define USER_ID               Qt::UserRole
-#define USER_RATED            Qt::UserRole+1
-#define USER_CHILD_ID         Qt::UserRole+2
-#define USER_PARENT_NAME      Qt::UserRole+3
-#define USER_TITLE            Qt::UserRole+5 //! بيانات العنوان
-#define USER_IMGPATH          Qt::UserRole+4
-#define USER_FAVORITE         Qt::UserRole+6
-
 #define  D_MARGINS   3
 
-//! معرف الحالي
+//!  معرفات تخزين البيانات
+#define USER_ID               Qt::UserRole   //! بيانات المعرف الحالي
+#define USER_RATED            Qt::UserRole+1 //! بيانات المفضلة
+#define USER_CHILD_ID         Qt::UserRole+2 //! بيانات معرف الابن
+#define USER_PARENT_NAME      Qt::UserRole+3 //! بيانات العنوان الاب
+#define USER_TITLE            Qt::UserRole+5 //! بيانات العنوان
+#define USER_IMGPATH          Qt::UserRole+4 //! بيانات الصورة
+#define USER_FAVO_DISPLY      Qt::UserRole+6 //! لمعرفة هل هو عرض المفضلة
 
+//!  معرفات اعمدة الشجرة
+#define HIDER_ADD    0
+#define HIDER_FAVO   1
+#define HIDER_TITLE  2
+#define HIDER_ARTIST 3
+#define HIDER_ALBUM  4
+#define HIDER_TIME   5
 
-#define  MAP_ID    "Id"
-#define  MAP_PID    "PId"
-#define  MAP_GID   "GId"
-#define  MAP_CHILD "Child"
-#define  MAP_TITLE "Title"
-#define  MAP_PTITLE "PTitle"
-#define  MAP_GTITLE "GTitle"
-#define  MAP_IMG "Img"
+//! معرف بيانات الحالي
+#define  MAP_ID      "Id"
+#define  MAP_PID     "PId"
+#define  MAP_GID     "GId"
+#define  MAP_CHILD   "Child"
+#define  MAP_TITLE   "Title"
+#define  MAP_PTITLE  "PTitle"
+#define  MAP_GTITLE  "GTitle"
+#define  MAP_IMG     "Img"
 #define  MAP_IS_FAVO "IsFavo"
 
-#define CAT_ID     0
-#define CAT_TITLE  1        //! معرف العنوان
-#define CAT_ARTIST 2
-#define CAT_ALBUM  3
-#define CAT_GENRE  4
-#define CAT_PATH   5
-#define CAT_DURATION   6
-#define CAT_RATED  7
-//#define CAT_TIME   8
-//#define CAT_ALBUMRATED  9
-#define CAT_NULL   99
+//! معرف اعمدة قاعدة البيانات
+#define COL_I_ID         0
+#define COL_I_TITLE      1
+#define COL_I_ARTIST     2
+#define COL_I_ALBUM      3
+#define COL_I_GENRE      4
+#define COL_I_PATH       5
+#define COL_I_DURATION   6
+#define COL_I_RATED      7
+#define COL_I_MODIF      8
+#define COL_I_NULL      99
 
-#define COLM_ID     "id"        //0
-#define COLM_TITLE  "title"     //1
-#define COLM_ARTIST "artist"    //2
-#define COLM_ALBUM  "album"     //3
-#define COLM_GENRE  "genre"     //4
-#define COLM_PATH   "path"      //5
-#define COLM_DURATION   "duration"      //6
-#define COLM_RATED  "favo"      //7
-//#define COLM_TIME   "tags"      //8
-//id=0 1=title 2=artist  3=album 4=genre  5=path 6=icon 7=favo 7=tags
+//! معرف اسماء اعمدة قاعدة البيانات
+#define COL_S_ID         "id"        //0
+#define COL_S_TITLE      "title"     //1
+#define COL_S_ARTIST     "artist"    //2
+#define COL_S_ALBUM      "album"     //3
+#define COL_S_GENRE      "genre"     //4
+#define COL_S_PATH       "path"      //5
+#define COL_S_DURATION   "duration"  //6
+#define COL_S_RATED      "favo"      //7
+#define COL_S_MODIF      "modified"  //8
+
+// id=0 1=title 2=artist  3=album 4=genre  5=path 6=icon 7=favo 7=tags
 
 #endif // DEFINES_H

@@ -10,9 +10,12 @@ class Slider : public QSlider
 public:
     Slider();
 void wheelEvent(QWheelEvent *event);
-
+ void mouseReleaseEvent(QMouseEvent *ev) ;
+  void mousePressEvent(QMouseEvent *ev) ;
+   void mouseMoveEvent(QMouseEvent *ev) ;
+    void keyPressEvent(QKeyEvent *ev);
 signals:
-void seekChanged(int );
+//void seekChanged(int );
 };
 
 #endif // SLIDER_H

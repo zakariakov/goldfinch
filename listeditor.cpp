@@ -54,7 +54,7 @@
 #include "listeditor.h"
 //#include "starrating.h"
 #include "QToolButton"
-#include "QDebug"
+//#include "QDebug"
 #include "QLabel"
 void Iditoring::paint(QPainter *painter, const QRect &rect,
                       const QPalette &palette, EditMode mode) const
@@ -143,7 +143,7 @@ btnFavorit->setChecked(index.data(USER_RATED).toBool());
     hLayout->addWidget(btnAdd);
 
     int id=index.data(USER_ID).toInt();
-    if(id==CAT_ALBUM /*||id==CAT_ALBUMRATED*/){
+    if(id==COL_I_ALBUM /*||id==CAT_ALBUMRATED*/){
         hLayout->addWidget(btnFavorit);
         bool checked=index.data(USER_RATED).toBool();
         btnFavorit->setChecked(checked);
@@ -190,8 +190,8 @@ void ListEditor::setEditingAcion()
 
     if(btn)
     {
-        int data=btn->defaultAction()->data().toInt();
-        qDebug()<<"setEditingAcion data"<<data <<mIndex.row();
+      ///  int data=btn->defaultAction()->data().toInt();
+      //  qDebug()<<"setEditingAcion data"<<data <<mIndex.row();
         //  emit editingChanged(mIndex.row(),data,btnFavorit->isChecked());
 
     }

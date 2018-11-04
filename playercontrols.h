@@ -93,7 +93,7 @@ signals:
     void previous();
     void changeVolume(int volume);
     void changeRate(qreal rate);
-    void seek(int);
+   // void seek(int);
 private slots:
     void playClicked();
     void onVolumeSliderValueChanged();
@@ -103,9 +103,7 @@ private slots:
      void setSeeked(int val);
 
 private:
-
-
-    QToolButton *m_playButton = nullptr;
+  QToolButton *m_playButton = nullptr;
 
     QToolButton *m_nextButton = nullptr;
     QToolButton *m_previousButton = nullptr;
@@ -113,13 +111,19 @@ private:
     QAbstractSlider *m_volumeSlider = nullptr;
     Slider *m_slider = nullptr;
     QLabel *m_labelDuration = nullptr;
+
+
     QIcon playIcon;
     QIcon pauseIcon;
-    qint64 m_duration;
 
+    qint64 m_duration;
     QMediaPlayer::State m_playerState = QMediaPlayer::StoppedState;
+
+// int m_pos2=0;
+ //  int m_pos=0;
    bool m_playerMuted = false;
-    int m_pos=0;
+  // bool m_playerMuted2 = false;
+
 };
 
 #endif // PLAYERCONTROLS_H

@@ -11,12 +11,12 @@ int main(int argc, char *argv[])
     QApplication a(argc, argv);
     //-----------------------------
     a.setApplicationName("goldfinch");
-     a.setApplicationDisplayName(QObject::tr("Goldfinch"));
+    a.setApplicationDisplayName(QObject::tr("Goldfinch"));
     a.setApplicationVersion("0.1");
     a.setOrganizationName("goldfinch");
     //-----------------------------
     QDBusConnection connection = QDBusConnection::sessionBus();
-  // org.mpris.MediaPlayer2.Interface
+    // org.mpris.MediaPlayer2.Interface
     if (! QDBusConnection::sessionBus().registerService(QString("org.mpris.MediaPlayer2.%1").arg(a.applicationName())))
     {
         printf ("Unable to register 'org.mpris.MediaPlayer2' service - is another instance of Goldfinch running?\n");
@@ -25,11 +25,12 @@ int main(int argc, char *argv[])
 
     //-----------------------------
     a.setWindowIcon(QIcon::fromTheme("goldfinch",QIcon(":/icons/goldfinch")));
-a.setLayoutDirection(Qt::RightToLeft);
+    //a.setLayoutDirection(Qt::RightToLeft);
     MainWindow w;
-    new player_adaptor(w.player());
 
-    connection.registerObject(QString("/org/mpris/MediaPlayer2").arg(a.applicationName()), w.player());
+    // new PlayerAdaptor(w.player());
+    //    new MainAdaptor(w.player());
+    //   connection.registerObject(QString("/org/mpris/MediaPlayer2"),QString("Player"), w.player());
 
     w.show();
 

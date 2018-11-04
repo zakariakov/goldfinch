@@ -15,18 +15,13 @@ class Thread : public QThread
 public:
     Thread();
     void setFile(QVariantMap map){mMap=map;}
-    QUrl curentPath(){return mUrl;}
 signals:
-    void removelast();
     void removeKey(const QString &key);
 protected:
     void run();
 
 private:
-    QUrl mUrl;
     QVariantMap mMap;
-    DataBase *mDataBase;
-
 
 private slots:
 
@@ -38,46 +33,52 @@ class MediaUpdate : public QObject
     Q_OBJECT
 public:
     explicit MediaUpdate(QObject *parent = nullptr);
-  ~MediaUpdate();
+    ~MediaUpdate();
 signals:
     void updated();
     void progressMaxChanged(int max);
     void progressValueChanged(int value);
-    void dirNidUpdate(bool);
+    void directoryNeedUpdate(bool);
+
 public slots:
-    void addUpdateDirectory();
-    void scanDirectory(const QString &path);
-    void updateDirectory(const QString &dir);
+
+    //!  اضافة ملفات جديدة
     void addFiles(const QList<QUrl>urls);
+    //!  تحديث ملف
     void updateFile(QVariantMap map, const QString &path);
-void setUpdateDirs(bool update);
-//    void setlistDirs(QStringList list){mLisDirs=list;}
-//    QStringList listDirs(){return mLisDirs;}
+    //!  تحديث مجلدات
+    void setUpdateDirs(bool update);
+    //!
+    void getDirListOptions();
 
 private slots:
+
+    //!
     void metaDataChanged();
+    //!  تحميل المجلدات المراقبة
     void chargeDirectoryWatcher();
-void directoryChanged(const QString &path);
+    //!   اشارة عند نغير مجلد
+    void directoryChanged(const QString &path);
+    //! تحديث مجلد بعد الطلب
+    void updateDirectory(const QString &dir);
+    //!  اضافة او تحديث مجلدات
+    void addUpdateDirectories(bool all);
+    //!  فحص مجلد
+    void scanDirectory(const QString &path);
 
-    //thread
+    //!  thread
     void startNewThread();
+    //!  thread
     void removelast(const QString &key);
+
 private:
-    QMediaPlayer *player;
-    QMediaPlaylist *playlist;
-  //  DataBase *mDataBase;
+    QMediaPlayer *mPlayer;
+    QMediaPlaylist *mPlaylist;
     Thread   *mThread;
-    QList<QUrl> mListMedia;
-
-   QStringList mLisUpdateDirs;
-QFileSystemWatcher *mWatcher;
-    //thred
-QList <QVariantMap>listMap;
-
-QStringList listThread;
-QMap<QString,QVariantMap> mMapTread;
-    int mValue;
-
+    QStringList mLisUpdateDirs;
+    QFileSystemWatcher *mWatcher;
+    QList <QVariantMap>mListMap;
+    QMap<QString,QVariantMap> mMapTread;
 
 };
 

@@ -55,7 +55,8 @@ SOURCES += \
     player_adaptor.cpp \
     dialogoptions.cpp \
     slider.cpp \
-    propertiesfile.cpp
+    propertiesfile.cpp \
+    searchbar.cpp
 
 HEADERS += \
         mainwindow.h \
@@ -81,7 +82,8 @@ HEADERS += \
     player_adaptor.h \
     dialogoptions.h \
     slider.h \
-    propertiesfile.h
+    propertiesfile.h \
+    searchbar.h
 
 FORMS += \
         mainwindow.ui \
@@ -92,4 +94,5 @@ FORMS += \
 RESOURCES += \
     icons.qrc
 
+ target.path = /usr/bin
  INSTALLS +=target

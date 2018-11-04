@@ -22,8 +22,8 @@ void WidgetImageInfo::paintEvent(QPaintEvent *event)
 
     QColor bgcolor=this->palette().base().color();
     QColor txtcolor=this->palette().windowText().color();
-  //  QColor shadowcolor=this->palette().highlight().color();
-QTextOption txtOption;
+    //  QColor shadowcolor=this->palette().highlight().color();
+    QTextOption txtOption;
 
     if(isLeftToRight())txtOption.setAlignment(Qt::AlignLeft|Qt::AlignVCenter);
     else txtOption.setAlignment(Qt::AlignRight|Qt::AlignVCenter);
@@ -59,7 +59,6 @@ QTextOption txtOption;
         return;
     }
 
-
     font.setPointSize(font.pointSize()+2);
     painter.setFont(font);
     QFontMetrics fm(font);
@@ -87,19 +86,18 @@ QTextOption txtOption;
     painter.setPen(txtcolor);
     painter.drawText(textRect, Qt::AlignCenter, title);
 
-     // TEXT INFO
+    // TEXT INFO
     font.setPointSize(font.pointSize()-2);
     painter.setFont(font);
     painter.setPen(bgcolor);
 
-
     textRect.moveTop(textRect.top()+_h);
     QString info=fm.elidedText(mInfo,Qt::ElideRight,textRect.width());
-     painter.drawText(textRect, Qt::AlignCenter, info);
+    painter.drawText(textRect, Qt::AlignCenter, info);
 
-     textRect.adjust(2,2,0,0);
-     painter.setPen(txtcolor);
-     painter.drawText(textRect, Qt::AlignCenter, info);
+    textRect.adjust(2,2,0,0);
+    painter.setPen(txtcolor);
+    painter.drawText(textRect, Qt::AlignCenter, info);
 
 
 }

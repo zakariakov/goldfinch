@@ -91,9 +91,7 @@ void DialogOptions::on_buttonBox_accepted()
         settings.setValue("Checked", cheked);
     }
       settings.endArray();
- settings.beginGroup("Options") ;
- settings.setValue("Clear",ui->checkBoxRemove->isChecked());
-settings.endGroup();
+
 
 }
 
@@ -102,3 +100,8 @@ void DialogOptions::on_checkBoxRemove_toggled(bool checked)
     if(checked)
         QMessageBox::warning(this,tr("Warning"),tr("This process will delete all your data and previous edits"));
 }
+
+ bool DialogOptions::clearData()
+ {
+     return ui->checkBoxRemove->isChecked();
+ }

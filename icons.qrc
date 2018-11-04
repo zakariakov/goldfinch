@@ -31,5 +31,13 @@
         <file>icons/artist.png</file>
         <file>icons/play-rtl.png</file>
         <file>icons/mask.svg</file>
+        <file>icons/cover-album.png</file>
+        <file>icons/favorite.png</file>
+        <file>icons/goldfinch-24.svg</file>
+        <file>icons/edit-clear-rtl.svg</file>
+        <file>icons/edit-clear.svg</file>
+        <file>icons/find.svg</file>
+        <file>icons/window-close.svg</file>
+        <file>icons/find-16.svg</file>
     </qresource>
 </RCC>

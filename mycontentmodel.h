@@ -30,8 +30,8 @@ private:
 
 public slots:
 
-   void chargeCategory(int root, int child=CAT_NULL, int children=CAT_NULL);
- QList<QStandardItem *> addChilds(QString prentName, int parentColumn, int child, int children=CAT_NULL);
+   void chargeCategory(int root, int child=COL_I_NULL, int children=COL_I_NULL);
+ QList<QStandardItem *> addChilds(QString prentName, int parentColumn, int child, int children=COL_I_NULL);
 
 private slots:
 //void chargeFavoritedAudio();

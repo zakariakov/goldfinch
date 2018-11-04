@@ -8,31 +8,71 @@
 #include <QVariant>
 QT_BEGIN_NAMESPACE
 
-
+#include <QApplication>
 class QString;
 
 QT_END_NAMESPACE
-
 /*
- * Adaptor class for interface org.tawhid.session.org
+ * Adaptor class for interface org.mpris.MediaPlayer2
  */
 
-class player_adaptor: public QDBusAbstractAdaptor
+class MainAdaptor: public QDBusAbstractAdaptor
 {
     Q_OBJECT
+    Q_CLASSINFO("D-Bus Interface", "org.mpris.MediaPlayer2")
+    Q_PROPERTY(bool CanQuit READ CanQuit)
+    Q_PROPERTY(bool CanRaise READ CanRaise)
+    Q_PROPERTY(QString Identity READ Identity)
+    Q_PROPERTY(QString DesktopEntry READ DesktopEntry)
+
+    Q_CLASSINFO("D-Bus Introspection",
+                "  <interface name=\"org.mpris.MediaPlayer2\">\n"
+                "    <property name=\"Identity\" type=\"s\" access=\"read\" />\n"
+                "    <property name=\"DesktopEntry\" type=\"s\" access=\"read\" />\n"
+                "    <property name=\"CanQuit\" type=\"b\" access=\"read\" />\n"
+                "    <property name=\"CanRaise\" type=\"b\" access=\"read\" />\n"
+                "    <method name=\"Quit\" />\n"
+                "    <method name=\"Raise\" />\n"
+                "  </interface>\n"
+                )
+public:
+    MainAdaptor(QObject *parent);
+    virtual ~MainAdaptor();
+
+public Q_SLOTS: // METHODS
+
+    void Quit();
+    void Raise();
+    bool CanQuit() {return true;}
+    bool CanRaise(){return true;}
+
+    QString DesktopEntry(){return QApplication::applicationName();}
+    QString Identity()    {return QApplication::applicationName();}
+
+};
+
+
+/*
+ * Adaptor class for interface org.mpris.MediaPlayer2.Player
+ */
+
+class PlayerAdaptor: public QDBusAbstractAdaptor
+{
+    Q_OBJECT
+
     Q_CLASSINFO("D-Bus Interface", "org.mpris.MediaPlayer2.Player")
     Q_PROPERTY(bool CanPlay READ CanPlay)
     Q_PROPERTY(bool CanPause READ CanPause)
     Q_PROPERTY(bool CanSeek READ CanSeek)
     Q_PROPERTY(bool CanGoPrevious READ CanGoPrevious)
     Q_PROPERTY(bool CanGoNext READ CanGoNext)
+    Q_PROPERTY(bool CanControl READ CanControl)
     Q_PROPERTY(QString PlaybackStatus READ PlaybackStatus)
     Q_PROPERTY(QVariantMap Metadata READ Metadata)
-
-
+    Q_PROPERTY(qint64 Position READ Position)
 
     Q_CLASSINFO("D-Bus Introspection",
-                ""
+
                 "  <interface name=\"org.mpris.MediaPlayer2.Player\">\n"
                 "    <property name=\"Metadata\" type=\"a{sv}\" access=\"read\" />\n"
                 "    <property name=\"PlaybackStatus\" type=\"s\" access=\"read\" />\n"
@@ -66,17 +106,17 @@ class player_adaptor: public QDBusAbstractAdaptor
                 "      <arg type=\"o\" direction=\"in\" />\n"
                 "      <arg type=\"x\" direction=\"in\" />\n"
                 "    </method>\n"
-                "<signal name=\"Seeked\">\n"
-
+                "    <signal name=\"Seeked\">\n"
                 "    </signal>"
                 "  </interface>\n"
                 "")
 public:
-    player_adaptor(QObject *parent);
-    virtual ~player_adaptor();
+    PlayerAdaptor(QObject *parent);
+    virtual ~PlayerAdaptor();
 
 Q_SIGNALS: // SIGNALS
-    void Seeked(int);
+    void Seeked(qint64);
+
 public Q_SLOTS: // METHODS
 
     void Play();
@@ -86,13 +126,22 @@ public Q_SLOTS: // METHODS
     void Previous();
     void Seek(int Offset);
     void PlayPause();
+
     bool CanPlay();
     bool CanPause();
     bool CanSeek();
     bool CanGoPrevious();
     bool CanGoNext();
+    bool CanControl(){return true;}
     QString PlaybackStatus();
+    qint64 Position();
+    void setPos(qint64 p);
     QVariantMap Metadata();
+
+    void propertiesChanged(QVariantMap changedProps);
+private slots:
+
+    //   FreeDesktopAdaptor* mFreeDesktopAdaptor;
 };
 
 

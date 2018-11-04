@@ -20,5 +20,4 @@ void PropertiesFile::setInformations(const QVariantMap &map)
    ui->lineEditArtist->setText(map.value("Artist").toString());
    ui->lineEditPath->setText(map.value("Path").toString());
 
-
 }

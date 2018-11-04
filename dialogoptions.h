@@ -13,7 +13,10 @@ class DialogOptions : public QDialog
 
 public:
     explicit DialogOptions(QWidget *parent = nullptr);
+
     ~DialogOptions();
+
+    bool clearData();
 
 private slots:
     void on_toolButtonAdd_clicked();

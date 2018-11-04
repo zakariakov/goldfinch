@@ -77,7 +77,7 @@ PlayerControls::PlayerControls(QWidget *parent)
     m_playButton->setAutoRaise(true);
     m_playButton->setShortcut(Qt::Key_Space);
     m_playButton->setToolTip(tr("Play/Pause \n")+m_playButton->shortcut().toString());
-  //  m_playButton->animateClick(500);
+    //  m_playButton->animateClick(500);
     connect(m_playButton, &QAbstractButton::clicked, this, &PlayerControls::playClicked);
 
     m_nextButton = new QToolButton(this);
@@ -108,8 +108,9 @@ PlayerControls::PlayerControls(QWidget *parent)
     m_slider = new Slider;
 
     m_labelDuration = new QLabel(this);
-    connect(m_slider, &QSlider::sliderMoved, this, &PlayerControls::seek);
-    connect(m_slider, &Slider::seekChanged, this, &PlayerControls::setSeeked);
+ //connect(m_slider, &QSlider::sliderMoved, this, &PlayerControls::seek);
+  //   connect(m_slider, &Slider::seekChanged, this, &PlayerControls::setSeeked);
+  //  connect(m_slider, &Slider::valueChanged, this, &PlayerControls::setSeeked);
 
     QBoxLayout *layout = new QHBoxLayout;
     layout->setMargin(0);
@@ -198,7 +199,6 @@ void PlayerControls::playClicked()
     }
 }
 
-
 void PlayerControls::onVolumeSliderValueChanged()
 {
     emit changeVolume(volume());
@@ -215,12 +215,14 @@ void PlayerControls::durationChanged(qint64 duration)
 void PlayerControls::positionChanged(qint64 progress)
 {
     QVariant value=progress / 1000;
-    m_pos=value.toInt();
+ //   m_pos=value.toInt();
     if (!m_slider->isSliderDown())
         m_slider->setValue(value.toInt());
 
     updateDurationInfo(value.toLongLong());
 }
+
+
 void PlayerControls::updateDurationInfo(qint64 currentInfo)
 {
     QString tStr;
@@ -237,17 +239,14 @@ void PlayerControls::updateDurationInfo(qint64 currentInfo)
     m_labelDuration->setText(tStr);
 }
 
-
-
-
 void PlayerControls:: setSeeked(int val)
 {
 
-    int value=m_pos+val;
-    if(value>m_duration)value=m_duration;
+    int value=/*m_pos+*/val;
+    if(value>m_duration)value=QVariant(m_duration).toInt();
     if(value<0)value=0;
-
-   emit seek(value);
+ QMetaObject::invokeMethod(parent(), "setSeek",Q_ARG(int,value));
+ //   emit seek(value);
 }
 
 

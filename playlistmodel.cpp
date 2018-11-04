@@ -185,9 +185,9 @@ bool PlaylistModel::setTitle(const QModelIndex &index,const QVariant &key, const
 void PlaylistModel::beginInsertItems(int start, int end)
 {
     m_data.clear();
-    qDebug()<<"beginInsertItems"<<start<<end;
+    //  qDebug()<<"beginInsertItems"<<start<<end;
     beginInsertRows(QModelIndex(), start, end);
-    //    emit dataChanged(index(start,0), index(end,ColumnCount));
+
 }
 
 void PlaylistModel::endInsertItems()
@@ -199,15 +199,7 @@ void PlaylistModel::endInsertItems()
 void PlaylistModel::beginRemoveItems(int start, int end)
 {
     m_data.clear();
-    // m_dataTitle.clear();
-    qDebug()<<"beginRemoveItems"<<start<<end;
-
-
-    //   QUrl location = m_playlist->media(index.row()).canonicalUrl();
     QUrl location = m_playlist->media(start).canonicalUrl();
-    //  qDebug()<<location;
-    // m_dataTitle.remove(location);
-
     beginRemoveRows(QModelIndex(), start, end);
 }
 
@@ -219,8 +211,7 @@ void PlaylistModel::endRemoveItems()
 void PlaylistModel::changeItems(int start, int end)
 {
     m_data.clear();
-    qDebug()<<"changeItems"<<start<<end;
-    // m_dataTitle.clear();
+    //  qDebug()<<"changeItems"<<start<<end;
     emit dataChanged(index(start,0), index(end,ColumnCount));
 }
 

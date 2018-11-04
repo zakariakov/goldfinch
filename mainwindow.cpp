@@ -1,8 +1,8 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include "tumb.h"
-#include "dialogoptions.h"
-#include <QDebug>
+//#include "dialogoptions.h"
+//#include <QDebug>
 #include <QMediaMetaData>
 #include <QFileInfo>
 #include <QTreeWidget>
@@ -13,19 +13,13 @@
 #include <dialogopen.h>
 #include <QFileDialog>
 #include <QStandardPaths>
-
+#include <QComboBox>
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-//    QColor col=this->palette().text().color();
-//    QColor coled=this->palette().highlight().color();
-    //Tumb::setIconColor(col,coled);
 
-    //setAnimated(true);
-  //  mSetting=new Setting;
-    //  mDataBase=new DataBase;
     mMyTreeModel=new MyContentModel;
     mMyListModel=new MyListModel;
     mMediaUpdate=new MediaUpdate;
@@ -35,10 +29,12 @@ MainWindow::MainWindow(QWidget *parent) :
     mLIDelegate=new ListItemDelegate;
     mTItemDelegate=new TreeItemDelegate;
     mWPlayList=new WidgetPlayList;
-    mPlayer=new Player(mWPlayList->playListView());
+    mPlayer=new Player(mWPlayList->playListView(),this);
     mImageInfo=new WidgetImageInfo;
+    mSearchBar=new SearchBar(this);
 
-    // Slider Change Icons Size
+
+   //-- Slider Change Icons Size
     mSliderIconSize = new QSlider(Qt::Horizontal, this);
     mSliderIconSize->setRange(96,256);
     mSliderIconSize->setMaximumWidth(160);
@@ -50,13 +46,21 @@ MainWindow::MainWindow(QWidget *parent) :
     mActSwich->setShortcut(QKeySequence("Ctrl+M"));
     mActSwich->setCheckable(true);
     connect(mActSwich,SIGNAL(triggered(bool)),this,SLOT(switchViewMode(bool)));
-    // addAction(mActSwich);
+
+    //-- ACtion Search
+    QAction *actSearch=new QAction(Tumb::icon(I_FIND),tr("Search"),this);
+    actSearch->setShortcut(QKeySequence("Ctrl+F"));
+   // actSearch->setCheckable(true);
+    connect(actSearch,&QAction::triggered,mSearchBar,&SearchBar::showHid);
 
     //--  Menu Main
     QMenu *menu=new QMenu;
-    menu->addAction(ui->actionopen);
-    menu->addAction(ui->actionaddDir);
+    menu->addAction(tr("Open Foles..."),this,&MainWindow::onActionopentriggered);
+    menu->addAction(tr("Add/Update Directory"),mMediaUpdate,&MediaUpdate::getDirListOptions);
+    menu->addAction(actSearch);
     menu->addAction(mActSwich);
+    menu->addSeparator();
+    menu->addAction(Tumb::icon(I_QUIT),tr("Quit"),this,&MainWindow::close);
     ui->tButtonMenu->setMenu(menu);
 
     //--  TreeViewContent;
@@ -78,9 +82,14 @@ MainWindow::MainWindow(QWidget *parent) :
 
     ui->hLayoutControle->insertWidget(0,mPlayer);
 
+    ui->vLayoutViewAll->insertWidget(0,mSearchBar);
+
     ui->progressBarUpdate->setVisible(false);
 
     ui->widgetMessage->setVisible(false);
+
+    mSearchBar->setVisible(false);
+
 
 
     //   ------------------------        CONNECTIONS      ------------------------
@@ -102,38 +111,43 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(mMediaUpdate,&MediaUpdate::updated,               this, &MainWindow::rechargeAlbums);
     connect(mMediaUpdate,&MediaUpdate::progressMaxChanged,    this, &MainWindow::progressShow);
     connect(mMediaUpdate,&MediaUpdate::progressValueChanged,  this, &MainWindow::progressSetValue);
-    connect(mMediaUpdate,&MediaUpdate::dirNidUpdate,          this->ui->widgetMessage, &QWidget::setVisible);
+    connect(mMediaUpdate,&MediaUpdate::directoryNeedUpdate,          this->ui->widgetMessage, &QWidget::setVisible);
 
     connect(mLIDelegate, &ListItemDelegate::addAlbum,         this, &MainWindow::onAddAlbum);
     connect(mLIDelegate, &ListItemDelegate::playAlbum,        this, &MainWindow::onPlayAlbum);
     connect(mLIDelegate, &ListItemDelegate::favoritAlbum,     this, &MainWindow::onFavoritAlbum);
     connect(mLIDelegate, &ListItemDelegate::changeImageAlbum, this, &MainWindow::onChangeImageAlbum);
 
-    connect(mTVContent,  &TreeViewContent::activated,         this, &MainWindow::treeViewContentActivated);
-    connect(mTVContent,  &TreeViewContent::clicked,           this, &MainWindow::treeViewContentActivated);
+    connect(mTVContent,  &TreeViewContent::activated,         this, &MainWindow::onTreeViewContentActivated);
+    connect(mTVContent,  &TreeViewContent::clicked,           this, &MainWindow::onTreeViewContentActivated);
 
-    connect(mTVAudio,    &TreeViewAudio::clicked,             this, &MainWindow::treeAudioClicked);
-    connect(mTVAudio,    &TreeViewAudio::treeAudioClicked,    this, &MainWindow::treeAudioClicked);
+    connect(mTVAudio,    &TreeViewAudio::clicked,             this, &MainWindow::onTreeAudioClicked);
+    connect(mTVAudio,    &TreeViewAudio::treeAudioClicked,    this, &MainWindow::onTreeAudioClicked);
     connect(mTVAudio,    &TreeViewAudio::updateCurent,        this, &MainWindow::chargeListItemes);
-    connect(mTVAudio,    &TreeViewAudio::activated,           this, &MainWindow::treeAudioActivated);
+    connect(mTVAudio,    &TreeViewAudio::activated,           this, &MainWindow::onTreeAudioActivated);
 
-    connect(mListView,        &ListView::activated,           this,&MainWindow::listViewActivated);
+    connect(mListView,        &ListView::activated,           this,&MainWindow::onListViewActivated);
     connect(mSliderIconSize,  &QSlider::valueChanged,          this,&MainWindow::setIconSize);
 
-    //   connect(this->ui->comboBoxSwichCat,&QComboBox::currentIndexChanged,this,&MainWindow::setPathAlbum);
-    connect(ui->comboBoxSwichCat,SIGNAL(currentIndexChanged(int)),this,SLOT(setPathAlbum(int)));
-    // connect(mPlayer,SIGNAL(playBackChanged(QString)),ui->statusBar,SLOT(showMessage(QString)));
-    connect(mPlayer,     &Player::playBackChanged,            this->ui->statusBar,&QStatusBar::showMessage);
+
+    connect(mPlayer,&Player::playBackChanged,this->ui->statusBar,&QStatusBar::showMessage);
+    //connect(ui->actionaddDir, &QAction::triggered,  mMediaUpdate,&MediaUpdate::getDirListOptions);
+    connect(ui->comboBoxSwichCat,QOverload<int>::of(&QComboBox::currentIndexChanged),this,&MainWindow::setAlbumPath);
+
+    connect(mSearchBar,  &SearchBar::searchTextChanged,          this,&MainWindow::searchAudios);
+    connect(mSearchBar,  &SearchBar::clearSearching,          mMyListModel,&MyListModel::clear);
+
 
     DataBase::openDataBase();
 
-    switchViewMode(false);
+    //switchViewMode(false);
 
     changeStyleSheet();
 
     setupIcons();
 
     chargeRecent();
+
 }
 
 void MainWindow::switchViewMode(bool mini)
@@ -149,9 +163,10 @@ void MainWindow::switchViewMode(bool mini)
         ui->vLayout_Center->addWidget(mImageInfo);
         mImageInfo->setHorizontal(false);
         mImageInfo->setMinimumSize(QSize(0,0));
-        resize(300,320);
+        showNormal();
+        resize(360,400);
         adjustSize();
-        resize(300,320);
+        resize(360,400);
         //
     }else{
         restoreGeometry(settings.value("Geometry").toByteArray());
@@ -159,7 +174,7 @@ void MainWindow::switchViewMode(bool mini)
         ui->stackedWidget->setVisible(true);
         ui->statusBar->setVisible(true);
         ui->hLayoutControle->insertWidget(0,mImageInfo);
-        mImageInfo->setMinimumSize(QSize(190,50));
+        mImageInfo->setMinimumSize(QSize(200,50));
         mImageInfo->setHorizontal(true);
 
     }
@@ -207,8 +222,11 @@ MainWindow::~MainWindow()
 
     settings.beginGroup("Window");
 
-    settings.setValue("Geometry",this->saveGeometry());
-    settings.setValue("SState",ui->splitter->saveState());
+    if(!mActSwich->isChecked()){
+        settings.setValue("Geometry",this->saveGeometry());
+        settings.setValue("SState",ui->splitter->saveState());
+    }
+    settings.setValue("MiniPlayer",mActSwich->isChecked());
     settings.setValue("IconSize",mIconSize);
 
     settings.endGroup();
@@ -251,55 +269,74 @@ void MainWindow::changeStyleSheet()
                     "border-bottom-right-radius: 6px;";
 
     }
-    QString style=QString("QTreeView{"
-                          "background-color: transparent;"
-                          //   "border: 1px solid palette(midlight);"
-                          // "border-color: palette(highlight);"
-                          "color:palette(window-text);"
-                          "}"
-                          " QListView{"
-                          " background-color: transparent;"
-                          " border-color: palette(Window);"
-                          "color:palette(window-text);"
-                          " }"
-                          "QToolButton#PrevButton{"
-                          " border: 1px solid palette(shadow);"
-                          "%1"
-                          "}"
-                          "QToolButton#PlayButton{"
-                          " border: 1px solid palette(shadow);"
-                          "border-left-color:transparent;"
-                          "border-right-color:transparent;"
-                          "}"
-                          "QToolButton#NextButton{"
-                          " border: 1px solid palette(shadow);"
-                          "%2"
-                          "}"
-                          "QToolButton#PrevButton:hover,#PlayButton:hover,#NextButton:hover{"
-                          "background-color:palette(highlight)"
-                          "}"
-                          "QToolButton#PrevButton:pressed,#PlayButton:pressed,#NextButton:pressed{"
-                          "background-color:palette(shadow)"
-                          "}"
-                          "QToolButton#VolumeButton ,#tButtonMenu{"
-                          "border-radius: 15px;"
-                          "width: 30px;"
-                          "height:30px;"
-                          "max-width: 30px;"
-                          " max-height:30px;"
-                          "}"
-                          "QToolButton#VolumeButton:hover ,#tButtonMenu:hover{"
-                          // "border: 1px solid palette(highlight);"
-                          "background-color:palette(shadow)"
-                          "}"
-                          "QToolButton#VolumeButton:pressed ,#tButtonMenu:pressed{"
-                          // "border: 1px solid palette(shadow);"
-                          "background-color:palette(highlight)"
-                          "}").arg(leftBorder).arg(rightBorder);
-    //::menu-button
+
+    int h=mSearchBar->height()/2;
+    int tb_h=h-2;
+
+    QString style=QString(
+
+                /*-- search bar --*/
+                "QWidget#SearchBar{"
+                "   background-color: palette(base);"
+                "   border:1px solid palette(highlight);"
+                "   border-radius:%3px;"
+                "}"
+                "QToolButton#TBSearch{"
+                 "   background-color: palette(base);"
+                "    border:0px ;"
+                "   border-radius: %4px;"
+                "}"
+                "QToolButton#TBSearch:hover{ background-color: palette(shadow);}"
+                "QToolButton#TBSearch:pressed{background-color: palette(highlight);}"
+                 /*-- TreeView ListView --*/
+                "QTreeView{"
+                "background-color: transparent;"
+                //   "border: 1px solid palette(midlight);"
+                // "border-color: palette(highlight);"
+                "color:palette(window-text);"
+                "}"
+                " QListView{"
+                " background-color: transparent;"
+                " border-color: palette(Window);"
+                "color:palette(window-text);"
+                " }"
+                /*-- Player Control --*/
+                "QToolButton#PrevButton{"
+                " border: 1px solid palette(shadow);"
+                "%1"
+                "}"
+                "QToolButton#PlayButton{"
+                " border: 1px solid palette(shadow);"
+                "border-left-color:transparent;"
+                "border-right-color:transparent;"
+                "}"
+                "QToolButton#NextButton{"
+                " border: 1px solid palette(shadow);"
+                "%2"
+                "}"
+                "QToolButton#PrevButton:hover,#PlayButton:hover,#NextButton:hover{"
+                "background-color:palette(highlight)"
+                "}"
+                "QToolButton#PrevButton:pressed,#PlayButton:pressed,#NextButton:pressed{"
+                "background-color:palette(shadow)"
+                "}"
+                "QToolButton#VolumeButton ,#tButtonMenu{"
+                "border-radius: 15px;"
+                "width: 30px;"
+                "height:30px;"
+                " max-width: 30px;"
+                " max-height:30px;"
+                "}"
+                "QToolButton#VolumeButton:hover ,#tButtonMenu:hover{"
+                // "border: 1px solid palette(highlight);"
+                "background-color:palette(shadow)"
+                "}"
+                "QToolButton#VolumeButton:pressed ,#tButtonMenu:pressed{"
+                // "border: 1px solid palette(shadow);"
+                "background-color:palette(highlight)"
+                "}").arg(leftBorder).arg(rightBorder).arg(h).arg(tb_h);
+
     setStyleSheet(style) ;
-
-
 
     setupIcons();
     mWPlayList->setupIcons();
@@ -333,12 +370,20 @@ void MainWindow::chargeRecent()
     ui->splitter->restoreState(settings.value("SState").toByteArray());
     mIconSize=settings.value("IconSize",128).toInt();
     mSliderIconSize->setValue(mIconSize);
+    bool trayicon=settings.value("TrayIcon",true).toBool();
+    bool mini=settings.value("MiniPlayer",false).toBool();
+
     settings.endGroup();
 
     ui->comboBoxSwichCat->setCurrentIndex(index);
     setIconSize(mIconSize);
-    setPathAlbum(index);
+    setAlbumPath(index);
     chargeListItemes();
+    if(trayicon &&  QSystemTrayIcon::isSystemTrayAvailable())
+        creatTrayIcon();
+
+    mActSwich->setChecked(mini);
+    switchViewMode(mini);
 }
 
 // ------------------------------------------------------
@@ -369,38 +414,25 @@ void MainWindow::progressShow(int max)
 }
 
 // ------------------------------------------------------
-void MainWindow::on_actionaddDir_triggered()
-{
-    //    QString path="/media/Data/Music";
-    //    mMediaUpdate->addDirectory(path);
-
-    DialogOptions *dlg=new DialogOptions;
-    if(dlg->exec()==QDialog::Accepted){
-        mMediaUpdate->addUpdateDirectory();
-    }
-    delete dlg;
-}
-
-// ------------------------------------------------------
 void MainWindow::rechargeAlbums()
 {
     ui->progressBarUpdate->setVisible(false);
     int cur=ui->comboBoxSwichCat->currentIndex();
-    setPathAlbum(cur);
+    setAlbumPath(cur);
 }
 
 // ------------------------------------------------------
-void MainWindow::setPathAlbum(int index)
+void MainWindow::setAlbumPath(int index)
 {
     switch (index) {
-    case 0:mMyTreeModel->chargeCategory(CAT_GENRE,CAT_ARTIST);           break;
-    case 1:mMyTreeModel->chargeCategory(CAT_GENRE,CAT_ALBUM);            break;
-    case 2:mMyTreeModel->chargeCategory(CAT_ALBUM,CAT_ARTIST);           break;
-    case 3:mMyTreeModel->chargeCategory(CAT_ARTIST,CAT_ALBUM);           break;
-    case 4:mMyTreeModel->chargeCategory(CAT_GENRE,CAT_ARTIST,CAT_ALBUM); break;
-    case 5:mMyTreeModel->chargeCategory(CAT_GENRE,CAT_ALBUM,CAT_ARTIST); break;
-    case 6:mMyTreeModel->chargeCategory(CAT_ARTIST,CAT_NULL);            break;
-    case 7:mMyTreeModel->chargeCategory(CAT_ALBUM,CAT_NULL);             break;
+    case 0:mMyTreeModel->chargeCategory(COL_I_GENRE,COL_I_ARTIST);           break;
+    case 1:mMyTreeModel->chargeCategory(COL_I_GENRE,COL_I_ALBUM);            break;
+    case 2:mMyTreeModel->chargeCategory(COL_I_ALBUM,COL_I_ARTIST);           break;
+    case 3:mMyTreeModel->chargeCategory(COL_I_ARTIST,COL_I_ALBUM);           break;
+    case 4:mMyTreeModel->chargeCategory(COL_I_GENRE,COL_I_ARTIST,COL_I_ALBUM); break;
+    case 5:mMyTreeModel->chargeCategory(COL_I_GENRE,COL_I_ALBUM,COL_I_ARTIST); break;
+    case 6:mMyTreeModel->chargeCategory(COL_I_ARTIST,COL_I_NULL);            break;
+    case 7:mMyTreeModel->chargeCategory(COL_I_ALBUM,COL_I_NULL);             break;
 
     default: break;
     }
@@ -410,9 +442,9 @@ void MainWindow::setPathAlbum(int index)
 QString logo(int col){
 
     switch (col) {
-    case CAT_GENRE: return ":/icons/genre-16";
-    case CAT_ALBUM: return ":/icons/cover-16";
-    case CAT_ARTIST:return ":/icons/artist-16";
+    case COL_I_GENRE: return ":/icons/genre-16";
+    case COL_I_ALBUM: return ":/icons/cover-album";
+    case COL_I_ARTIST:return ":/icons/artist-16";
     default:        break;
     }
     return   ":/icons/star";
@@ -439,17 +471,15 @@ void MainWindow::changeStatusPathText()
     if(!gName.isEmpty()){
         ui->labelStatusG->setText( QString("<html><head/><body><p><img src='%1'/> %2 </p></body></html>")
                                    .arg(logo(gId)).arg(gTxt));
-
     }
+
     if(!pName.isEmpty()){
         ui->labelStatusP->setText( QString("<html><head/><body><p><img src='%1'/> %2 </p></body></html>")
                                    .arg(logo(pId)).arg(pTxt));
-
     }
     if(!name.isEmpty()){
         ui->labelStatus->setText(QString("<html><head/><body><p><img src='%1'/> %2 </p></body></html>")
                                  .arg(logo(id)).arg(nTxt));
-
     }
 
 
@@ -457,9 +487,9 @@ void MainWindow::changeStatusPathText()
 }
 
 // ------------------------------------------------------
-void MainWindow::treeAudioActivated(const QModelIndex &index)
+void MainWindow::onTreeAudioActivated(const QModelIndex &index)
 {
-    QModelIndex idx=mMyListModel->index(index.row(),2);
+    QModelIndex idx=mMyListModel->index(index.row(),HIDER_TITLE);
     QString path   =idx.data(Qt::UserRole).toString();
     QString title  =idx.data().toString();
     if(path.isEmpty() )return;
@@ -477,10 +507,10 @@ void MainWindow::treeAudioActivated(const QModelIndex &index)
 }
 
 // ------------------------------------------------------
-void MainWindow::treeAudioClicked(const QModelIndex &index)
+void MainWindow::onTreeAudioClicked(const QModelIndex &index)
 {
-    if(index.column()==0){
-        QModelIndex idx=mMyListModel->index(index.row(),2);
+    if(index.column()==HIDER_ADD){
+        QModelIndex idx=mMyListModel->index(index.row(),HIDER_TITLE);
 
         QString path =idx.data(Qt::UserRole).toString();
         QString title=idx.data().toString();
@@ -494,28 +524,28 @@ void MainWindow::treeAudioClicked(const QModelIndex &index)
         list.append(map);
         mPlayer->addToPlaylist(list);
 
-    }else if(index.column()==1){
-        QModelIndex idx=mMyListModel->index(index.row(),1);
+    }else if(index.column()==HIDER_FAVO){
+        QModelIndex idx=mMyListModel->index(index.row(),HIDER_FAVO);
         if(!idx.isValid())return;
 
         bool favo   =idx.data(USER_RATED).toBool();
-        QString path=mMyListModel->index(index.row(),2).data(Qt::UserRole).toString();
+        QString path=mMyListModel->index(index.row(),HIDER_TITLE).data(Qt::UserRole).toString();
         if (DataBase::setFavorite(path,!favo)){
             mMyListModel->itemFromIndex(index)->setData(!favo,USER_RATED);
             mMyListModel->itemFromIndex(index)->setIcon(favo ? Tumb::icon(I_START):Tumb::icon(I_STARTED));
-            qDebug()<<"mainwindow favorit saved";
+            //qDebug()<<"mainwindow favorit saved";
         }
     }
 
 }
 
 // ------------------------------------------------------
-void MainWindow::treeViewContentActivated(const QModelIndex &index)
+void MainWindow::onTreeViewContentActivated(const QModelIndex &index)
 {
-
+mSearchBar->setVisible(false);
     QModelIndex  pIndex= index.parent();
     QModelIndex  gIndex= pIndex.parent();
-    int isfavo   =index.data(USER_FAVORITE).toBool();
+    int isfavo   =index.data(USER_FAVO_DISPLY).toBool();
 
     mMap[MAP_ID]     =index.data(USER_ID).toString();
     mMap[MAP_TITLE]  =index.data(USER_TITLE).toString();;
@@ -532,15 +562,15 @@ void MainWindow::treeViewContentActivated(const QModelIndex &index)
 }
 
 // ------------------------------------------------------
-void MainWindow::listViewActivated(const QModelIndex &index)
+void MainWindow::onListViewActivated(const QModelIndex &index)
 {
-
+mSearchBar->setVisible(false);
     QString pId  =mMap.value(MAP_ID);
     QString pName=mMap.value(MAP_TITLE);
     QString gId  =mMap.value(MAP_PID);
     QString gName=mMap.value(MAP_PTITLE);
 
-    int isfavo=index.data(USER_FAVORITE).toBool();
+    int isfavo=index.data(USER_FAVO_DISPLY).toBool();
 
     mMap[MAP_ID]       =index.data(USER_ID).toString();
     mMap[MAP_TITLE]    =index.data(USER_TITLE).toString();
@@ -548,7 +578,7 @@ void MainWindow::listViewActivated(const QModelIndex &index)
     mMap[MAP_PTITLE]   =pName;
     mMap[MAP_GID]      =gId;
     mMap[MAP_GTITLE]   =gName;
-    mMap[MAP_CHILD]    =QString::number(CAT_NULL);
+    mMap[MAP_CHILD]    =QString::number(COL_I_NULL);
     mMap[MAP_IMG]      =index.data(USER_IMGPATH).toString();
     mMap[MAP_IS_FAVO]  =QString::number(isfavo);
 
@@ -567,7 +597,7 @@ void MainWindow::chargeListItemes()
 
     //  qDebug()<<"album rated"<<isFavo<<id<<chld<<pId<<pName;
 
-    if(chld!=CAT_NULL){
+    if(chld!=COL_I_NULL){
         if(isFavo)
             mMyListModel->chargeFavoritedAlbum();
         else
@@ -581,8 +611,8 @@ void MainWindow::chargeListItemes()
 
     if(isFavo){
 
-        if(id==CAT_ALBUM)
-            mMyListModel->chargeAudios(name,CAT_ALBUM);
+        if(id==COL_I_ALBUM)
+            mMyListModel->chargeAudios(name,COL_I_ALBUM);
         else
             mMyListModel->chargeAudios("1",id);
 
@@ -590,27 +620,27 @@ void MainWindow::chargeListItemes()
         mMyListModel->chargeAudios(name,id,pName,pId,gName,gId);
     }
 
-    if(isFavo && id!=CAT_ALBUM){
-        mTVAudio->setColumnHidden(3,true);
-        mTVAudio->setColumnHidden(4,true);
+    if(isFavo && id!=COL_I_ALBUM){
+        mTVAudio->setColumnHidden(HIDER_ARTIST,true);
+        mTVAudio->setColumnHidden(HIDER_ALBUM,true);
     }else{
-        mTVAudio->setColumnHidden(4,id==CAT_ALBUM);
-        mTVAudio->setColumnHidden(3,id!=CAT_ALBUM);
+        mTVAudio->setColumnHidden(HIDER_ALBUM,id==COL_I_ALBUM);
+        mTVAudio->setColumnHidden(HIDER_ARTIST,id!=COL_I_ALBUM);
     }
 
-    ui->tb_favoritAlbum->setVisible(id==CAT_ALBUM);
+    ui->tb_favoritAlbum->setVisible(id==COL_I_ALBUM);
     ui->tb_imgAlbum->setVisible(!isFavo);
     setlabelImage();
 
-    mTVAudio->resizeColumnToContents(2);
-    mTVAudio->resizeColumnToContents(5);
+    mTVAudio->resizeColumnToContents(HIDER_TITLE);
+    mTVAudio->resizeColumnToContents(HIDER_TIME);
 
     ui->stackedWidgetView->setCurrentWidget(ui->pageAudio);
 
-    mTVAudio->setColumnWidth(0,20);
-    mTVAudio->setColumnWidth(1,20);
+    mTVAudio->setColumnWidth(HIDER_ADD,20);
+    mTVAudio->setColumnWidth(HIDER_FAVO,20);
 
-    mTVAudio->header()->setSectionResizeMode(2,QHeaderView::Stretch);
+    mTVAudio->header()->setSectionResizeMode(HIDER_TITLE,QHeaderView::Stretch);
     mTVAudio->setSizeAdjustPolicy(QAbstractScrollArea::AdjustToContents);
 
     changeStatusPathText();
@@ -618,6 +648,31 @@ void MainWindow::chargeListItemes()
     int favo= Setting::albumIsFavorited(name);
     ui->tb_favoritAlbum->setChecked(favo);
     ui->tb_favoritAlbum->setIcon(favo ? Tumb::icon(I_STARTED):Tumb::icon(I_START));
+
+}
+
+// ------------------------------------------------------
+void MainWindow::searchAudios(int col,const QString &text)
+{
+    mMyListModel->searchAudios(col,text);
+    mTVAudio->setColumnHidden(HIDER_ARTIST,false);
+    mTVAudio->setColumnHidden(HIDER_ALBUM,false);
+
+    mTVAudio->resizeColumnToContents(HIDER_TITLE);
+    mTVAudio->resizeColumnToContents(HIDER_TIME);
+
+    ui->stackedWidgetView->setCurrentWidget(ui->pageAudio);
+
+    mTVAudio->setColumnWidth(HIDER_ADD,20);
+    mTVAudio->setColumnWidth(HIDER_FAVO,20);
+
+    mTVAudio->header()->setSectionResizeMode(HIDER_TITLE,QHeaderView::Stretch);
+    mTVAudio->setSizeAdjustPolicy(QAbstractScrollArea::AdjustToContents);
+    ui->tb_favoritAlbum->setVisible(false);
+    ui->tb_imgAlbum->setVisible(false);
+   // changeStatusPathText();
+    QIcon icon(":/icons/find");
+    ui->labelAlbumImage->setPixmap(icon.pixmap(mIconSize,mIconSize));
 
 }
 
@@ -630,9 +685,10 @@ void MainWindow::setlabelImage()
     bool  isFavo=   mMap.value(MAP_IS_FAVO).toInt();
     QIcon img;
 
-    if(isFavo && id!=CAT_ALBUM){ img=Tumb::icon(I_FAVO);        }
-    else if(id==CAT_ALBUM)     { img=Tumb::iconAlbum(name,path);}
-    else                       { img=Tumb::iconnArtist(name);   }
+    if(mSearchBar->isVisible()) { img= QIcon (":/icons/find");}
+    else if(isFavo && id!=COL_I_ALBUM){ img=Tumb::icon(I_FAVO);        }
+    else if(id==COL_I_ALBUM)     { img=Tumb::iconAlbum(name,path);}
+    else  if(id==COL_I_ARTIST)    { img=Tumb::iconnArtist(name);   }
 
     ui->labelAlbumImage->setPixmap(QPixmap(img.pixmap(mIconSize,mIconSize)));
 
@@ -677,7 +733,7 @@ void MainWindow::on_tb_addAlbum_clicked()
 
     for (int i = 0; i < count; ++i) {
 
-        QModelIndex idx=mTVAudio->model()->index(i,2);
+        QModelIndex idx=mTVAudio->model()->index(i,HIDER_TITLE);
         QString title  =idx.data().toString();
         QString path   =idx.data(Qt::UserRole).toString();
 
@@ -701,17 +757,19 @@ void MainWindow::on_tb_playAlbum_clicked()
     mPlayer->play();
 }
 
-
+// ------------------------------------------------------
 void MainWindow::on_tb_imgAlbum_clicked()
 {
     QString Name=   mMap.value(MAP_TITLE);
-    if(Name==tr("Unknown")) return;
+qDebug()<<"MainWindow::on_tb_imgAlbum_clicked:::"<<Name;
+
+    if(Name==tr("Unknown")||Name.isEmpty()) return;
+
     int id=   mMap.value(MAP_ID).toInt();
 
     changeImageAlbum(id,Name);
 
 }
-
 
 // ------------------------------------------------------
 void MainWindow::onChangeImageAlbum(int row)
@@ -730,6 +788,7 @@ void MainWindow::onChangeImageAlbum(int row)
 
 }
 
+// ------------------------------------------------------
 void MainWindow::changeImageAlbum(int id ,const QString Name)
 {
     QString fileName = QFileDialog::getOpenFileName(this,
@@ -743,9 +802,9 @@ void MainWindow::changeImageAlbum(int id ,const QString Name)
 
     img= img.scaled(256,256,Qt::KeepAspectRatio,Qt::SmoothTransformation);
 
-    if(id==CAT_ALBUM)
+    if(id==COL_I_ALBUM)
         img.save(D_ALBUM_CACHE+"/"+Name+".jpg","jpg");
-    else if(id==CAT_ARTIST)
+    else if(id==COL_I_ARTIST)
         img.save(D_ARTIST_CACHE+"/"+Name+".jpg","jpg");
 
 }
@@ -758,19 +817,19 @@ void MainWindow::onFavoritAlbum(int row,bool favo)
     if(!index.isValid())return;
 
     bool oldfavo=index.data(USER_RATED).toBool();
-    qDebug()<<oldfavo<<favo;
+    // qDebug()<<oldfavo<<favo;
     if(oldfavo==favo)return;
 
     Setting::setAlbumFavo(index.data(USER_TITLE).toString(),favo);
     mMyListModel->itemFromIndex(index)->setData(favo,USER_RATED);
-    qDebug()<<row<<favo;
+    // qDebug()<<row<<favo;
 
 }
 
 // ------------------------------------------------------
 void MainWindow::onAddAlbum(int row)
 {
-    qDebug()<<row<<"onAddAlbumClicked";
+    //qDebug()<<row<<"onAddAlbumClicked";
     QModelIndex index=mMyListModel->index(row,0);
 
     if(!index.isValid())return;
@@ -801,28 +860,18 @@ void MainWindow::onPlayAlbum(int row)
     mPlayer->play();
 }
 
-// ------------------------------------------------------
-//void MainWindow::editCurIndex(const QString &path)
-//{
-//    qDebug()<<path;
-//    QProcess p;
-//    p.startDetached("easytag",QStringList()<<path);
-//}
 
 // ------------------------------------------------------
-void MainWindow::on_actionopen_triggered()
+void MainWindow::onActionopentriggered()
 {
-    //    if(DataBase::clearDatabase()){
-    //        setPathAlbum(ui->comboBoxSwichCat->currentIndex());
-    //    }
-    //    return;
+
 
     DialogOpen *dlg=new DialogOpen(this);
     if(dlg->exec()==QDialog::Accepted){
         bool save=dlg->autoSave(); //TODO :add this to save
 
         QList<QUrl>list=dlg->listUrls();
-        qDebug()<<"MainWindow urls :"<<list;
+        //  qDebug()<<"MainWindow urls :"<<list;
         if(save)
             mMediaUpdate->addFiles(list);
 
@@ -833,15 +882,57 @@ void MainWindow::on_actionopen_triggered()
 }
 
 
-
+// ------------------------------------------------------
 void MainWindow::on_tButtonCancelMsg_clicked()
 {
     mMediaUpdate->setUpdateDirs(false);
     ui->widgetMessage->setVisible(false);
 }
 
+// ------------------------------------------------------
 void MainWindow::on_tButtonOkMsg_clicked()
 {
     mMediaUpdate->setUpdateDirs(true);
     ui->widgetMessage->setVisible(false);
+}
+//----------------------------------- TRAY ICON ---------------------------------------
+void MainWindow:: creatTrayIcon()
+{
+    if(!trayIcon){
+        trayIcon= new QSystemTrayIcon(QIcon::fromTheme("goldfinch",QIcon(":/icons/goldfinch-24")));
+        QMenu *trayIconMenu=new QMenu;
+        trayIconMenu->addAction(Tumb::icon(I_PLAY), tr("Play"),    mPlayer,&Player::play);
+        trayIconMenu->addAction(Tumb::icon(I_PAUSE),tr("Pause"),   mPlayer,&Player::pause);
+        trayIconMenu->addAction(Tumb::icon(I_NEXT), tr("Next"),    mPlayer,&Player::next);
+        trayIconMenu->addAction(Tumb::icon(I_PREV), tr("Previous"),mPlayer,&Player::previous);
+        trayIconMenu->addSeparator();
+        trayIconMenu->addAction(Tumb::icon(I_PLAY), tr("Quit"),    this,&MainWindow::close);
+        trayIcon->setContextMenu(trayIconMenu);
+        connect(trayIcon, &QSystemTrayIcon::activated, this, &MainWindow::trayIconActivated);
+    }
+    trayIcon->show();
+
+}
+
+//----------------------------------------------------------------------------------
+void MainWindow::setwTitle(const QString &title)
+{
+    setWindowTitle(title);
+    if(isHidden()){
+        QIcon ico=QIcon::fromTheme("goldfinch",QIcon(":/icons/goldfinch"));
+        if(trayIcon)
+            trayIcon->showMessage(QApplication::applicationDisplayName(),title,ico);
+
+    }
+}
+
+//----------------------------------------------------------------------------------
+void MainWindow::trayIconActivated(QSystemTrayIcon::ActivationReason reason)
+{
+    switch (reason) {
+    case QSystemTrayIcon::Trigger: isHidden()?show():hide(); break;
+    case QSystemTrayIcon::DoubleClick: break;
+    case QSystemTrayIcon::MiddleClick: break;
+    default: break  ;
+    }
 }

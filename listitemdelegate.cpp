@@ -6,7 +6,7 @@
 #include<QFile>
 #include<QImageReader>
 
-#include<QDebug>
+//#include<QDebug>
 #include<QDir>
 ListItemDelegate::ListItemDelegate()
 {
@@ -45,10 +45,10 @@ QIcon decoration(const QModelIndex &index){
     int col=index.data(USER_ID).toInt();
     QString title=index.data(USER_TITLE).toString();
 
-    if(col==CAT_ALBUM/*||col==CAT_ALBUMRATED*/){
+    if(col==COL_I_ALBUM/*||col==CAT_ALBUMRATED*/){
         QString imgPath=index.data(USER_IMGPATH).toString();
         return  Tumb::iconAlbum(title,imgPath);
-    }else if(col==CAT_ARTIST){
+    }else if(col==COL_I_ARTIST){
         return (Tumb::iconnArtist(title));
     }
     return (Tumb::iconnArtist(title));
@@ -90,7 +90,7 @@ void ListItemDelegate::paintIconView(QPainter *painter, const QStyleOptionViewIt
 
     QRect rectborder=option.rect;
 
-    if(id==CAT_ALBUM){
+    if(id==COL_I_ALBUM){
         rectborder.adjust(0,0,-1,-1);
         painter->setOpacity(0.3);
         painter->setPen(option.palette.highlight().color());

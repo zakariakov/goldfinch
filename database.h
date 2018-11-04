@@ -9,7 +9,7 @@
 
 #define DATA_NOEXIST    0
 #define DATA_EXIST      1
-#define DATA_NIDUPDATE  2
+#define DATA_NEEDUPDATE  2
 
 class DataBase : public QObject
 {
@@ -33,9 +33,15 @@ public:
                                            QString pPname,int pPcolm);
 
 
+   static QString duration( const QString &path);
+   static void setDuration(const QString &duration, const QString &path);
+
+   static  QList<QVariantMap> searchAudios(int col ,const QString &text);
 signals:
 
 public slots:
+
+    static  bool fileExist(const QString &path);
     //! حذف كل البيانات
     static  bool clearDatabase();
 
@@ -70,9 +76,7 @@ private:
 
 private slots:
     //! النحقق من البيانات
-    static int  checkSongInfo(const QString &title,const QString &artist,
-                              const QString &album,const QString &genre,
-                              const QString &path, const QString &duration);
+    static int  checkSongInfo(const QString &path);
 
     //! تحديث بيانات
     static  bool updateSong(const QString &title,const QString &artist,

@@ -152,7 +152,7 @@ QToolButton:hover {
        <item>
         <widget class="QLabel" name="label">
          <property name="text">
-          <string>TextLabel</string>
+          <string>There are folders that can be updated</string>
          </property>
         </widget>
        </item>
@@ -192,7 +192,7 @@ QToolButton:hover {
        <number>0</number>
       </property>
       <widget class="QWidget" name="pageLibrery">
-       <layout class="QVBoxLayout" name="verticalLayout">
+       <layout class="QVBoxLayout" name="vLayoutLibrery">
         <property name="leftMargin">
          <number>3</number>
         </property>
@@ -280,7 +280,7 @@ QToolButton:hover {
            </layout>
           </widget>
           <widget class="QWidget" name="widgetView" native="true">
-           <layout class="QVBoxLayout" name="verticalLayout_6">
+           <layout class="QVBoxLayout" name="vLayoutViewAll">
             <property name="spacing">
              <number>1</number>
             </property>
@@ -437,7 +437,7 @@ QListView{
                    }</string>
               </property>
               <property name="currentIndex">
-               <number>0</number>
+               <number>1</number>
               </property>
               <widget class="QWidget" name="page_View">
                <layout class="QVBoxLayout" name="vLayoutView">
@@ -634,21 +634,6 @@ QListView{
    </layout>
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
-  <action name="actionaddDir">
-   <property name="text">
-    <string>addDir</string>
-   </property>
-  </action>
-  <action name="actionopen">
-   <property name="text">
-    <string>open</string>
-   </property>
-  </action>
-  <action name="actionSettings">
-   <property name="text">
-    <string>Settings</string>
-   </property>
-  </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <resources>

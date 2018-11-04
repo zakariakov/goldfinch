@@ -16,6 +16,8 @@
 #include "setting.h"
 #include "widgetplaylist.h"
 #include "widgetimageinfo.h"
+#include "searchbar.h"
+#include <QSystemTrayIcon>
 namespace Ui {
 class MainWindow;
 }
@@ -37,6 +39,8 @@ private:
     void changeEvent(QEvent *event);
     //!
     void changeStyleSheet();
+
+    void creatTrayIcon();
     //!
     QMap<QString,QString>mMap;
     //! موديول قائمة النفاصبل
@@ -65,6 +69,8 @@ private:
     WidgetImageInfo *mImageInfo;
     //! تحديث المقطوعات من الجهاز
     MediaUpdate *mMediaUpdate;
+
+    SearchBar *mSearchBar;
     //!
     Setting *mSetting;
     //!
@@ -75,8 +81,13 @@ private:
     int mIconSize=94;
     //!
     QString mcoloor;
+    //!
+    QSystemTrayIcon *trayIcon=nullptr;
+
 
 private slots:
+    //!
+    void showRaise(){showNormal();raise();}
     //!
     void switchViewMode(bool mini);
     //!
@@ -92,21 +103,21 @@ private slots:
     //! عرض مسار الالبومات
     void changeStatusPathText();
     //! تغيير مسار الالبومات
-    void setPathAlbum(int index);
-    //! اضاغة مسارات جديدة لتحميل الالبومات
-    //!
+    void setAlbumPath(int index);
+     //!
     void setIconSize(int value);
     //!
-    void setwTitle(const QString &title){setWindowTitle(title);}
+    void setwTitle(const QString &title);
     //!
     void chargeListItemes();
+    //!
+    void searchAudios(int col,const QString &text);
+    //!
     void setlabelImage();
     //!
-    void on_actionaddDir_triggered();
+    void onTreeViewContentActivated(const QModelIndex &index);
     //!
-    void treeViewContentActivated(const QModelIndex &index);
-    //!
-    void listViewActivated(const QModelIndex &index);
+    void onListViewActivated(const QModelIndex &index);
     //!
     void on_tb_paneContent_toggled(bool checked);
     //!
@@ -131,17 +142,18 @@ private slots:
     //!
     void on_tb_favoritAlbum_clicked();
     //!
-    void treeAudioClicked(const QModelIndex &index);
+    void onTreeAudioClicked(const QModelIndex &index);
     //!
-    void treeAudioActivated(const QModelIndex &index);
+    void onTreeAudioActivated(const QModelIndex &index);
     //!
    // void editCurIndex(const QString &path);
     //!
-    void on_actionopen_triggered();
+    void onActionopentriggered();
 
 
     void on_tButtonCancelMsg_clicked();
     void on_tButtonOkMsg_clicked();
+    void trayIconActivated(QSystemTrayIcon::ActivationReason reason);
 };
 
 #endif // MAINWINDOW_H

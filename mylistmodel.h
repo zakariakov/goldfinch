@@ -16,6 +16,7 @@ public:
                       QString pName=QString(), int pColm=0,
                       QString pPname=QString(), int pPcolm=0);
 void chargeFavoritedAlbum();
+void searchAudios(int col ,const QString &text);
 
   QIcon icon(const QModelIndex &index){return item(index.row())->icon();}
 protected:

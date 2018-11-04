@@ -34,13 +34,18 @@
 #define I_FAVO    26
 #define I_MENU    27
 #define I_PROPERTIES    28
-
+#define I_ALBUM_SMALL    29
+#define I_OPTIONS    30
+#define I_CLEAR    31
+#define I_QUIT    32
+#define I_Close    33
+#define I_FIND    34
 class Tumb
 {
 public:
     Tumb();
     //!
-    static Tumb *instance();
+     static Tumb *instance();
      static QIcon iconAlbum(const QString &title, const QString &dirPath);
      static QString imageAlbumPath(const QString &title, const QString &dirPath);
      static QIcon iconnArtist(const QString &title);

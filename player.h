@@ -52,6 +52,8 @@
 #define PLAYER_H
 #include "playercontrols.h"
 #include "widgetplaylist.h"
+#include "player_adaptor.h"
+
 #include <QWidget>
 #include <QMediaPlayer>
 #include <QMediaPlaylist>
@@ -96,24 +98,33 @@ signals:
     void durationChanged(qint64 duration);
     void positionChanged(qint64 progress);
     void updateSong(QVariantMap,QString);
-
+ void propertiesChanged(QString,QVariantMap,QStringList);
 
 public slots:
+
     // dbus
-    void play(){  m_player->play();  }
-    void pause(){  m_player->pause();  }
-    void stop(){  m_player->stop();  }
-    void next(){ m_playlist->next();  }
+    void play() {   mPlayer->play();   }
+    void pause(){   mPlayer->pause();  }
+    void stop() {   mPlayer->stop();   }
+    void next() {   mPlaylist->next(); }
     void previous();
     void playPause();
-    void seek(int seconds);
-    bool canPlay() {  return !m_playlist->isEmpty(); }
-    bool canGoNext(){return true /*m_playlist->currentIndex()<(m_playlist->mediaCount()-1)*/;}
-    bool canGoPrevious(){return true /*m_playlist->currentIndex()>0*/;}
-    bool canPause(){return true /*m_player->isAudioAvailable()*/;}
-    bool canSeek(){return  m_player->isSeekable();}
+    void setSeek(int seconds);
+    qint64 position(){return mPlayer->position(); }
+    bool canPlay() {
+       if(!mPlayer->isAvailable())return false;
+       return true;
+    }
+    bool canPause() {
+       if(!mPlayer->isAvailable()) return false;
+       return true;
+    }
+    bool canGoNext();
+    bool canGoPrevious();
+    bool canSeek(){return  mPlayer->isSeekable();}
     QVariantMap metadata(){return mMetaDataMap;}
     QString playbackStatus(){return mPlaybackStatus;}
+    //--
     void rmovePlaylistItem(QModelIndex idx);
     void moveMedia(int from,int to);
     void cleanList();
@@ -131,22 +142,27 @@ private slots:
     void displayErrorMessage();
     void save(const QString &name);
     void openSavedList(QString name);
+    void setduration(qint64 duration);
 private:
 
-    void setTrackInfo(const QString &info);
-    void setStatusInfo(const QString &info);
-    void handleCursor(QMediaPlayer::MediaStatus status);
+    void setTrackInfo  (const QString &info);
+    void setStatusInfo (const QString &info);
+    void handleCursor  (QMediaPlayer::MediaStatus status);
     void setCovertImage(QImage img, QString album);
 
-    QMediaPlayer *m_player = nullptr;
-    QMediaPlaylist *m_playlist = nullptr;
- PlayerControls *controls;
-    PlaylistModel *m_playlistModel = nullptr;
-    QListView *m_playlistView ;
-    QString m_trackInfo;
-    QString m_statusInfo;
-    QString mPlaybackStatus;
-    QVariantMap mMetaDataMap;
+    PlayerAdaptor  *mPlayerAdaptor;
+    QMediaPlayer   *mPlayer = nullptr;
+    QMediaPlaylist *mPlaylist = nullptr;
+    PlayerControls *controls;
+    PlaylistModel  *mPlaylistModel = nullptr;
+    QListView      *mPlaylistView ;
+    QVariantMap     mMetaDataMap;
+    QString         mTrackInfo;
+    QString         mStatusInfo;
+    QString         mPlaybackStatus;
+
+
+ // FreeDesktopAdaptor *mFreeDesktopAdaptor;
 };
 
 #endif // PLAYER_H

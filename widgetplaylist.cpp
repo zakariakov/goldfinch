@@ -1,12 +1,12 @@
 #include "widgetplaylist.h"
 #include "tumb.h"
 #include <QLayout>
-#include <QDebug>
+//#include <QDebug>
 #include <QAction>
 WidgetPlayList::WidgetPlayList(QWidget *parent) : QWidget(parent)
 {
 
-
+    actGroup =      new QActionGroup(this);
     mPlayListView=  new QListView;
     tbRemoveItem=   new QToolButton;
     tbMoveItemUp=   new QToolButton;
@@ -21,7 +21,6 @@ WidgetPlayList::WidgetPlayList(QWidget *parent) : QWidget(parent)
     tbRemoveItem->setAutoRaise(true);
     tbRemoveItem->setToolTip(tr("Remove Current "));
     connect(tbRemoveItem,SIGNAL(clicked()),SLOT(rmoveItem()));
-
 
     tbMoveItemUp->setIconSize(QSize(16,16));
     tbMoveItemUp->setAutoRaise(true);
@@ -44,23 +43,32 @@ WidgetPlayList::WidgetPlayList(QWidget *parent) : QWidget(parent)
 
     actPlayOne=mnuPlayMode->addAction(tr("Current Once"));
     actPlayOne->setData(0);
-    connect(actPlayOne,SIGNAL(triggered()),this,SLOT(setPlayMode()));
+    actPlayOne->setCheckable(true);
 
     actRepeatOne=mnuPlayMode->addAction(tr("Current Loop"));
     actRepeatOne->setData(1);
-    connect(actRepeatOne,SIGNAL(triggered()),this,SLOT(setPlayMode()));
+    actRepeatOne->setCheckable(true);
 
     actSquent=mnuPlayMode->addAction(tr("Sequential"));
     actSquent->setData(2);
-    connect(actSquent,SIGNAL(triggered()),this,SLOT(setPlayMode()));
+    actSquent->setCheckable(true);
 
     actRepeatAlbum=mnuPlayMode->addAction(tr("Plylist Loop"));
     actRepeatAlbum->setData(3);
-    connect(actRepeatAlbum,SIGNAL(triggered()),this,SLOT(setPlayMode()));
+    actRepeatAlbum->setCheckable(true);
 
     actRandom=mnuPlayMode->addAction(tr("Random"));
     actRandom->setData(4);
-    connect(actRandom,SIGNAL(triggered()),this,SLOT(setPlayMode()));
+    actRandom->setCheckable(true);
+
+    actGroup->addAction(actPlayOne);
+    actGroup->addAction(actRepeatOne);
+    actGroup->addAction(actSquent);
+    actGroup->addAction(actRepeatAlbum);
+    actGroup->addAction(actRandom);
+    connect(actGroup,&QActionGroup::triggered,this,&WidgetPlayList::setPlayMode);
+
+    actSquent->setChecked(true);
 
     tbPlayMode->setIcon(Tumb::icon(I_M_SEQUEN));
     tbPlayMode->setPopupMode(QToolButton::InstantPopup);
@@ -97,8 +105,6 @@ void WidgetPlayList::setupIcons()
 {
     tbRemoveItem->setIcon(Tumb::icon(I_LIST_REMOVE));
     tbCleanList->setIcon(Tumb::icon(I_CLEAN));
-    //playModeIcon=Tumb::icon(I_M_SEQUEN);
-
     actPlayOne->setIcon(Tumb::icon(I_M_PLAY_ONE));
     actRepeatOne->setIcon(Tumb::icon(I_M_REPEAT_ONE));
     actSquent->setIcon(Tumb::icon(I_M_SEQUEN));
@@ -142,15 +148,14 @@ void WidgetPlayList::moveItemDown()
     emit movCurentItem(row,row+1);
 }
 
-void WidgetPlayList::setPlayMode()
+void WidgetPlayList::setPlayMode(QAction *action)
 {
 
-    QAction *action = qobject_cast<QAction *>(sender());
+   // QAction *action = qobject_cast<QAction *>(sender());
     if(action)
     {
-
         int data=action->data().toInt();
-        qDebug()<<"playmode="<<data;
+     //   qDebug()<<"playmode="<<data;
         emit playbackModeChanged(data);
         tbPlayMode->setIcon(action->icon());
 
