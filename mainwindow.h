@@ -129,7 +129,7 @@ private slots:
      //!
     void setIconSize(int value);
     //!
-    void setwTitle(const QString &title);
+    void setwTitle(const QString &title, const QString &info);
     //!
     void chargeListItemes();
     //!

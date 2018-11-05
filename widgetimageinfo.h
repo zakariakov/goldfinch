@@ -39,8 +39,8 @@ public slots:
           mImage=img;
           update();
     }
-    void setTitle(const QString &tit){mTitle=tit;}
-    void setInfo(const QString &info){mInfo=info;}
+    void setTitle(const QString &tit,const QString &info){mTitle=tit;mInfo=info;}
+   // void setInfo(const QString &info){mInfo=info;}
     void setHorizontal(bool arg){mHorisontal=arg;}
 private:
 

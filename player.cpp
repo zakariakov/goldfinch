@@ -242,8 +242,8 @@ void Player::metaDataChanged()
         QString strTit=title.isEmpty() ? fi.fileName() : title;
         QString strInf=QString("%1 - %2").arg(artist).arg(album);
 
-        emit titleChanged(title);
-        emit infoChanged(strInf);
+
+       // emit infoChanged(strInf);
 
         //---------------------------------------
         //        QString artSmall= m_player->metaData(QMediaMetaData::CoverArtUrlSmall).toString();
@@ -541,12 +541,17 @@ void Player::openSavedList(QString name)
 
 void Player::setduration(qint64 duration)
 {
+        emit titleChanged(mMetaDataMap.value("xesam:title").toString(),
+                          mMetaDataMap.value("xesam:artist").toString()+"-"+
+                          mMetaDataMap.value("xesam:album").toString());
     QString file=mPlayer->currentMedia().canonicalUrl().toLocalFile();
     QString mDur=QTime::fromMSecsSinceStartOfDay(QVariant(duration).toInt()).toString();
     QString dataDur=  DataBase::duration(file);
     qDebug()<<" Player::durationChanged"<<mDur<<dataDur;
     if(mDur!=dataDur)
         DataBase::setDuration(mDur,file);
+
+
 }
 
 bool Player::canGoNext()

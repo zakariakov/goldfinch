@@ -179,6 +179,7 @@ void PlayerControls::onVolumeSliderValueChanged()
 void PlayerControls::durationChanged(qint64 duration)
 {
 
+
     m_duration = duration / 1000;
     m_slider->setMaximum(QVariant(m_duration).toInt());
 }

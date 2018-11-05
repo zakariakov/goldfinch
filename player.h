@@ -63,7 +63,7 @@ signals:
     void playBackChanged(QString,int=0 );
     void iconsChanged();
     void imageChanged(QImage);
-    void titleChanged(QString);
+    void titleChanged(QString,QString);
     void infoChanged(QString);
     void durationChanged(qint64 duration);
     void positionChanged(qint64 progress);

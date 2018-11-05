@@ -21,7 +21,8 @@
 
 #ifndef DEFINES_H
 #define DEFINES_H
-
+#include <QDBusInterface>
+#include <QDebug>
 #include <QDir>
 #include <QStandardPaths>
 #define D_CACHE          QDir::homePath()+"/.cache/qplayer"
@@ -84,5 +85,52 @@
 #define COL_S_MODIF      "modified"  //8
 
 // id=0 1=title 2=artist  3=album 4=genre  5=path 6=icon 7=favo 7=tags
+/**
+ * @brief The NotificationUtill class
+ */
+class Notification
+{
+public:
+    Notification(){}
+public:
+
+    static void Notify(const QString &app_name, const QString &app_icon,
+                       const QString &summary, const QString &body,
+                           int expire_timeout)
+    {
+        QDBusInterface dbus("org.freedesktop.Notifications",
+                            "/org/freedesktop/Notifications",
+                            "org.freedesktop.Notifications");
+
+        if (!NotificationIsValid()) {
+         //   qDebug() << "QDBusInterface is not valid!";
+            return ;
+        }
+
+        QList<QVariant> args;
+        args.append(app_name);       // Application Name
+        args.append(0123U);         // Replaces ID (0U)
+        args.append(app_icon);     // Notification Icon
+        args.append( summary);       // Summary
+        args.append(body);          // Body
+        args.append(QStringList()); // Actions
+        args.append(QVariantMap());
+        args.append(expire_timeout);
+        dbus.callWithArgumentList(QDBus::NoBlock, "Notify", args);
+    }
+
+    static bool NotificationIsValid()
+    {
+        QDBusInterface dbus("org.freedesktop.Notifications",
+                            "/org/freedesktop/Notifications",
+                            "org.freedesktop.Notifications");
+
+        if (!dbus.isValid()) {
+          //  qDebug() << "QDBusInterface is not valid!";
+            return false;
+        }
+        return true;
+    }
+};
 
 #endif // DEFINES_H

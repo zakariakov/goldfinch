@@ -27,6 +27,7 @@ QT       += core gui multimedia \
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
 TARGET =goldfinch
+DESTDIR = usr/bin
 TEMPLATE = app
 
 CONFIG += qt \
@@ -109,6 +110,12 @@ FORMS += \
 
 RESOURCES += \
     icons.qrc
+
+TRANSLATIONS    =usr/share/goldfinch/translations/ar/goldfinch.ts\
+                 usr/share/goldfinch/translations/fr/goldfinch.ts\
+                 usr/share/goldfinch/translations/en/goldfinch.ts
+
+#------------ INSTTALL ---------------
 desktop.file=goldfinch.desktop
 desktop.path  =/usr/share/applications
 icons.file  =icons/icons/hicolor/*

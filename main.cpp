@@ -26,7 +26,7 @@
 
 #include <QApplication>
 #include <QDBusConnection>
-
+#include <QTranslator>
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
@@ -72,14 +72,32 @@ int main(int argc, char *argv[])
     a.setWindowIcon(QIcon::fromTheme("goldfinch",QIcon(":/icons/goldfinch")));
 
     //-----------------------------------------------------------------TRANSLATIONS
-    a.setLayoutDirection(Qt::RightToLeft);
+
+    QDir appDir(a.applicationDirPath());
+    appDir.cdUp();
+    QString dirPath=  appDir.absolutePath()+"/share/"+a.applicationName();
+
+   QString   locale = QLocale::system().name().section("_",0,0);
+    /// اللغة الحالية لجميع البرنامج
+    QLocale::setDefault(QLocale(locale));
+    /// جلب ترجمات كيوتي
+    QString translatorFileName = QLatin1String("qt_");
+    translatorFileName += locale;
+    QTranslator *translatorsys = new QTranslator;
+    if (translatorsys->load(translatorFileName, QLibraryInfo::location(QLibraryInfo::TranslationsPath)))
+        QApplication::installTranslator(translatorsys);
+    QString translatorPath=dirPath+"/translations/"+locale+"/"+a.applicationName();
+    qDebug()<<"translatorPath"<<translatorPath;
+    QTranslator translator;
+           translator.load(translatorPath);
+           a.installTranslator(&translator);
+    QLocale lx=QLocale(locale);
+    a.setLayoutDirection(lx.textDirection());
+   // a.setLayoutDirection(Qt::RightToLeft);
 
     //-----------------------------------------------------------------EXEC
     MainWindow w;
 
-    // new PlayerAdaptor(w.player());
-    //    new MainAdaptor(w.player());
-    //   connection.registerObject(QString("/org/mpris/MediaPlayer2"),QString("Player"), w.player());
     if(!pathUrl.isEmpty()){  w.setUrl(pathUrl.toLocalFile()); }
 
     w.show();

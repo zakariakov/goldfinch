@@ -55,7 +55,7 @@ MainWindow::MainWindow(QWidget *parent) :
     mSearchBar=new SearchBar(this);
 
 
-   //-- Slider Change Icons Size
+    //-- Slider Change Icons Size
     mSliderIconSize = new QSlider(Qt::Horizontal, this);
     mSliderIconSize->setRange(96,256);
     mSliderIconSize->setMaximumWidth(160);
@@ -71,12 +71,12 @@ MainWindow::MainWindow(QWidget *parent) :
     //-- ACtion Search
     QAction *actSearch=new QAction(Tumb::icon(I_FIND),tr("Search"),this);
     actSearch->setShortcut(QKeySequence("Ctrl+F"));
-   // actSearch->setCheckable(true);
+    // actSearch->setCheckable(true);
     connect(actSearch,&QAction::triggered,mSearchBar,&SearchBar::showHid);
 
     //--  Menu Main
     QMenu *menu=new QMenu;
-    menu->addAction(tr("Open Foles..."),this,&MainWindow::onActionopentriggered);
+    menu->addAction(tr("Open Files..."),this,&MainWindow::onActionopentriggered);
     menu->addAction(tr("Add/Update Directory"),mMediaUpdate,&MediaUpdate::getDirListOptions);
     menu->addAction(actSearch);
     menu->addAction(mActSwich);
@@ -122,7 +122,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
     connect(mPlayer,     &Player::imageChanged,               mImageInfo,  &WidgetImageInfo::setImage);
     connect(mPlayer,     &Player::titleChanged,               mImageInfo,  &WidgetImageInfo::setTitle);
-    connect(mPlayer,     &Player::infoChanged,                mImageInfo,  &WidgetImageInfo::setInfo);
+  //  connect(mPlayer,     &Player::infoChanged,                mImageInfo,  &WidgetImageInfo::setInfo);
     connect(mPlayer,     &Player::updateSong,                 mMediaUpdate,&MediaUpdate::updateFile);
     connect(mPlayer,     &Player::titleChanged,               this      ,  &MainWindow::setwTitle);
 
@@ -271,8 +271,8 @@ void MainWindow::changeStyleSheet()
 
     QColor col=this->palette().text().color();
     QColor coled=this->palette().highlight().color();
-  QString colControl=this->palette().window().color().dark().name();
-  qDebug()<<colControl;
+    QString colControl=this->palette().window().color().dark().name();
+    qDebug()<<colControl;
     if (mcoloor==col.name()+coled.name())
         return;
 
@@ -298,24 +298,24 @@ void MainWindow::changeStyleSheet()
 
     QString style=QString(
 
-//               " QWidget#widgetControl{"
-//                  "  background-color: %5;"
-//                  "  color: palette(light);"
-//               " }"
+                //               " QWidget#widgetControl{"
+                //                  "  background-color: %5;"
+                //                  "  color: palette(light);"
+                //               " }"
                 /*-- search bar --*/
-                              "QWidget#SearchBar{"
-                              "   background-color: palette(base);"
-                              "   border:1px solid palette(highlight);"
-                              "   border-radius:%3px;"
-              "}"
+                "QWidget#SearchBar{"
+                "   background-color: palette(base);"
+                "   border:1px solid palette(highlight);"
+                "   border-radius:%3px;"
+                "}"
                 "QToolButton#TBSearch{"
-                 "   background-color: palette(base);"
+                "   background-color: palette(base);"
                 "    border:0px ;"
                 "   border-radius: %4px;"
                 "}"
                 "QToolButton#TBSearch:hover{ background-color: palette(shadow);}"
                 "QToolButton#TBSearch:pressed{background-color: palette(highlight);}"
-                 /*-- TreeView ListView --*/
+                /*-- TreeView ListView --*/
                 "QTreeView{"
                 "background-color: transparent;"
                 //   "border: 1px solid palette(midlight);"
@@ -364,7 +364,7 @@ void MainWindow::changeStyleSheet()
                 "}").arg(leftBorder).arg(rightBorder).arg(h).arg(tb_h).arg("#1c1e25");
 
     setStyleSheet(style) ;
-qDebug()<<style;
+    qDebug()<<style;
     setupIcons();
     mWPlayList->setupIcons();
     emit iconsChanged();
@@ -569,7 +569,7 @@ void MainWindow::onTreeAudioClicked(const QModelIndex &index)
 // ------------------------------------------------------
 void MainWindow::onTreeViewContentActivated(const QModelIndex &index)
 {
-mSearchBar->setVisible(false);
+    mSearchBar->setVisible(false);
     QModelIndex  pIndex= index.parent();
     QModelIndex  gIndex= pIndex.parent();
     int isfavo   =index.data(USER_FAVO_DISPLY).toBool();
@@ -591,7 +591,7 @@ mSearchBar->setVisible(false);
 // ------------------------------------------------------
 void MainWindow::onListViewActivated(const QModelIndex &index)
 {
-mSearchBar->setVisible(false);
+    mSearchBar->setVisible(false);
     QString pId  =mMap.value(MAP_ID);
     QString pName=mMap.value(MAP_TITLE);
     QString gId  =mMap.value(MAP_PID);
@@ -697,7 +697,7 @@ void MainWindow::searchAudios(int col,const QString &text)
     mTVAudio->setSizeAdjustPolicy(QAbstractScrollArea::AdjustToContents);
     ui->tb_favoritAlbum->setVisible(false);
     ui->tb_imgAlbum->setVisible(false);
-   // changeStatusPathText();
+    // changeStatusPathText();
     QIcon icon(":/icons/find");
     ui->labelAlbumImage->setPixmap(icon.pixmap(mIconSize,mIconSize));
 
@@ -788,7 +788,7 @@ void MainWindow::on_tb_playAlbum_clicked()
 void MainWindow::on_tb_imgAlbum_clicked()
 {
     QString Name=   mMap.value(MAP_TITLE);
-qDebug()<<"MainWindow::on_tb_imgAlbum_clicked:::"<<Name;
+    qDebug()<<"MainWindow::on_tb_imgAlbum_clicked:::"<<Name;
 
     if(Name==tr("Unknown")||Name.isEmpty()) return;
 
@@ -947,16 +947,51 @@ void MainWindow:: creatTrayIcon()
 
 }
 
+bool Notify(const QString &app_name, const QString &app_icon,
+                   const QString &summary, const QString &body,
+                       int expire_timeout)
+{
+    QDBusInterface dbus("org.freedesktop.Notifications",
+                        "/org/freedesktop/Notifications",
+                        "org.freedesktop.Notifications");
+
+    if (!dbus.isValid()) {  return false; }
+
+    QList<QVariant> args;
+    args.append(app_name);       // Application Name
+    args.append(0123U);         // Replaces ID (0U)
+    args.append(app_icon);     // Notification Icon
+    args.append( summary);       // Summary
+    args.append(body);          // Body
+    args.append(QStringList()); // Actions
+    args.append(QVariantMap());
+    args.append(expire_timeout);
+    dbus.callWithArgumentList(QDBus::NoBlock, "Notify", args);
+
+    return  true;
+}
 //----------------------------------------------------------------------------------
-void MainWindow::setwTitle(const QString &title)
+void MainWindow::setwTitle(const QString &title,const QString &info)
 {
     setWindowTitle(title);
-    if(isHidden()){
+    qDebug()<<windowState();
+    if(isHidden()|| windowState()==Qt::WindowMinimized){
+
+#ifdef Q_OS_UNIX
+
+        if(Notify( QApplication::applicationName(),
+                   QApplication::applicationName(),
+                   title,info, 5000))
+        { return; }
+
+#endif
+
         QIcon ico=QIcon::fromTheme("goldfinch",QIcon(":/icons/goldfinch"));
         if(trayIcon)
-            trayIcon->showMessage(QApplication::applicationDisplayName(),title,ico);
-
+            trayIcon->showMessage(QApplication::applicationDisplayName(),title+"\n"
+                                  +info,ico);
     }
+
 }
 
 //----------------------------------------------------------------------------------
