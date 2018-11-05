@@ -1,0 +1,29 @@
+#!/usr/bin/env xdg-open
+
+[Desktop Entry]
+Version=0.1
+Name=goldfinch
+Name[ar]=الحسون
+Name[fr]=chardonneret
+Name[es]=jilguero
+
+GenericName=Music Player goldfinch
+GenericName[ar]=قارئ الوسائط الحسون
+GenericName[fr]=Lecteur de musique chardonneret
+GenericName[es]=Reproductor de música jilguero
+
+Comment=Play and organize your music collection
+Comment[ar]=تشغيل وتنظيم مجموعة الموسيقى الخاصة بك
+Comment[fr]=Lit et organise votre collection de musique
+Comment[es]=Reproduce y organiza tu colección de música
+
+Exec=goldfinch
+TryExec=goldfinch
+Icon=goldfinch
+Categories=AudioVideo;Audio;Player;Qt;
+Type=Application
+
+Terminal=false
+
+
+MimeType=application/ogg;application/x-ogg;application/x-ogm-audio;audio/aac;audio/mp4;audio/mpeg;audio/mpegurl;audio/ogg;audio/vnd.rn-realaudio;audio/vorbis;audio/x-flac;audio/x-mp3;audio/x-mpeg;audio/x-mpegurl;audio/x-ms-wma;audio/x-musepack;audio/x-oggflac;audio/x-pn-realaudio;audio/x-scpls;audio/x-speex;audio/x-vorbis;audio/x-vorbis+ogg;audio/x-wav;x-content/audio-player;audio/x-aac;audio/m4a;audio/x-m4a;audio/mp3;audio/ac3;audio/flac;application/xspf+xml;audio/x-opus+ogg;
