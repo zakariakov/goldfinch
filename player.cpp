@@ -1,52 +1,23 @@
-/****************************************************************************
-**
-** Copyright (C) 2017 The Qt Company Ltd.
-** Contact: https://www.qt.io/licensing/
-**
-** This file is part of the examples of the Qt Toolkit.
-**
-** $QT_BEGIN_LICENSE:BSD$
-** Commercial License Usage
-** Licensees holding valid commercial Qt licenses may use this file in
-** accordance with the commercial license agreement provided with the
-** Software or, alternatively, in accordance with the terms contained in
-** a written agreement between you and The Qt Company. For licensing terms
-** and conditions see https://www.qt.io/terms-conditions. For further
-** information use the contact form at https://www.qt.io/contact-us.
-**
-** BSD License Usage
-** Alternatively, you may use this file under the terms of the BSD license
-** as follows:
-**
-** "Redistribution and use in source and binary forms, with or without
-** modification, are permitted provided that the following conditions are
-** met:
-**   * Redistributions of source code must retain the above copyright
-**     notice, this list of conditions and the following disclaimer.
-**   * Redistributions in binary form must reproduce the above copyright
-**     notice, this list of conditions and the following disclaimer in
-**     the documentation and/or other materials provided with the
-**     distribution.
-**   * Neither the name of The Qt Company Ltd nor the names of its
-**     contributors may be used to endorse or promote products derived
-**     from this software without specific prior written permission.
-**
-**
-** THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
-** "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
-** LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
-** A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
-** OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
-** SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
-** LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
-** DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
-** THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
-** (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
-** OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE."
-**
-** $QT_END_LICENSE$
-**
-****************************************************************************/
+/***************************************************************************
+ *      Project created by QtCreator 2018-06-01T17:15:24                   *
+ *                                                                         *
+ *    goldfinch Copyright (C) 2014 AbouZakaria <yahiaui@gmail.com>         *
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 3 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ *   This program is distributed in the hope that it will be useful,       *
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of        *
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
+ *   GNU General Public License for more details.                          *
+ *                                                                         *
+ *   You should have received a copy of the GNU General Public License     *
+ *   along with this program; if not, write to the                         *
+ *   Free Software Foundation, Inc.,                                       *
+ *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
+ ***************************************************************************/
 
 #include "player.h"
 #include "database.h"
@@ -102,52 +73,52 @@ Player::Player(QListView *playlist, QWidget *parent)
     connect(mPlaylistView, &QAbstractItemView::activated, this, &Player::jump);
 
 
-    controls = new PlayerControls(this);
-    controls->setState(mPlayer->state());
-    controls->setVolume(mPlayer->volume());
+    mControls = new PlayerControls(this);
+    mControls->setState(mPlayer->state());
+    mControls->setVolume(mPlayer->volume());
 
-    connect(mPlayer, &QMediaPlayer::durationChanged, controls, &PlayerControls::durationChanged);
+    connect(mPlayer, &QMediaPlayer::durationChanged, mControls, &PlayerControls::durationChanged);
     connect(mPlayer, &QMediaPlayer::durationChanged, this, &Player::setduration);
 
-    connect(mPlayer, &QMediaPlayer::positionChanged, controls, &PlayerControls::positionChanged);
+    connect(mPlayer, &QMediaPlayer::positionChanged, mControls, &PlayerControls::positionChanged);
     // connect(mPlayer, &QMediaPlayer::positionChanged, mPlayerAdaptor, &PlayerAdaptor::setPos);
     //   connect(this, &Player::propertiesChanged, mFreeDesktopAdaptor, &FreeDesktopAdaptor::PropertiesChanged);
 
-    connect(controls, &PlayerControls::play, mPlayer, &QMediaPlayer::play);
-    connect(controls, &PlayerControls::pause, mPlayer, &QMediaPlayer::pause);
-    connect(controls, &PlayerControls::stop, mPlayer, &QMediaPlayer::stop);
-    connect(controls, &PlayerControls::next, mPlaylist, &QMediaPlaylist::next);
-    connect(controls, &PlayerControls::previous, this, &Player::previous);
-    connect(controls, &PlayerControls::changeVolume, mPlayer, &QMediaPlayer::setVolume);
-    connect(controls, &PlayerControls::changeRate, mPlayer, &QMediaPlayer::setPlaybackRate);
+    connect(mControls, &PlayerControls::play, mPlayer, &QMediaPlayer::play);
+    connect(mControls, &PlayerControls::pause, mPlayer, &QMediaPlayer::pause);
+    connect(mControls, &PlayerControls::stop, mPlayer, &QMediaPlayer::stop);
+    connect(mControls, &PlayerControls::next, mPlaylist, &QMediaPlaylist::next);
+    connect(mControls, &PlayerControls::previous, this, &Player::previous);
+    connect(mControls, &PlayerControls::changeVolume, mPlayer, &QMediaPlayer::setVolume);
+    connect(mControls, &PlayerControls::changeRate, mPlayer, &QMediaPlayer::setPlaybackRate);
    // connect(controls, &PlayerControls::seek, this, &Player::seek);
 
-    connect(this, &Player::iconsChanged, controls, &PlayerControls::setupIcons);
+    connect(this, &Player::iconsChanged, mControls, &PlayerControls::setupIcons);
     //   connect(this, &Player::canPlay, controls, &PlayerControls::setPlayEnabled);
     //  connect(this, &Player::canNext, controls, &PlayerControls::setNextEnabled);
     //  connect(this, &Player::canPrev, controls, &PlayerControls::setPrevEnabled);
 
-    connect(mPlayer, &QMediaPlayer::stateChanged, controls, &PlayerControls::setState);
+    connect(mPlayer, &QMediaPlayer::stateChanged, mControls, &PlayerControls::setState);
     connect(mPlayer, &QMediaPlayer::stateChanged, this, &Player::stateChanged);
-    connect(mPlayer, &QMediaPlayer::volumeChanged, controls, &PlayerControls::setVolume);
+    connect(mPlayer, &QMediaPlayer::volumeChanged, mControls, &PlayerControls::setVolume);
     //  connect(mPlayer, SIGNAL(metaDataChanged()), SLOT(metaDataChanged()));
     // connect(m_player, &QMediaPlayer::metaDataChanged,this, &Player::metaDataChanged);
 
     QHBoxLayout *hLayout = new QHBoxLayout;
     hLayout->setMargin(0);
     hLayout->addSpacing(3);
-    hLayout->addWidget(controls);
+    hLayout->addWidget(mControls);
     hLayout->addSpacing(3);
 
 
     setLayout(hLayout);
 
-    if (!isPlayerAvailable()) {
+    if (!mPlayer->isAvailable()) {
         QMessageBox::warning(this, tr("Service not available"),
                              tr("The QMediaPlayer object does not have a valid service.\n"\
                                 "Please check the media service plugins are installed."));
 
-        controls->setEnabled(false);
+        mControls->setEnabled(false);
         mPlaylistView->setEnabled(false);
     }
 
@@ -183,51 +154,42 @@ void Player::moveMedia(int from,int to)
 
 void Player::cleanList()
 {
-
     mPlaylist->clear();
     mPlaylistModel->clear();
 }
 
 //-----------------------------------------------------------
-bool Player::isPlayerAvailable() const
-{
-    return mPlayer->isAvailable();
-}
 
-void Player::addToPlaylist( QList<QVariantMap> &urls)
+//--  Add String list to playlist
+void Player::addToPlaylist( QList<QVariantMap> &files)
 {
     QList<QMap<QString,QUrl>> list;
     QMap<QString,QUrl> map;
 
     int count=mPlaylist->mediaCount();
 
-    /*
-    for (auto &url: urls) {
+    for (int i = 0; i < files.count(); ++i) {
+        QMap<QString,QVariant> map=files.at(i);
 
-        m_playlist->addMedia(url);
-    }
-*/
-    for (int i = 0; i < urls.count(); ++i) {
-        QMap<QString,QVariant> map=urls.at(i);
 
-        QUrl url;
         QString str=map.value("Url").toString();
-        if(str.startsWith("https:")){
-            url.setUrl(str);
-            mPlaylist->addMedia(url);
-        }else{
+         //TODO : fix this Url
+          QUrl url;
+        if(str.contains("://")){ url.setUrl(str); }
+        else{url.setUrl(QUrl::fromLocalFile(str).toString());}
 
-            url.setUrl(QUrl::fromLocalFile(str).toString());
+        if(url.isValid()){
             mPlaylist->addMedia(url);
+
+            QString tit=map.value("Title").toString();
+            QModelIndex idx=mPlaylistModel->index(count+i,0);
+            mPlaylistModel->setTitle(idx,url,tit);
         }
-
-        QString tit=map.value("Title").toString();
-        QModelIndex idx=mPlaylistModel->index(count+i,0);
-        mPlaylistModel->setTitle(idx,url,tit);
-
     }
 
 }
+
+//--  Add Urls to playlist
 void Player::addToPlaylist( QList<QUrl> &urls)
 {
     for (auto &url: urls) {
@@ -235,6 +197,13 @@ void Player::addToPlaylist( QList<QUrl> &urls)
     }
 }
 
+//--  Add file string to playlist
+void Player::setFile(const QString &file)
+{
+     QUrl url=QUrl::fromLocalFile(file);
+      mPlaylist->addMedia(url);
+      playLast();
+}
 
 void Player::metaDataChanged()
 {
@@ -310,7 +279,7 @@ void Player::setCovertImage(QImage img,QString album)
     QFileInfo fi=mPlaylist->currentMedia().canonicalUrl().toLocalFile();
 
     QString path=fi.absolutePath();
-    //  TODO: fix title album
+
     QIcon icon=Tumb::iconAlbum((album.isEmpty() ? fi.absoluteDir().dirName():album),path);
     QString imgPath= Tumb::imageAlbumPath(
                 (album.isEmpty() ? fi.absoluteDir().dirName():album),path);
@@ -394,7 +363,6 @@ void Player::statusChanged(QMediaPlayer::MediaStatus status)
         displayErrorMessage();
         break;
     }
-
 
 }
 
@@ -531,6 +499,7 @@ void Player::save(const QString &name)
 
 
 }
+
 void Player::openSavedList(QString name)
 {
 
@@ -547,6 +516,9 @@ void Player::openSavedList(QString name)
 
         QString title=settings.value("Title").toString();
         mPlaylist->addMedia(url2);
+
+        qDebug()<<url2.scheme()<<url2.isLocalFile()<<url2;
+
         QModelIndex idx=mPlaylistModel->index(i,0);
         mPlaylistModel->setTitle(idx,url2,title);
 
@@ -575,25 +547,20 @@ void Player::setduration(qint64 duration)
     qDebug()<<" Player::durationChanged"<<mDur<<dataDur;
     if(mDur!=dataDur)
         DataBase::setDuration(mDur,file);
-
-
 }
 
 bool Player::canGoNext()
 {
-    //  return m_playlist->currentIndex()<(m_playlist->mediaCount()-1);
-    int idx=mPlaylist->currentIndex();
-    if(idx<(mPlaylist->mediaCount()-1))
+    if(mPlaylist->currentIndex()<(mPlaylist->mediaCount()-1))
         return true;
-    return false;
 
+    return false;
 }
+
 bool Player::canGoPrevious()
 {
-    int idx=mPlaylist->currentIndex();
-    if(idx>0)
+    if(mPlaylist->currentIndex()>0)
         return true;
 
     return false;
-
 }
