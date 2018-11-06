@@ -6,6 +6,10 @@ Goldfinch a Qt app Organize your audio files
 
 ![Screenshots](https://github.com/zakariakov/screenshots/blob/master/goldfinch500.png)
 
+![Screenshots](https://github.com/zakariakov/screenshots/blob/master/goldfinch-album.png)
+
+![Screenshots](https://github.com/zakariakov/screenshots/blob/master/goldfinch-artist.png)
+
 ### Dependencies:
 
 - qt5-multimedia 
