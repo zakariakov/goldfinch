@@ -22,6 +22,7 @@
 #ifndef PLAYER_H
 #define PLAYER_H
 #include "playercontrols.h"
+#include "actions.h"
 #include "widgetplaylist.h"
 #include "player_adaptor.h"
 
@@ -52,8 +53,6 @@ public:
 
     void addToPlaylist(QList<QVariantMap> &files);
     void addToPlaylist( QList<QUrl> &urls);
-
-
     void playLast();
 
 
@@ -61,45 +60,45 @@ signals:
 
     void statuInfoChanged(QString );
     void playBackChanged(QString,int=0 );
-    void iconsChanged();
+//    void iconsChanged();
     void imageChanged(QImage);
     void titleChanged(QString,QString);
     void infoChanged(QString);
     void durationChanged(qint64 duration);
     void positionChanged(qint64 progress);
-    void updateSong(QVariantMap,QString);
- void propertiesChanged(QString,QVariantMap,QStringList);
+//    void updateSong(QVariantMap,QString);
+// void propertiesChanged(QString,QVariantMap,QStringList);
 
 public slots:
 
+  void  setVolumeUp(){mPlayer->setVolume(mPlayer->volume()+5);}
+  void  setVolumeDown(){mPlayer->setVolume(mPlayer->volume()-5);}
+  void  setVolumeMuteUnmute(bool mute){mPlayer->setMuted(mute);}
+
     // dbus
-    void play() {   mPlayer->play();   }
+    void play()   {    mPlayer->play();    }
     void pause(){   mPlayer->pause();  }
-    void stop() {   mPlayer->stop();   }
-    void next() {   mPlaylist->next(); }
+    void stop()  {    mPlayer->stop();    }
+    void next()  {    mPlaylist->next();   }
     void previous();
     void playPause();
     void setSeek(int seconds);
-    qint64 position(){return mPlayer->position(); }
-    bool canPlay() {
-       if(mPlayer->isAvailable())return false;
-       return true;
-    }
-    bool canPause() {
-       if(!mPlayer->isAvailable()) return false;
-       return true;
-    }
-    bool canGoNext();
-    bool canGoPrevious();
+    void seek(qlonglong Offset);
+    qint64 position(){return mPlayer->position()*1000; }
+    bool canPlay()     { if(!mPlayer->isAvailable()){return false;} else {   return true;}  }
+     bool canPause() { if(!mPlayer->isAvailable()) { return false; } else { return true;}    }
+    bool canGoNext(){ if(mPlaylist->currentIndex()<(mPlaylist->mediaCount()-1)) { return true; }  else {return false;} }
+    bool canGoPrevious(){ if(mPlaylist->currentIndex()>0) { return true; } else { return false;  }  }
     bool canSeek(){return  mPlayer->isSeekable();}
     QVariantMap metadata(){return mMetaDataMap;}
     QString playbackStatus(){return mPlaybackStatus;}
     //--
-    void rmovePlaylistItem(QModelIndex idx);
+    void rmovePlaylistItem();
     void moveMedia(int from,int to);
     void cleanList();
     void setPlaybackMode(int value);
     void setFile(const QString &file);
+    void saveList();
 private slots:
 
     void metaDataChanged();
@@ -111,8 +110,8 @@ private slots:
     void bufferingProgress(int progress);
 
     void displayErrorMessage();
-    void save(const QString &name);
-    void openSavedList(QString name);
+void setseekold();
+    void openSavedList();
     void setduration(qint64 duration);
 private:
 
@@ -131,7 +130,7 @@ private:
     QString         mTrackInfo;
     QString         mStatusInfo;
     QString         mPlaybackStatus;
-
+qint64 mOldPos=0;
 
  // FreeDesktopAdaptor *mFreeDesktopAdaptor;
 };

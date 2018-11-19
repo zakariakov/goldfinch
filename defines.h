@@ -21,14 +21,20 @@
 
 #ifndef DEFINES_H
 #define DEFINES_H
-#include <QDBusInterface>
-#include <QDebug>
+
 #include <QDir>
 #include <QStandardPaths>
-#define D_CACHE          QDir::homePath()+"/.cache/qplayer"
-#define D_ARTIST_CACHE   D_CACHE+"/artistArt"
-#define D_ALBUM_CACHE    D_CACHE+"/albmArt"
-#define D_Picture        QStandardPaths::writableLocation(QStandardPaths::PicturesLocation)
+#define APP_NAME  "goldfinch"
+ #define APP_D_NAME  "Goldfinch"
+#define APP_VERTION  "0.1"
+#define TEMP           QStandardPaths::writableLocation(QStandardPaths::TempLocation)
+#define TEMP_CACH      TEMP+"/"+APP_NAME
+#define CACHE          QStandardPaths::writableLocation(QStandardPaths::CacheLocation)
+#define CACHE_ARTIST   CACHE+"/artistArt"
+#define CACHE_ALBUM    CACHE+"/albmArt"
+#define CACHE_IMAGE    CACHE+"/thumb.png"
+
+#define D_Picture       QStandardPaths::writableLocation(QStandardPaths::PicturesLocation)
 #define D_DMUSIC        QStandardPaths::writableLocation(QStandardPaths::MusicLocation)
 
 #define  D_MARGINS   3
@@ -83,54 +89,18 @@
 #define COL_S_DURATION   "duration"  //6
 #define COL_S_RATED      "favo"      //7
 #define COL_S_MODIF      "modified"  //8
+//! metadata
+#define COL_S_YEAR      "Year"  //9
+#define COL_S_COMMENT    "Commant"  //10
+#define COL_S_TRACK     "Track"  //10
+#define COL_S_TIME     "Time"  //10
+#define COL_S_LENGHT     "Lenght"  //10
+#define COL_S_BITRATE     "Bitrate"  //10
+#define COL_S_SAMPLE_RATE     "Sample_rate"  //10
+#define COL_S_CHANNELS     "Channels"  //10
+
+
 
 // id=0 1=title 2=artist  3=album 4=genre  5=path 6=icon 7=favo 7=tags
-/**
- * @brief The NotificationUtill class
- */
-class Notification
-{
-public:
-    Notification(){}
-public:
-
-    static void Notify(const QString &app_name, const QString &app_icon,
-                       const QString &summary, const QString &body,
-                           int expire_timeout)
-    {
-        QDBusInterface dbus("org.freedesktop.Notifications",
-                            "/org/freedesktop/Notifications",
-                            "org.freedesktop.Notifications");
-
-        if (!NotificationIsValid()) {
-         //   qDebug() << "QDBusInterface is not valid!";
-            return ;
-        }
-
-        QList<QVariant> args;
-        args.append(app_name);       // Application Name
-        args.append(0123U);         // Replaces ID (0U)
-        args.append(app_icon);     // Notification Icon
-        args.append( summary);       // Summary
-        args.append(body);          // Body
-        args.append(QStringList()); // Actions
-        args.append(QVariantMap());
-        args.append(expire_timeout);
-        dbus.callWithArgumentList(QDBus::NoBlock, "Notify", args);
-    }
-
-    static bool NotificationIsValid()
-    {
-        QDBusInterface dbus("org.freedesktop.Notifications",
-                            "/org/freedesktop/Notifications",
-                            "org.freedesktop.Notifications");
-
-        if (!dbus.isValid()) {
-          //  qDebug() << "QDBusInterface is not valid!";
-            return false;
-        }
-        return true;
-    }
-};
 
 #endif // DEFINES_H

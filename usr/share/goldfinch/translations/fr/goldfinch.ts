@@ -2,6 +2,191 @@
 <!DOCTYPE TS>
 <TS version="2.1">
 <context>
+    <name>ACtions</name>
+    <message>
+        <location filename="../../../../../actions.cpp" line="16"/>
+        <source>Play</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../../../../actions.cpp" line="18"/>
+        <source>Play 
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../../../../actions.cpp" line="21"/>
+        <source>Play/Pause</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../../../../actions.cpp" line="23"/>
+        <source>Play/Pause 
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../../../../actions.cpp" line="26"/>
+        <source>Pause</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../../../../actions.cpp" line="28"/>
+        <location filename="../../../../../actions.cpp" line="38"/>
+        <source>Next Song 
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../../../../actions.cpp" line="31"/>
+        <source>Stop</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../../../../actions.cpp" line="33"/>
+        <source>Stop 
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../../../../actions.cpp" line="36"/>
+        <source>Next</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../../../../actions.cpp" line="41"/>
+        <source>previous</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../../../../actions.cpp" line="43"/>
+        <source>Previous Song 
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../../../../actions.cpp" line="48"/>
+        <source>Increase volume</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../../../../actions.cpp" line="52"/>
+        <source>Decrease volume</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../../../../actions.cpp" line="56"/>
+        <source>Mute/Unmute</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../../../../actions.cpp" line="61"/>
+        <source>Volume</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../../../../actions.cpp" line="66"/>
+        <source>Open Files</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../../../../actions.cpp" line="70"/>
+        <source>Open Urls</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../../../../actions.cpp" line="73"/>
+        <source>Add/Update Directory</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../../../../actions.cpp" line="77"/>
+        <source>Mini player</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../../../../actions.cpp" line="82"/>
+        <source>Quit</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../../../../actions.cpp" line="86"/>
+        <source>Update All</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../../../../actions.cpp" line="90"/>
+        <source>Search</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../../../../actions.cpp" line="94"/>
+        <source>PlayBack Mode</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../../../../actions.cpp" line="96"/>
+        <source>Current Once</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../../../../actions.cpp" line="100"/>
+        <source>Current Loop</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../../../../actions.cpp" line="104"/>
+        <source>Sequential</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../../../../actions.cpp" line="108"/>
+        <source>Plylist Loop</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../../../../actions.cpp" line="112"/>
+        <source>Random</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../../../../actions.cpp" line="116"/>
+        <source>Remove</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../../../../actions.cpp" line="117"/>
+        <source>Remove Current </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../../../../actions.cpp" line="120"/>
+        <location filename="../../../../../actions.cpp" line="121"/>
+        <source>Clear PlayList</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../../../../actions.cpp" line="139"/>
+        <source>Help</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../../../../actions.cpp" line="141"/>
+        <source>About</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../../../../actions.cpp" line="143"/>
+        <source>About Qt</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../../../../actions.cpp" line="192"/>
+        <source>About...Goldfinch</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>DialogOpen</name>
     <message>
         <location filename="../../../../../dialogopen.ui" line="14"/>
@@ -169,81 +354,46 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../../../mainwindow.cpp" line="66"/>
-        <source>Mini player</source>
+        <location filename="../../../../../mainwindow.ui" line="648"/>
+        <source>&amp;File</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../../../mainwindow.cpp" line="72"/>
+        <location filename="../../../../../mainwindow.ui" line="653"/>
+        <source>&amp;Edit</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../../../../mainwindow.ui" line="658"/>
+        <source>&amp;Help</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../../../../mainwindow.cpp" line="107"/>
         <source>Search</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../../../mainwindow.cpp" line="79"/>
-        <source>Open Files...</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../../../../mainwindow.cpp" line="80"/>
-        <source>Add/Update Directory</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../../../../mainwindow.cpp" line="84"/>
-        <location filename="../../../../../mainwindow.cpp" line="942"/>
-        <source>Quit</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../../../../mainwindow.cpp" line="793"/>
-        <location filename="../../../../../mainwindow.cpp" line="810"/>
+        <location filename="../../../../../mainwindow.cpp" line="848"/>
+        <location filename="../../../../../mainwindow.cpp" line="865"/>
         <source>Unknown</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../../../mainwindow.cpp" line="822"/>
+        <location filename="../../../../../mainwindow.cpp" line="877"/>
         <source>Open File</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../../../../mainwindow.cpp" line="937"/>
-        <source>Play</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../../../../mainwindow.cpp" line="938"/>
-        <source>Pause</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../../../../mainwindow.cpp" line="939"/>
-        <source>Next</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../../../../mainwindow.cpp" line="940"/>
-        <source>Previous</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>MediaUpdate</name>
-    <message>
-        <location filename="../../../../../mediaupdate.cpp" line="207"/>
-        <location filename="../../../../../mediaupdate.cpp" line="209"/>
-        <source>Unknown</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>MyContentModel</name>
     <message>
-        <location filename="../../../../../mycontentmodel.cpp" line="41"/>
+        <location filename="../../../../../mycontentmodel.cpp" line="42"/>
         <source>Favorite Song</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../../../mycontentmodel.cpp" line="50"/>
+        <location filename="../../../../../mycontentmodel.cpp" line="51"/>
         <source>Favorite Albums</source>
         <translation type="unfinished"></translation>
     </message>
@@ -286,68 +436,47 @@
 <context>
     <name>Player</name>
     <message>
-        <location filename="../../../../../player.cpp" line="117"/>
+        <location filename="../../../../../player.cpp" line="107"/>
         <source>Service not available</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../../../player.cpp" line="118"/>
+        <location filename="../../../../../player.cpp" line="108"/>
         <source>The QMediaPlayer object does not have a valid service.
 Please check the media service plugins are installed.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../../../player.cpp" line="354"/>
+        <location filename="../../../../../player.cpp" line="342"/>
         <source>Loading...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../../../player.cpp" line="357"/>
+        <location filename="../../../../../player.cpp" line="343"/>
         <source>Media Stalled</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../../../player.cpp" line="383"/>
+        <location filename="../../../../../player.cpp" line="364"/>
         <source>Buffering %4%</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../../../player.cpp" line="425"/>
-        <location filename="../../../../../player.cpp" line="427"/>
+        <location filename="../../../../../player.cpp" line="403"/>
+        <location filename="../../../../../player.cpp" line="405"/>
         <source>Stopped</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../../../player.cpp" line="430"/>
-        <location filename="../../../../../player.cpp" line="432"/>
+        <location filename="../../../../../player.cpp" line="409"/>
+        <location filename="../../../../../player.cpp" line="411"/>
         <source>Playing</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../../../player.cpp" line="435"/>
-        <location filename="../../../../../player.cpp" line="437"/>
+        <location filename="../../../../../player.cpp" line="415"/>
+        <location filename="../../../../../player.cpp" line="417"/>
         <source>Paused</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>PlayerControls</name>
-    <message>
-        <location filename="../../../../../playercontrols.cpp" line="50"/>
-        <source>Play/Pause 
-</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../../../../playercontrols.cpp" line="60"/>
-        <source>Next Song 
-</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../../../../playercontrols.cpp" line="69"/>
-        <source>Previous Song 
-</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -375,15 +504,45 @@ Please check the media service plugins are installed.</source>
     </message>
     <message>
         <location filename="../../../../../propertiesfile.ui" line="62"/>
+        <source>Genre:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../../../../propertiesfile.ui" line="119"/>
+        <source>Lenght:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../../../../propertiesfile.ui" line="92"/>
+        <source>Bitrate:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../../../../propertiesfile.ui" line="99"/>
+        <source>Sample rate:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../../../../propertiesfile.ui" line="76"/>
         <source>Path:</source>
         <translation type="unfinished"></translation>
     </message>
-</context>
-<context>
-    <name>QObject</name>
     <message>
-        <location filename="../../../../../main.cpp" line="35"/>
-        <source>Goldfinch</source>
+        <location filename="../../../../../propertiesfile.cpp" line="48"/>
+        <location filename="../../../../../propertiesfile.cpp" line="74"/>
+        <source>Bitrate:  </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../../../../propertiesfile.cpp" line="49"/>
+        <location filename="../../../../../propertiesfile.cpp" line="75"/>
+        <source>Lenght:  </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../../../../propertiesfile.cpp" line="50"/>
+        <location filename="../../../../../propertiesfile.cpp" line="76"/>
+        <source>SampleRate:  </source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -421,6 +580,15 @@ Please check the media service plugins are installed.</source>
     </message>
 </context>
 <context>
+    <name>TagId</name>
+    <message>
+        <location filename="../../../../../tagid.cpp" line="42"/>
+        <location filename="../../../../../tagid.cpp" line="54"/>
+        <source>Unknown</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>TreeViewAudio</name>
     <message>
         <location filename="../../../../../treeviewaudio.cpp" line="60"/>
@@ -444,55 +612,40 @@ Please check the media service plugins are installed.</source>
     </message>
     <message>
         <location filename="../../../../../treeviewaudio.cpp" line="67"/>
-        <source>Properies</source>
+        <source>Properties</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>WidgetPlayList</name>
     <message>
-        <location filename="../../../../../widgetplaylist.cpp" line="43"/>
-        <source>Remove Current </source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../../../../widgetplaylist.cpp" line="49"/>
+        <location filename="../../../../../widgetplaylist.cpp" line="50"/>
         <source>Move Up Current </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../../../widgetplaylist.cpp" line="54"/>
+        <location filename="../../../../../widgetplaylist.cpp" line="55"/>
         <source>Move Down Current </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../../../widgetplaylist.cpp" line="60"/>
-        <source>Clear Plylist</source>
+        <location filename="../../../../../widgetplaylist.cpp" line="134"/>
+        <source>Move Up</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../../../widgetplaylist.cpp" line="65"/>
-        <source>Current Once</source>
+        <location filename="../../../../../widgetplaylist.cpp" line="135"/>
+        <source>Move Down</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../../../widgetplaylist.cpp" line="69"/>
-        <source>Current Loop</source>
+        <location filename="../../../../../widgetplaylist.cpp" line="139"/>
+        <source>Edit tags</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../../../widgetplaylist.cpp" line="73"/>
-        <source>Sequential</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../../../../widgetplaylist.cpp" line="77"/>
-        <source>Plylist Loop</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../../../../widgetplaylist.cpp" line="81"/>
-        <source>Random</source>
+        <location filename="../../../../../widgetplaylist.cpp" line="140"/>
+        <source>Properties</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

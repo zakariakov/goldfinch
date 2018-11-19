@@ -61,6 +61,7 @@
 #define I_QUIT    32
 #define I_Close    33
 #define I_FIND    34
+#define I_STOP    35
 class Tumb
 {
 public:

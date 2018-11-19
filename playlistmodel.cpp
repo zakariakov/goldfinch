@@ -99,6 +99,11 @@ QVariant PlaylistModel::data(const QModelIndex &index, int role) const
 
     }
 
+    if ( role == Qt::UserRole && index.column() == Title) {
+
+        QUrl location = m_playlist->media(index.row()).canonicalUrl();
+        return location.toLocalFile();
+    }
     return QVariant();
 }
 
@@ -152,6 +157,8 @@ bool PlaylistModel::setTitle(const QModelIndex &index,const QVariant &key, const
     emit dataChanged(index, index);
     return true;
 }
+
+
 
 void PlaylistModel::beginInsertItems(int start, int end)
 {

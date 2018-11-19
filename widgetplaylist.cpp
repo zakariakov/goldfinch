@@ -20,14 +20,14 @@
  ***************************************************************************/
 
 #include "widgetplaylist.h"
-#include "tumb.h"
+#include "actions.h"
 #include <QLayout>
-//#include <QDebug>
+#include <QDebug>
 #include <QAction>
 WidgetPlayList::WidgetPlayList(QWidget *parent) : QWidget(parent)
 {
 
-    actGroup =      new QActionGroup(this);
+    //actGroup =      new QActionGroup(this);
     mPlayListView=  new QListView;
     tbRemoveItem=   new QToolButton;
     tbMoveItemUp=   new QToolButton;
@@ -40,9 +40,10 @@ WidgetPlayList::WidgetPlayList(QWidget *parent) : QWidget(parent)
 
     tbRemoveItem->setIconSize(QSize(16,16));
     tbRemoveItem->setAutoRaise(true);
-    tbRemoveItem->setToolTip(tr("Remove Current "));
-    connect(tbRemoveItem,SIGNAL(clicked()),SLOT(rmoveItem()));
-
+    tbRemoveItem->setDefaultAction(ACtions::removeItemAct());
+  //  tbRemoveItem->setToolTip(tr("Remove Current "));
+//    connect(tbRemoveItem,SIGNAL(clicked()),SLOT(rmoveItem()));
+// connect(ACtions::instance(), &ACtions::removeItem, this, &WidgetPlayList::rmoveItem);
     tbMoveItemUp->setIconSize(QSize(16,16));
     tbMoveItemUp->setAutoRaise(true);
     tbMoveItemUp->setArrowType(Qt::UpArrow);
@@ -57,48 +58,48 @@ WidgetPlayList::WidgetPlayList(QWidget *parent) : QWidget(parent)
 
     tbCleanList->setIconSize(QSize(16,16));
     tbCleanList->setAutoRaise(true);
-    tbCleanList->setToolTip(tr("Clear Plylist"));
-    connect(tbCleanList,SIGNAL(clicked()),SIGNAL(cleanList()));
+    tbCleanList->setDefaultAction(ACtions::cleanListAct());
+   // connect(tbCleanList,SIGNAL(clicked()),SIGNAL(cleanList()));
 
-    QMenu *mnuPlayMode=new QMenu;
+//    QMenu *mnuPlayMode=new QMenu;
 
-    actPlayOne=mnuPlayMode->addAction(tr("Current Once"));
-    actPlayOne->setData(0);
-    actPlayOne->setCheckable(true);
+//    actPlayOne=mnuPlayMode->addAction(tr("Current Once"));
+//    actPlayOne->setData(0);
+//    actPlayOne->setCheckable(true);
 
-    actRepeatOne=mnuPlayMode->addAction(tr("Current Loop"));
-    actRepeatOne->setData(1);
-    actRepeatOne->setCheckable(true);
+//    actRepeatOne=mnuPlayMode->addAction(tr("Current Loop"));
+//    actRepeatOne->setData(1);
+//    actRepeatOne->setCheckable(true);
 
-    actSquent=mnuPlayMode->addAction(tr("Sequential"));
-    actSquent->setData(2);
-    actSquent->setCheckable(true);
+//    actSquent=mnuPlayMode->addAction(tr("Sequential"));
+//    actSquent->setData(2);
+//    actSquent->setCheckable(true);
 
-    actRepeatAlbum=mnuPlayMode->addAction(tr("Plylist Loop"));
-    actRepeatAlbum->setData(3);
-    actRepeatAlbum->setCheckable(true);
+//    actRepeatAlbum=mnuPlayMode->addAction(tr("Plylist Loop"));
+//    actRepeatAlbum->setData(3);
+//    actRepeatAlbum->setCheckable(true);
 
-    actRandom=mnuPlayMode->addAction(tr("Random"));
-    actRandom->setData(4);
-    actRandom->setCheckable(true);
+//    actRandom=mnuPlayMode->addAction(tr("Random"));
+//    actRandom->setData(4);
+//    actRandom->setCheckable(true);
 
-    actGroup->addAction(actPlayOne);
-    actGroup->addAction(actRepeatOne);
-    actGroup->addAction(actSquent);
-    actGroup->addAction(actRepeatAlbum);
-    actGroup->addAction(actRandom);
-    connect(actGroup,&QActionGroup::triggered,this,&WidgetPlayList::setPlayMode);
+//    actGroup->addAction(actPlayOne);
+//    actGroup->addAction(actRepeatOne);
+//    actGroup->addAction(actSquent);
+//    actGroup->addAction(actRepeatAlbum);
+//    actGroup->addAction(actRandom);
+//    connect(actGroup,&QActionGroup::triggered,this,&WidgetPlayList::setPlayMode);
 
-    actSquent->setChecked(true);
+//    actSquent->setChecked(true);
 
-    tbPlayMode->setIcon(Tumb::icon(I_M_SEQUEN));
+ //   tbPlayMode->setIcon(Tumb::icon(I_M_SEQUEN));
     tbPlayMode->setPopupMode(QToolButton::InstantPopup);
     tbPlayMode->setIconSize(QSize(16,16));
     tbPlayMode->setAutoRaise(true);
+    tbPlayMode->setDefaultAction(ACtions::modeAct());
+    tbPlayMode->setMenu(ACtions::menuPlayBackMode());
 
-    tbPlayMode->setMenu(mnuPlayMode);
-
-    setupIcons();
+   // setupIcons();
     //------------- LAYOUTS -----------------
 
     QHBoxLayout *hLayout = new QHBoxLayout;
@@ -120,30 +121,62 @@ WidgetPlayList::WidgetPlayList(QWidget *parent) : QWidget(parent)
     vLayout->addWidget(mPlayListView);
 
     setLayout(vLayout);
-
+mPlayListView->setContextMenuPolicy(Qt::CustomContextMenu);
+connect(mPlayListView,&QListView::customContextMenuRequested,this,&WidgetPlayList::setCustomMenu);
 }
-void WidgetPlayList::setupIcons()
+
+void WidgetPlayList::setCustomMenu(const QPoint &pos)
 {
-    tbRemoveItem->setIcon(Tumb::icon(I_LIST_REMOVE));
-    tbCleanList->setIcon(Tumb::icon(I_CLEAN));
-    actPlayOne->setIcon(Tumb::icon(I_M_PLAY_ONE));
-    actRepeatOne->setIcon(Tumb::icon(I_M_REPEAT_ONE));
-    actSquent->setIcon(Tumb::icon(I_M_SEQUEN));
-    actRepeatAlbum->setIcon(Tumb::icon(I_M_REPEAT));
-    actRandom->setIcon(Tumb::icon(I_M_SHUFLE));
-}
+    if(!mPlayListView->currentIndex().isValid())return;
 
-void WidgetPlayList::rmoveItem()
+    Q_UNUSED(pos);
+    QMenu mnu;
+    mnu.addAction(tr("Move Up"),this,&WidgetPlayList::moveItemUp);
+    mnu.addAction(tr("Move Down"),this,&WidgetPlayList::moveItemDown);
+    mnu.addSeparator();
+    mnu.addAction(ACtions::removeItemAct());
+     mnu.addSeparator();
+    mnu.addAction(tr("Edit tags"),this,SLOT(editCurent()));
+     mnu.addAction(tr("Properties"),this,SLOT(fileProperies()));
+ //   mnu.addAction(tr("Add To library"),this ,&WidgetPlayList::addCurent);
+     mnu.exec(QCursor::pos());
+}
+//void WidgetPlayList::setupIcons()
+//{
+////    tbRemoveItem->setIcon(Tumb::icon(I_LIST_REMOVE));
+////    tbCleanList->setIcon(Tumb::icon(I_CLEAN));
+////    actPlayOne->setIcon(Tumb::icon(I_M_PLAY_ONE));
+////    actRepeatOne->setIcon(Tumb::icon(I_M_REPEAT_ONE));
+////    actSquent->setIcon(Tumb::icon(I_M_SEQUEN));
+////    actRepeatAlbum->setIcon(Tumb::icon(I_M_REPEAT));
+////    actRandom->setIcon(Tumb::icon(I_M_SHUFLE));
+//}
+
+void WidgetPlayList::fileProperies()
 {
     //TODO Add selectedIndexes
     //QModelIndexList list= mPlayListView->selectedIndexes();
 
     QModelIndex idx=mPlayListView->currentIndex();
     if(!idx.isValid())return;
+QString file=mPlayListView->model()->data(idx,Qt::UserRole).toString();
 
-    emit rmovePlaylistItem(idx);
+//qDebug()<<file;
+   emit getPropperty(true,file);
 
 }
+
+void WidgetPlayList::editCurent()
+{
+    QModelIndex idx=mPlayListView->currentIndex();
+    if(!idx.isValid())return;
+QString file=mPlayListView->model()->data(idx,Qt::UserRole).toString();
+
+qDebug()<<file;
+   emit getPropperty(false,file);
+
+}
+
 
 void WidgetPlayList::moveItemUp()
 {
@@ -169,17 +202,17 @@ void WidgetPlayList::moveItemDown()
     emit movCurentItem(row,row+1);
 }
 
-void WidgetPlayList::setPlayMode(QAction *action)
-{
+//void WidgetPlayList::setPlayMode(QAction *action)
+//{
 
-   // QAction *action = qobject_cast<QAction *>(sender());
-    if(action)
-    {
-        int data=action->data().toInt();
-     //   qDebug()<<"playmode="<<data;
-        emit playbackModeChanged(data);
-        tbPlayMode->setIcon(action->icon());
+//   // QAction *action = qobject_cast<QAction *>(sender());
+//    if(action)
+//    {
+//        int data=action->data().toInt();
+//     //   qDebug()<<"playmode="<<data;
+//        emit playbackModeChanged(data);
+//        tbPlayMode->setIcon(action->icon());
 
-    }
+//    }
 
-}
+//}

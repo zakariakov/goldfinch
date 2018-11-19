@@ -54,12 +54,8 @@ void  ListView::onItemEntered(const QModelIndex &index)
 void  ListView::selectionHasChanged()
 {
 
-    //    qDebug()<<"==========="<<row;
-    //    int col=5;
-    //QModelIndex indx=this->model()->index(row,5);
     if(mOldIndex.isValid())
         this->closePersistentEditor(mOldIndex);
 
-    //  this->edit(index);
 
 }

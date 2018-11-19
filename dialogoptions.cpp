@@ -33,31 +33,31 @@ DialogOptions::DialogOptions(QWidget *parent) :
     ui(new Ui::DialogOptions)
 {
     ui->setupUi(this);
-ui->toolButtonAdd->setIcon(Tumb::icon(I_ADD));
-ui->toolButtonRemove->setIcon(Tumb::icon(I_LIST_REMOVE));
-
+    ui->toolButtonAdd->setIcon(Tumb::icon(I_ADD));
+    ui->toolButtonRemove->setIcon(Tumb::icon(I_LIST_REMOVE));
+    
     QSettings settings;
     int count = settings.beginReadArray("Directory");
-
+    
     if(count==0){
         QListWidgetItem *item=new QListWidgetItem(D_DMUSIC,ui->listWidget);
         item->setCheckState(Qt::Checked);
     }
-
+    
     for (int i = 0; i < count; ++i) {
         settings.setArrayIndex(i);
-
+        
         QString dir =settings.value("Dir").toString();
-     //   bool checked=settings.value("Checked").toBool();
-
+        //   bool checked=settings.value("Checked").toBool();
+        
         QListWidgetItem *item=new QListWidgetItem(dir,ui->listWidget);
         item->setCheckState(Qt::Unchecked);
-       // item->setCheckState(checked ? Qt::Checked:Qt::Unchecked);
-
+        // item->setCheckState(checked ? Qt::Checked:Qt::Unchecked);
+        
     }
-
+    
     settings.endArray();
-
+    
 }
 
 DialogOptions::~DialogOptions()

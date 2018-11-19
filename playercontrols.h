@@ -49,7 +49,7 @@ public:
     int volume() const;
 
 public slots:
-    void setState(QMediaPlayer::State state);
+//    void setState(QMediaPlayer::State state);
     void setVolume(int volume);
 
      void setupIcons();
@@ -64,9 +64,9 @@ signals:
     void previous();
     void changeVolume(int volume);
     void changeRate(qreal rate);
-   // void seek(int);
+    void seek(int);
 private slots:
-    void playClicked();
+  //  void playClicked();
     void onVolumeSliderValueChanged();
     void updateDurationInfo(qint64 currentInfo);
 

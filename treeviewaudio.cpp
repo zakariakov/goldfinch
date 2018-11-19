@@ -20,7 +20,7 @@
  ***************************************************************************/
 
 #include "treeviewaudio.h"
-#include "propertiesfile.h"
+
 #include "database.h"
 #include <QHeaderView>
 #include <QResizeEvent>
@@ -64,7 +64,7 @@ void TreeViewAudio::customContextMenu(QPoint )
     mnu.addSeparator();
     mnu.addAction(tr("Remove"),this,SLOT(removeFile()));
     mnu.addSeparator();
-    mnu.addAction(tr("Properies"),this,SLOT(fileProperies()));
+    mnu.addAction(tr("Properties"),this,SLOT(fileProperies()));
     mnu.exec(QCursor::pos());
 }
 
@@ -88,30 +88,25 @@ void TreeViewAudio::favoriteCurent()
 }
 void TreeViewAudio::editCurent()
 {
+//    int row=   selectionModel()->currentIndex().row();
+//     QModelIndex idx= model()->index(row,HIDER_TITLE);
+
+//     if(!idx.isValid()) return;
+
+//    QString path=idx.data(Qt::UserRole).toString();
+//    QProcess p;
+//    p.startDetached("easytag",QStringList()<<path);
     int row=   selectionModel()->currentIndex().row();
-     QModelIndex idx= model()->index(row,HIDER_TITLE);
-
-     if(!idx.isValid()) return;
-
-    QString path=idx.data(Qt::UserRole).toString();
-    QProcess p;
-    p.startDetached("easytag",QStringList()<<path);
+  QString file=model()->index(row,HIDER_TITLE).data(Qt::UserRole).toString();
+    emit getProperty(false,file);
 }
 
 void TreeViewAudio::fileProperies()
 {
-    QVariantMap map;
-    int row=   selectionModel()->currentIndex().row();
+     int row=   selectionModel()->currentIndex().row();
+   QString file=model()->index(row,HIDER_TITLE).data(Qt::UserRole).toString();
 
-    map["Title"]= model()->index(row,HIDER_TITLE).data().toString();
-    map["Album"]= model()->index(row,HIDER_ALBUM).data().toString();
-    map["Artist"]=model()->index(row,HIDER_ARTIST).data().toString();
-    map["Path"]=  model()->index(row,HIDER_TITLE).data(Qt::UserRole).toString();
-
-    PropertiesFile *dlg=new PropertiesFile;
-    dlg->setInformations(map);
-    dlg->exec();
-    delete dlg;
+emit getProperty(true,file);
 
 }
 
@@ -124,7 +119,7 @@ void TreeViewAudio::removeFile()
 
     QString path=idx.data(Qt::UserRole).toString();
     if(DataBase::removeSong(path)){
-         QSettings s(D_CACHE+"/filesinfo",QSettings::IniFormat);
+         QSettings s(CACHE+"/filesinfo",QSettings::IniFormat);
         s.remove(path);
         emit updateCurent();
     }

@@ -59,7 +59,7 @@ SearchBar::SearchBar(QWidget *parent) : QWidget(parent)
     tbCloseSearch->setToolTip(tr("Hide search bar"));
 
     QBoxLayout *layoutSearch = new QHBoxLayout;
-    layoutSearch->setContentsMargins(3,2,3,2);
+    layoutSearch->setContentsMargins(5,2,5,2);
     layoutSearch->setSpacing(0);
 
     layoutSearch->addWidget(tbClear);

@@ -21,11 +21,14 @@
 
 #ifndef MEDIAUPDATE_H
 #define MEDIAUPDATE_H
+#ifdef USE_LIB_TAG
+#include "tagid.h"
+#endif
 #include "database.h"
 #include <QObject>
 #include <QWidget>
-#include <QMediaPlayer>
-#include <QMediaPlaylist>
+//#include <QMediaPlayer>
+//#include <QMediaPlaylist>
 #include <QThread>
 #include <QFileSystemWatcher>
 //*********************THREAD**************************
@@ -35,16 +38,15 @@ class Thread : public QThread
 
 public:
     Thread();
-    void setFile(QVariantMap map){mMap=map;}
+    void setFile(QString file){mFile=file;}
 signals:
     void removeKey(const QString &key);
 protected:
     void run();
 
 private:
-    QVariantMap mMap;
 
-private slots:
+QString mFile;
 
 };
 
@@ -66,24 +68,25 @@ public slots:
     //!  اضافة ملفات جديدة
     void addFiles(const QList<QUrl>urls);
     //!  تحديث ملف
-    void updateFile(QVariantMap map, const QString &path);
+    //void updateFile(QVariantMap map, const QString &path);
+   void addupdates(const QString file=QString());
     //!  تحديث مجلدات
     void setUpdateDirs(bool update);
     //!
     void getDirListOptions();
+   void  updateAllDirectories();
 
 private slots:
 
-    //!
-    void metaDataChanged();
+   //!  اضافة او تحديث مجلدات
+   void addUpdateDirectories(bool all=true);
     //!  تحميل المجلدات المراقبة
     void chargeDirectoryWatcher();
     //!   اشارة عند نغير مجلد
     void directoryChanged(const QString &path);
     //! تحديث مجلد بعد الطلب
     void updateDirectory(const QString &dir);
-    //!  اضافة او تحديث مجلدات
-    void addUpdateDirectories(bool all);
+
     //!  فحص مجلد
     void scanDirectory(const QString &path);
 
@@ -93,13 +96,15 @@ private slots:
     void removelast(const QString &key);
 
 private:
-    QMediaPlayer *mPlayer;
-    QMediaPlaylist *mPlaylist;
+ //   QMediaPlayer *mPlayer;
+ //   QMediaPlaylist *mPlaylist;
     Thread   *mThread;
     QStringList mLisUpdateDirs;
+
+    QStringList listFiles;
     QFileSystemWatcher *mWatcher;
-    QList <QVariantMap>mListMap;
-    QMap<QString,QVariantMap> mMapTread;
+
+
 
 };
 

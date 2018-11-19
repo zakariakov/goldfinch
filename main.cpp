@@ -31,10 +31,10 @@ int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
     //-----------------------------------------------------------------APP INFO
-    a.setApplicationName("goldfinch");
-    a.setApplicationDisplayName(QObject::tr("Goldfinch"));
-    a.setApplicationVersion("0.1");
-    a.setOrganizationName("goldfinch");
+    a.setApplicationName(APP_NAME);
+    a.setApplicationDisplayName(QObject::tr(APP_D_NAME));
+    a.setApplicationVersion(APP_VERTION);
+    a.setOrganizationName(APP_NAME);
 
     //-----------------------------------------------------------------ARGUMENTS
     QStringList args = a.arguments();
@@ -56,7 +56,7 @@ int main(int argc, char *argv[])
 
         QDBusInterface dbus("org.mpris.MediaPlayer2.goldfinch",
                             "/org/mpris/MediaPlayer2",
-                            "org.mpris.MediaPlayer2");
+                            "org.mpris.MediaPlayer2.Player");
 
         if (!dbus.isValid()) { printf ("QDBusInterface is not valid!");return 0; }
 
@@ -64,7 +64,12 @@ int main(int argc, char *argv[])
             printf ("QDBusInterface is  valid!!!!!");
             dbus.call("SetUrl",pathUrl.toLocalFile());
         }
+        QDBusInterface dbus2("org.mpris.MediaPlayer2.goldfinch",
+                            "/org/mpris/MediaPlayer2",
+                            "org.mpris.MediaPlayer2");
+         if (!dbus2.isValid()) { printf ("QDBusInterface 2 is not valid!");return 0; }
 
+         dbus2.call("Raise");
         return 0;
     }
 
@@ -77,7 +82,7 @@ int main(int argc, char *argv[])
     appDir.cdUp();
     QString dirPath=  appDir.absolutePath()+"/share/"+a.applicationName();
 
-   QString   locale = QLocale::system().name().section("_",0,0);
+    QString   locale = QLocale::system().name().section("_",0,0);
     /// اللغة الحالية لجميع البرنامج
     QLocale::setDefault(QLocale(locale));
     /// جلب ترجمات كيوتي
@@ -86,21 +91,23 @@ int main(int argc, char *argv[])
     QTranslator *translatorsys = new QTranslator;
     if (translatorsys->load(translatorFileName, QLibraryInfo::location(QLibraryInfo::TranslationsPath)))
         QApplication::installTranslator(translatorsys);
+    /// جلب ترجمة البرنامج
     QString translatorPath=dirPath+"/translations/"+locale+"/"+a.applicationName();
-    qDebug()<<"translatorPath"<<translatorPath;
     QTranslator translator;
-           translator.load(translatorPath);
-           a.installTranslator(&translator);
+    translator.load(translatorPath);
+    a.installTranslator(&translator);
     QLocale lx=QLocale(locale);
     a.setLayoutDirection(lx.textDirection());
-   // a.setLayoutDirection(Qt::RightToLeft);
+  //   a.setLayoutDirection(Qt::LeftToRight);
 
     //-----------------------------------------------------------------EXEC
     MainWindow w;
-
-    if(!pathUrl.isEmpty()){  w.setUrl(pathUrl.toLocalFile()); }
+//     new PlayerAdaptor(w.player());
+//          new MainAdaptor(w.player());
+//         connection.registerObject(QString("/org/mpris/MediaPlayer2"),QString("Player"), w.player());
 
     w.show();
+    if(!pathUrl.isEmpty()){  w.setUrl(pathUrl.toLocalFile()); }
 
     return a.exec();
 }

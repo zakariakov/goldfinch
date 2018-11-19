@@ -21,6 +21,8 @@
 
 #include "playercontrols.h"
 #include "tumb.h"
+
+#include "actions.h"
 #include <QBoxLayout>
 #include <QSlider>
 #include <QStyle>
@@ -32,7 +34,7 @@
 PlayerControls::PlayerControls(QWidget *parent)
     : QWidget(parent)
 {
-
+//ACtions::instance();
     setSizePolicy(QSizePolicy::Preferred,QSizePolicy::Preferred);
 
     m_volumeSlider = new QSlider(Qt::Horizontal, this);
@@ -46,42 +48,39 @@ PlayerControls::PlayerControls(QWidget *parent)
     m_playButton->setMinimumSize(QSize(30,30));
     m_playButton->setObjectName("PlayButton");
     m_playButton->setAutoRaise(true);
-    m_playButton->setShortcut(Qt::Key_Space);
-    m_playButton->setToolTip(tr("Play/Pause \n")+m_playButton->shortcut().toString());
-    //  m_playButton->animateClick(500);
-    connect(m_playButton, &QAbstractButton::clicked, this, &PlayerControls::playClicked);
+    m_playButton->setDefaultAction(ACtions::PlayPauseAct());
 
     m_nextButton = new QToolButton(this);
     m_nextButton->setIconSize(QSize(16,16));
     m_nextButton->setMinimumSize(QSize(30,30));
     m_nextButton->setObjectName("NextButton");
     m_nextButton->setAutoRaise(true);
-    m_nextButton->setShortcut(QKeySequence("Alt+Left"));
-    m_nextButton->setToolTip(tr("Next Song \n")+m_nextButton->shortcut().toString());
-    connect(m_nextButton, &QAbstractButton::clicked, this, &PlayerControls::next);
+    m_nextButton->setDefaultAction(ACtions::NextAct());
 
     m_previousButton = new QToolButton(this);
     m_previousButton->setIconSize(QSize(16,16));
     m_previousButton->setMinimumSize(QSize(30,30));
     m_previousButton->setObjectName("PrevButton");
     m_previousButton->setAutoRaise(true);
-    m_previousButton->setShortcut(QKeySequence("Alt+Right"));
-    m_previousButton->setToolTip(tr("Previous Song \n")+m_previousButton->shortcut().toString());
-    connect(m_previousButton, &QAbstractButton::clicked, this, &PlayerControls::previous);
+    m_previousButton->setDefaultAction(ACtions::PrevAct());
 
     m_muteButton = new QToolButton(this);
     m_muteButton->setObjectName("VolumeButton");
     m_muteButton->setIconSize(QSize(16,16));
     m_muteButton->setCheckable(true);
     m_muteButton->setAutoRaise(true);
-    connect(m_muteButton, &QAbstractButton::toggled, m_volumeSlider,&QSlider::setVisible);
+    m_muteButton->setDefaultAction(ACtions::volumeAct());
+
+   // connect(m_muteButton, &QAbstractButton::toggled, m_volumeSlider,&QSlider::setVisible);
+    connect(ACtions::instance()->volumeAct(), &QAction::toggled, m_volumeSlider,&QSlider::setVisible);
 
     m_slider = new Slider;
 
     m_labelDuration = new QLabel(this);
- //connect(m_slider, &QSlider::sliderMoved, this, &PlayerControls::seek);
-  //   connect(m_slider, &Slider::seekChanged, this, &PlayerControls::setSeeked);
-  //  connect(m_slider, &Slider::valueChanged, this, &PlayerControls::setSeeked);
+
+//    connect(ACtions::instance(), &ACtions::playPause, this, &PlayerControls::playClicked);
+//    connect(ACtions::instance(), &ACtions::next, this, &PlayerControls::next);
+//    connect(ACtions::instance(), &ACtions::previous, this, &PlayerControls::previous);
 
     QBoxLayout *layout = new QHBoxLayout;
     layout->setMargin(0);
@@ -98,7 +97,7 @@ PlayerControls::PlayerControls(QWidget *parent)
     layout->addWidget(m_volumeSlider);
 
     setLayout(layout);
-    setupIcons();
+ //   setupIcons();
 
 }
 
@@ -108,7 +107,7 @@ void PlayerControls::setupIcons()
     // QColor col=this->palette().text().color();
     playIcon=Tumb::icon(I_PLAY);
     pauseIcon=Tumb::icon(I_PAUSE);
-    m_playButton->setIcon(playIcon);
+  //  m_playButton->setIcon(playIcon);
 
     m_nextButton->setIcon(Tumb::icon(I_NEXT));
     m_previousButton->setIcon(Tumb::icon(I_PREV));
@@ -121,17 +120,17 @@ QMediaPlayer::State PlayerControls::state() const
     return m_playerState;
 }
 
-void PlayerControls::setState(QMediaPlayer::State state)
-{
-    if (state != m_playerState) {
-        m_playerState = state;
-        switch (state) {
-        case QMediaPlayer::StoppedState: m_playButton->setIcon(playIcon);  break;
-        case QMediaPlayer::PlayingState: m_playButton->setIcon(pauseIcon); break;
-        case QMediaPlayer::PausedState:  m_playButton->setIcon(playIcon);  break;
-        }
-    }
-}
+//void PlayerControls::setState(QMediaPlayer::State state)
+//{
+//    if (state != m_playerState) {
+//        m_playerState = state;
+//        switch (state) {
+//        case QMediaPlayer::StoppedState: ACtions::setPlayIcon();  break;
+//        case QMediaPlayer::PlayingState: ACtions::setPauseIcon(); break;
+//        case QMediaPlayer::PausedState:  ACtions::setPlayIcon();  break;
+//        }
+//    }
+//}
 
 
 int PlayerControls::volume() const
@@ -157,18 +156,18 @@ bool PlayerControls::isMuted() const
     return m_playerMuted;
 }
 
-void PlayerControls::playClicked()
-{
-    switch (m_playerState) {
-    case QMediaPlayer::StoppedState:
-    case QMediaPlayer::PausedState:
-        emit play();
-        break;
-    case QMediaPlayer::PlayingState:
-        emit pause();
-        break;
-    }
-}
+//void PlayerControls::playClicked()
+//{
+//    switch (m_playerState) {
+//    case QMediaPlayer::StoppedState:
+//    case QMediaPlayer::PausedState:
+//        emit play();
+//        break;
+//    case QMediaPlayer::PlayingState:
+//        emit pause();
+//        break;
+//    }
+//}
 
 void PlayerControls::onVolumeSliderValueChanged()
 {
@@ -186,6 +185,7 @@ void PlayerControls::durationChanged(qint64 duration)
 
 void PlayerControls::positionChanged(qint64 progress)
 {
+  //// qDebug()<<progress;
     QVariant value=progress / 1000;
  //   m_pos=value.toInt();
     if (!m_slider->isSliderDown())
@@ -218,7 +218,7 @@ void PlayerControls:: setSeeked(int val)
     if(value>m_duration)value=QVariant(m_duration).toInt();
     if(value<0)value=0;
  QMetaObject::invokeMethod(parent(), "setSeek",Q_ARG(int,value));
- //   emit seek(value);
+  //  emit seek(value*1000);
 }
 
 

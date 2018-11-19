@@ -24,6 +24,7 @@
 
 #include <QDialog>
 
+#include <QAbstractButton>
 namespace Ui {
 class PropertiesFile;
 }
@@ -33,11 +34,19 @@ class PropertiesFile : public QDialog
     Q_OBJECT
 
 public:
-    explicit PropertiesFile(QWidget *parent = nullptr);
+    explicit PropertiesFile(const QString &file, bool readOnly=true, QWidget *parent = nullptr);
     ~PropertiesFile();
-void setInformations(const QVariantMap &map);
+
+
+private slots:
+    void on_buttonBox_clicked(QAbstractButton *button);
+
 private:
     Ui::PropertiesFile *ui;
+
+    QString albumText;
+    QString genreText;
+     QString artistText;
 };
 
 #endif // PROPERTIESFILE_H

@@ -50,20 +50,20 @@ class MainWindow : public QMainWindow
 public:
     explicit MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
-     Player *player(){return mPlayer;}
-     void setUrl(const QString &file);
+    Player *player(){return mPlayer;}
+    void setUrl(const QString &file);
 signals:
-    void iconsChanged();
+   // void iconsChanged();
 
 private:
     Ui::MainWindow *ui;
-    //!
+    //! مراقبة تغير السمة العامة للنظام
     void changeEvent(QEvent *event);
-    //!
+    //! تغيرر السمة في حال تغيرت سمة النظام
     void changeStyleSheet();
-
+    //! تكوين ايقونة صينية النظام
     void creatTrayIcon();
-    //!
+    //! المعلومات العامة عن النوان الحالي للعرض
     QMap<QString,QString>mMap;
     //! موديول قائمة النفاصبل
     MyContentModel *mMyTreeModel;
@@ -71,48 +71,44 @@ private:
     MyListModel *mMyListModel;
     //! شجرة عرض التفاصبل
     TreeViewContent *mTVContent;
-    //!
+    //! شجرة عرض الملفات الصوتية
     TreeViewAudio *mTVAudio;
-    //!
+    //! قائمة عرض ايقونات الالبومات والفنانين
     ListView *mListView;
     //!  حاوي القائمة وادات تجرير القائمة
     WidgetPlayList *mWPlayList;
-    //! قاغدة البيانات
- ///   DataBase *mDataBase;
     //! تحرير مظهر الايقونات في معرض القائمة
     ListItemDelegate *mLIDelegate;
-    //!
+    //!تحرير مظهر الايقونات في معرض الشجرة
     TreeItemDelegate *mTItemDelegate;
     //! وحدة القراءة
     Player *mPlayer;
-    //! التحكم في ازرار القراءة
-    PlayerControls *controls;
-    //!
+    //! واجهة عرض صورة الالبوم والمعلومات
     WidgetImageInfo *mImageInfo;
     //! تحديث المقطوعات من الجهاز
     MediaUpdate *mMediaUpdate;
-
+    //! وحدة التحكم في الاضافة والتحديث
     SearchBar *mSearchBar;
-    //!
+    //! لوحة البحث
     Setting *mSetting;
-    //!
-    QAction *mActSwich;
-    //!
+    //!  امر تغيير الرض المصغر
+   // QAction *mActSwich;
+    //!  المتحكم في حجم الايقونات
     QSlider *mSliderIconSize;
-    //!
+    //! حجم الايقونات
     int mIconSize=94;
-    //!
+    //! لون العام للبرناج يتم مقارنته في حال تغير السمة
     QString mcoloor;
-    //!
+    //! ايقونة صينية النظام
     QSystemTrayIcon *trayIcon=nullptr;
 
 
 private slots:
-    //!
+    //! جلب النافذة الى الاعلى
     void showRaise(){showNormal();raise();}
-    //!
+    //! تغيير العرض بين مصغر وكامل
     void switchViewMode(bool mini);
-    //!
+    //! تحميل الاعدادات السابقة
     void chargeRecent();
     //! تحميل الايقونات
     void setupIcons();
@@ -126,15 +122,15 @@ private slots:
     void changeStatusPathText();
     //! تغيير مسار الالبومات
     void setAlbumPath(int index);
-     //!
+    //! تغيير حجم الايونات
     void setIconSize(int value);
-    //!
+    //! تغيير عنوان النافذة واخطار في حالة التصغير او الاخفاء
     void setwTitle(const QString &title, const QString &info);
-    //!
+    //! تحميل قائمة الالبومات او الفنانين او الملفات
     void chargeListItemes();
-    //!
+    //! البحث عن ملفات
     void searchAudios(int col,const QString &text);
-    //!
+    //! تغيير عموان القائمة
     void setlabelImage();
     //!
     void onTreeViewContentActivated(const QModelIndex &index);
@@ -150,11 +146,10 @@ private slots:
     void on_tb_playAlbum_clicked();
     //!
     void onChangeImageAlbum(int row);
-//!
-   void changeImageAlbum(int id ,const QString Name);
-//!
-      void on_tb_imgAlbum_clicked();
-
+    //!
+    void changeImageAlbum(int id ,const QString Name);
+    //!
+    void on_tb_imgAlbum_clicked();
     //!
     void onFavoritAlbum(int row, bool favo);
     //!
@@ -168,14 +163,19 @@ private slots:
     //!
     void onTreeAudioActivated(const QModelIndex &index);
     //!
-   // void editCurIndex(const QString &path);
-    //!
     void onActionopentriggered();
-
-
+     //!
     void on_tButtonCancelMsg_clicked();
+     //!
     void on_tButtonOkMsg_clicked();
+     //!
     void trayIconActivated(QSystemTrayIcon::ActivationReason reason);
+
+    void showPropertyDialog(bool isRead, const QString &file);
+
+    void onQuit();
+
+    void saveSettings();
 };
 
 #endif // MAINWINDOW_H

@@ -61,9 +61,9 @@ QString outTxt(QString txt){  return txt.trimmed().replace("$","'");}
 void DataBase::openDataBase()
 {
     QDir dir;
-    dir.mkpath(D_CACHE);
+    dir.mkpath(CACHE);
 
-   instance()-> db.setDatabaseName(D_CACHE+"/library.db");
+   instance()-> db.setDatabaseName(CACHE+"/library.db");
 
     QString txt="no database: ";
     if(! instance()-> db.open())
@@ -172,7 +172,7 @@ int  DataBase::checkSongInfo( const QString &path)
 
     while(query.next())
     {
-        qDebug()<<"data"<<query.value(1).toString()<<query.value(0).toString();
+        qDebug()<<"DataBase::checkSongInfo"<<query.value(1).toString()<<query.value(0).toString();
         if(lastModified!=query.value(1).toString())
             return DATA_NEEDUPDATE;
 
@@ -438,7 +438,7 @@ QList<QVariantMap> DataBase::chargeAudios(QString name,
         map[COL_S_DURATION]  =query.value(COL_I_DURATION).toString();
         map[COL_S_RATED] =query.value(COL_I_RATED).toString();
         //map[COLM_TIME]  =query.value(CAT_TIME).toString();
-        qDebug()<<query.value(COL_I_TITLE).toString()<<query.value(COL_I_DURATION).toString();
+       // qDebug()<<query.value(COL_I_TITLE).toString()<<query.value(COL_I_DURATION).toString();
         list.append(map);
 
     }
@@ -449,13 +449,16 @@ QList<QVariantMap> DataBase::chargeAudios(QString name,
  QList<QVariantMap> DataBase::searchAudios(int col ,const QString &text)
 {
     QString colm_s=colString(col);
-    qDebug()<<col<<colm_s<<text;
+ //   qDebug()<<col<<colm_s<<text;
     QString  txt=QString("select * from books WHERE %1 LIKE '%%2%'" )
             .arg(colm_s,text);
-qDebug()<<txt;
+//qDebug()<<txt;
     QSqlQuery query(instance()->db);
-    query.exec(txt);
-    //   qDebug()<< "QSqlQuery Audio:"<<txt;
+    if(query.exec(txt))
+     qDebug()<< "QSqlQuery Audio:"<<txt;
+    else
+         qDebug()<< "QSqlQuery Audio:"<<query.lastError().text();
+
     QList<QVariantMap> list;
     QVariantMap map;
     while(query.next())
@@ -476,7 +479,7 @@ qDebug()<<txt;
         map[COL_S_DURATION]  =query.value(COL_I_DURATION).toString();
         map[COL_S_RATED] =query.value(COL_I_RATED).toString();
         //map[COLM_TIME]  =query.value(CAT_TIME).toString();
-        qDebug()<<query.value(COL_I_TITLE).toString()<<query.value(COL_I_DURATION).toString();
+     //   qDebug()<<query.value(COL_I_TITLE).toString()<<query.value(COL_I_DURATION).toString();
         list.append(map);
 
     }
@@ -537,3 +540,27 @@ QList<QVariantMap> DataBase::getAlbumUrls(QString name,
     return list;
 }
 
+
+ QVariantMap DataBase::filePropery(const QString & file)
+ {
+
+     QVariantMap map;
+
+     QString   txt=QString("select * from books WHERE path='%1'")
+             .arg(inTxt(file));
+     QSqlQuery query(instance()->db);
+     query.exec(txt);
+
+     while(query.next())
+     {
+         map[COL_S_TITLE] =query.value(COL_I_TITLE).toString().replace("$","'");
+         map[COL_S_ARTIST]=query.value(COL_I_ARTIST).toString().replace("$","'");
+         map[COL_S_ALBUM] =query.value(COL_I_ALBUM).toString().replace("$","'");
+         map[COL_S_GENRE] =query.value(COL_I_GENRE).toString().replace("$","'");
+         map[COL_S_PATH]  =query.value(COL_I_PATH).toString().replace("$","'");
+         map[COL_S_DURATION]  =query.value(COL_I_DURATION).toString();
+
+     }
+
+     return map;
+ }

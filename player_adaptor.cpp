@@ -41,19 +41,14 @@ void MainAdaptor:: Quit()
 void MainAdaptor:: Raise()
 {  QMetaObject::invokeMethod(parent()->parent()->parent()->parent(), "showRaise"); }
 
- void MainAdaptor:: SetUrl(const QString &url)
- {
-     qDebug()<<"Adaptor:: setUrl"<<url;
-  //   QUrl urlm=QUrl::fromLocalFile(url);
-  QMetaObject::invokeMethod(parent(), "setFile", Q_ARG(QString, url));
- // QMetaObject::invokeMethod(parent(), "playLast");
- }
+
 //----------------------------------------------------------PlayerAdaptor
 PlayerAdaptor::PlayerAdaptor(QObject *parent)
     : QDBusAbstractAdaptor(parent)
 {
     // constructor
     setAutoRelaySignals(true);
+    connect(this,&PlayerAdaptor::Seeked,this,&PlayerAdaptor::Seek);
 }
 
 PlayerAdaptor::~PlayerAdaptor()
@@ -64,8 +59,17 @@ PlayerAdaptor::~PlayerAdaptor()
 
 //--------------------------- METHODS ---------------------------
 
-void PlayerAdaptor::Seek(int Offset)
-{  QMetaObject::invokeMethod(parent(), "seek", Q_ARG(int, Offset));}
+void PlayerAdaptor::Seek(qlonglong Offset)
+{
+    qDebug()<<"PlayerAdaptor::Seek==========================="<<Offset;
+    QMetaObject::invokeMethod(parent(), "seek", Q_ARG(qlonglong, Offset));}
+
+void PlayerAdaptor::SetPosition(const QDBusObjectPath &TrackId, qlonglong Position)
+{
+     qDebug()<<"PlayerAdaptor::SetPosition========================"<<Position<<&TrackId;
+ //   Q_UNUSED(TrackId);
+      QMetaObject::invokeMethod(parent(), "seek", Q_ARG(qlonglong, Position));
+}
 
 void PlayerAdaptor::Play()
 {  QMetaObject::invokeMethod(parent(), "play");     }
@@ -148,9 +152,10 @@ qint64 PlayerAdaptor::Position()
 void PlayerAdaptor::setPos(qint64 p)
 {
     QVariantMap changedProps;
-    changedProps.insert("Position", p);
+    changedProps.insert("Position", p*1000);
     propertiesChanged(changedProps);
 }
+
 
 QVariantMap  PlayerAdaptor::Metadata()
 {
@@ -173,7 +178,15 @@ void PlayerAdaptor::propertiesChanged(QVariantMap changedProps)
     signal << QStringList();
 
     if (QDBusConnection::sessionBus().send(signal))
-        qDebug()<<"emited"<<signal.arguments();
+        qDebug()<<"PlayerAdaptor::propertiesChanged :signal emited";
     else
-        qDebug()<<"No Emited"<<signal.arguments();
+        qDebug()<<"PlayerAdaptor::propertiesChanged :signal No Emited";
 }
+
+ void PlayerAdaptor:: SetUrl(const QString &url)
+ {
+     qDebug()<<"Adaptor:: setUrl"<<url;
+  //   QUrl urlm=QUrl::fromLocalFile(url);
+  QMetaObject::invokeMethod(parent(), "setFile", Q_ARG(QString, url));
+ // QMetaObject::invokeMethod(parent(), "playLast");
+ }

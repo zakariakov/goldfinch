@@ -37,9 +37,9 @@ Tumb *Tumb::instance()
 Tumb::Tumb()
 {
     QDir dir;
-    dir.mkpath(D_ALBUM_CACHE);
-    dir.mkpath(D_ARTIST_CACHE);
-
+    dir.mkpath(CACHE_ALBUM);
+    dir.mkpath(CACHE_ARTIST);
+    dir.mkpath(TEMP_CACH);
     mapIcons=new QMap<QString,QString>;
 }
 QIcon  Tumb::iconAlbum(const QString &title, const QString &dirPath)
@@ -90,8 +90,8 @@ QString Tumb::imageAlbumPath(const QString &title,const QString &dirPath)
     //qDebug()<<"Art"<<title<<dirPath;
     // Imge from user in cache
     // QString title=index.data().toString()+".jpg";
-    if(QFile::exists(D_ALBUM_CACHE+"/"+title+".jpg"))
-        return D_ALBUM_CACHE+"/"+title+".jpg";
+    if(QFile::exists(CACHE_ALBUM+"/"+title+".jpg"))
+        return CACHE_ALBUM+"/"+title+".jpg";
 
     // Image from defined name
     //QString dirPath=index.data(D_IMGPATH).toString();
@@ -163,8 +163,8 @@ QString Tumb::imageArtiPath(const QString &title)
 {
     // Imge from user in cache
     //QString title=index.data().toString()+".jpg";
-    if(QFile::exists(D_ARTIST_CACHE+"/"+title+".jpg"))
-        return D_ARTIST_CACHE+"/"+title+".jpg";
+    if(QFile::exists(CACHE_ARTIST+"/"+title+".jpg"))
+        return CACHE_ARTIST+"/"+title+".jpg";
     // Image from source
     return ":/icons/artist";
 }
@@ -201,6 +201,7 @@ QIcon Tumb::icon(int name)
     case I_Album:      return iconColorized(":/icons/cover-16",color);
     case I_Genre:      return iconColorized(":/icons/genre-16",color);
     case I_PAUSE:      return iconColorized(":/icons/pause",color);
+   case I_STOP:      return iconColorized(":/icons/stop",color);
     case I_ADD:        return iconColorized(":/icons/add",color);
     case I_ADD_ALBUM:  return iconColorized(":/icons/album-add",color);
     case I_START:      return iconColorized(":/icons/star",color);

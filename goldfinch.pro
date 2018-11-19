@@ -20,11 +20,22 @@
 # ***************************************************************************/
 
 
-QT       += core gui multimedia \
-      multimediawidgets \
-      sql dbus
-
+QT += core gui multimedia sql
+#Qt +=multimediawidgets
+win32{
+   QT +=winextras
+}else{
+   QT +=dbus
+}
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
+#packagesExist (taglib)
+exists(/usr/lib/libtag*){
+  message( "Configuring for libtag..." )
+   LIBS += $(SUBLIBS)  -L/usr/lib -ltag -ltag_c
+   DEFINES += USE_LIB_TAG
+SOURCES += tagid.cpp
+HEADERS +=  tagid.h
+}
 
 TARGET =goldfinch
 DESTDIR = usr/bin
@@ -73,7 +84,9 @@ SOURCES += \
     dialogoptions.cpp \
     slider.cpp \
     propertiesfile.cpp \
-    searchbar.cpp
+    searchbar.cpp \
+      actions.cpp
+
 
 HEADERS += \
         mainwindow.h \
@@ -100,7 +113,9 @@ HEADERS += \
     dialogoptions.h \
     slider.h \
     propertiesfile.h \
-    searchbar.h
+    searchbar.h \
+    actions.h
+
 
 FORMS += \
         mainwindow.ui \
@@ -116,9 +131,18 @@ TRANSLATIONS    =usr/share/goldfinch/translations/ar/goldfinch.ts\
                  usr/share/goldfinch/translations/en/goldfinch.ts
 
 #------------ INSTTALL ---------------
-desktop.file=goldfinch.desktop
+
+translations.files=usr/share/goldfinch/translations/*
+translations.path=/usr/share/goldfinch/translations
+
+desktop.files=goldfinch.desktop
 desktop.path  =/usr/share/applications
-icons.file  =icons/icons/hicolor/*
+
+icons.files  =icons/icons/hicolor/*
 icons.path  =/usr/share/icons/hicolor
+
 target.path =/usr/bin
- INSTALLS +=target icons desktop
+ INSTALLS +=target \
+            icons \
+            desktop \
+            translations

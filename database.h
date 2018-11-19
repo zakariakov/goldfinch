@@ -58,6 +58,8 @@ public:
    static void setDuration(const QString &duration, const QString &path);
 
    static  QList<QVariantMap> searchAudios(int col ,const QString &text);
+
+   static QVariantMap filePropery(const QString & file);
 signals:
 
 public slots:

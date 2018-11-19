@@ -36,6 +36,7 @@ public slots:
 signals:
    void treeAudioClicked(const QModelIndex);
    void updateCurent();
+   void getProperty(bool read,const QString &file);
 //   void editCurIndex(const QString);
 private slots:
     void addCurentToPLaylist();

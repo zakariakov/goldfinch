@@ -53,10 +53,8 @@ class MainAdaptor: public QDBusAbstractAdaptor
                 "    <property name=\"CanQuit\" type=\"b\" access=\"read\" />\n"
                 "    <property name=\"CanRaise\" type=\"b\" access=\"read\" />\n"
                 "    <method name=\"Quit\" />\n"
-                "    <method name=\"Raise\" />\n"
-               "        <arg name=\"url\" type=\"s\" direction=\"in\"/>"
-                "      <arg type=\"s\" />\n"
-                "    </method>\n"
+                 "    <method name=\"Raise\" />\n"
+
                 "  </interface>\n"
                 )
 public:
@@ -71,9 +69,9 @@ public Q_SLOTS: // METHODS
     bool CanRaise(){return true;}
 
     QString DesktopEntry(){return QApplication::applicationName();}
-    QString Identity()    {return QApplication::applicationName();}
+    QString Identity()    {return QApplication::applicationDisplayName();}
 
-    void SetUrl(const QString &url);
+   // void SetUrl(const QString &url);
 };
 
 
@@ -97,7 +95,6 @@ class PlayerAdaptor: public QDBusAbstractAdaptor
     Q_PROPERTY(qint64 Position READ Position)
 
     Q_CLASSINFO("D-Bus Introspection",
-
                 "  <interface name=\"org.mpris.MediaPlayer2.Player\">\n"
                 "    <property name=\"Metadata\" type=\"a{sv}\" access=\"read\" />\n"
                 "    <property name=\"PlaybackStatus\" type=\"s\" access=\"read\" />\n"
@@ -109,20 +106,17 @@ class PlayerAdaptor: public QDBusAbstractAdaptor
                 "    <property name=\"MinimumRate\" type=\"d\" access=\"readwrite\" />\n"
                 "    <property name=\"MaximumRate\" type=\"d\" access=\"readwrite\" />\n"
                 "    <property name=\"CanControl\" type=\"b\" access=\"read\" />\n"
-                "    <property name=\"CanPlay\" type=\"b\" access=\"read\" />\n"  //CanPlay
+                "    <property name=\"CanPlay\" type=\"b\" access=\"read\" />\n"
                 "    <property name=\"CanPause\" type=\"b\" access=\"read\" />\n"
                 "    <property name=\"CanSeek\" type=\"b\" access=\"read\" />\n"
-                "    <property name=\"CanGoPrevious\" type=\"b\" access=\"read\" />\n"
-                "    <property name=\"CanGoNext\" type=\"b\" access=\"read\" />\n"
-
                 "    <method name=\"Previous\" />\n"
                 "    <method name=\"Next\" />\n"
                 "    <method name=\"Stop\" />\n"
                 "    <method name=\"Play\" />\n"
                 "    <method name=\"Pause\" />\n"
                 "    <method name=\"PlayPause\" />\n"
-                "    <method name=\"Seek\">\n"             // Seek
-                "      <arg name=\"Offset\" type=\"i\" direction=\"in\" />\n"
+                "    <method name=\"Seek\">\n"
+                "      <arg type=\"x\" direction=\"in\" />\n"
                 "    </method>"
                 "    <method name=\"OpenUri\">\n"
                 "      <arg type=\"s\" direction=\"in\" />\n"
@@ -131,8 +125,9 @@ class PlayerAdaptor: public QDBusAbstractAdaptor
                 "      <arg type=\"o\" direction=\"in\" />\n"
                 "      <arg type=\"x\" direction=\"in\" />\n"
                 "    </method>\n"
-                "    <signal name=\"Seeked\">\n"
-                "    </signal>"
+                "   <signal name=\"Seeked\">\n"
+                "      <arg type=\"x\" direction=\"out\" />\n"
+                "   </signal>\n"
                 "  </interface>\n"
                 "")
 public:
@@ -149,8 +144,9 @@ public Q_SLOTS: // METHODS
     void Stop();
     void Next();
     void Previous();
-    void Seek(int Offset);
+    void Seek(qlonglong Offset);
     void PlayPause();
+    void SetPosition(const QDBusObjectPath &TrackId, qlonglong Position);
 
     bool CanPlay();
     bool CanPause();
@@ -160,11 +156,12 @@ public Q_SLOTS: // METHODS
     bool CanControl(){return true;}
     QString PlaybackStatus();
     qint64 Position();
-    void setPos(qint64 p);
     QVariantMap Metadata();
 
-    void propertiesChanged(QVariantMap changedProps);
 
+    void setPos(qint64 p);
+    void propertiesChanged(QVariantMap changedProps);
+    void SetUrl(const QString &url);
 private slots:
 
     //   FreeDesktopAdaptor* mFreeDesktopAdaptor;

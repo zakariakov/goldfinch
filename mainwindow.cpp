@@ -21,9 +21,21 @@
 
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
-#include "tumb.h"
+#include "actions.h"
+
+//#include "taglib/tag_c.h"
+//#include <stdio.h>
+//#include "taglib/tstring.h"
+//#include <iostream>
+//#include <iomanip>
+//#include <stdio.h>
+
+
+
+//#include "tumb.h"
 //#include "dialogoptions.h"
 //#include <QDebug>
+#include "propertiesfile.h"
 #include <QMediaMetaData>
 #include <QFileInfo>
 #include <QTreeWidget>
@@ -40,33 +52,56 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+    qDebug()<<"CACHE"<<CACHE;
+    mMyTreeModel=   new MyContentModel;
+    mMyListModel=   new MyListModel;
+    mMediaUpdate=   new MediaUpdate;
+    mTVContent=     new TreeViewContent;
+    mListView=      new ListView;
+    mTVAudio=       new TreeViewAudio;
+    mLIDelegate=    new ListItemDelegate;
+    mTItemDelegate= new TreeItemDelegate;
+    mWPlayList=     new WidgetPlayList;
+    mImageInfo=     new WidgetImageInfo;
+    mPlayer=        new Player(mWPlayList->playListView(),this);
+    mSearchBar=     new SearchBar(this);
 
-    mMyTreeModel=new MyContentModel;
-    mMyListModel=new MyListModel;
-    mMediaUpdate=new MediaUpdate;
-    mTVContent=new TreeViewContent;
-    mListView=new ListView;
-    mTVAudio=new TreeViewAudio;
-    mLIDelegate=new ListItemDelegate;
-    mTItemDelegate=new TreeItemDelegate;
-    mWPlayList=new WidgetPlayList;
-    mPlayer=new Player(mWPlayList->playListView(),this);
-    mImageInfo=new WidgetImageInfo;
-    mSearchBar=new SearchBar(this);
+    //--menuFile
+    ui->menuFile->addAction(ACtions::openFilesAct());
+     ui->menuFile->addSeparator();
+    ui->menuFile->addAction(ACtions::addUpdateDirsAct());
+     ui->menuFile->addSeparator();
+     ui->menuFile->addAction(ACtions::searchAct());
+    ui->menuFile->addAction(ACtions::swichMimiPlayerAct());
+    ui->menuFile->addSeparator();
+    ui->menuFile->addAction(ACtions::updateAllAct());
+    ui->menuFile->addSeparator();
+    ui->menuFile->addAction(ACtions::quitAct());
 
+    //--menuEdit
+     ui->menuEdit->addAction(ACtions::PlayPauseAct());
+    ui->menuEdit->addAction(ACtions::PlayAct());
+    ui->menuEdit->addAction(ACtions::PauseAct());
+    ui->menuEdit->addAction(ACtions::PrevAct());
+    ui->menuEdit->addAction(ACtions::NextAct());
+    ui->menuEdit->addAction(ACtions::StopAct());
+    ui->menuEdit->addSeparator();
+      ui->menuEdit->addAction(ACtions::volumeUpAct());
+      ui->menuEdit->addAction(ACtions::volumeDownAct());
+      ui->menuEdit->addAction(ACtions::muteUnmuteAct());
+         ui->menuEdit->addSeparator();
+    ui->menuEdit->addMenu(ACtions::menuPlayBackMode());
+
+    //-- menuHelp
+    ui->menuHelp->addAction(ACtions::helpAct());
+    ui->menuHelp->addAction(ACtions::aboutAct());
+    ui->menuHelp->addAction(ACtions::aboutQtAct());
 
     //-- Slider Change Icons Size
     mSliderIconSize = new QSlider(Qt::Horizontal, this);
     mSliderIconSize->setRange(96,256);
     mSliderIconSize->setMaximumWidth(160);
     ui->statusBar->addPermanentWidget(mSliderIconSize);
-
-
-    //-- Acton Switch view mode
-    mActSwich=new QAction(tr("Mini player"),this);
-    mActSwich->setShortcut(QKeySequence("Ctrl+M"));
-    mActSwich->setCheckable(true);
-    connect(mActSwich,SIGNAL(triggered(bool)),this,SLOT(switchViewMode(bool)));
 
     //-- ACtion Search
     QAction *actSearch=new QAction(Tumb::icon(I_FIND),tr("Search"),this);
@@ -75,14 +110,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(actSearch,&QAction::triggered,mSearchBar,&SearchBar::showHid);
 
     //--  Menu Main
-    QMenu *menu=new QMenu;
-    menu->addAction(tr("Open Files..."),this,&MainWindow::onActionopentriggered);
-    menu->addAction(tr("Add/Update Directory"),mMediaUpdate,&MediaUpdate::getDirListOptions);
-    menu->addAction(actSearch);
-    menu->addAction(mActSwich);
-    menu->addSeparator();
-    menu->addAction(Tumb::icon(I_QUIT),tr("Quit"),this,&MainWindow::close);
-    ui->tButtonMenu->setMenu(menu);
+    ui->tButtonMenu->setMenu(ui->menuFile);
 
     //--  TreeViewContent;
     mTVContent->setModel(mMyTreeModel);
@@ -96,7 +124,9 @@ MainWindow::MainWindow(QWidget *parent) :
 
     //--  TreeViewAudio
     mTVAudio->setItemDelegate(mTItemDelegate);
+
     mTVAudio->setModel(mMyListModel);
+
     ui->hlLayoutAudios->addWidget(mTVAudio);
 
     ui->splitter->addWidget(mWPlayList);
@@ -111,23 +141,33 @@ MainWindow::MainWindow(QWidget *parent) :
 
     mSearchBar->setVisible(false);
 
-
+    ui->menuBar->setVisible(false);
 
     //   ------------------------        CONNECTIONS      ------------------------
+
+    connect(ACtions::instance(), &ACtions::addUpdateDirs, mMediaUpdate,&MediaUpdate::getDirListOptions);
+    connect(ACtions::instance(), &ACtions::swichMimiPlayer, this,&MainWindow::switchViewMode);
+    connect(ACtions::instance(), &ACtions::quit, this,&MainWindow::onQuit);
+    connect(ACtions::instance(), &ACtions::openFiles,this,&MainWindow::onActionopentriggered);
+    connect(ACtions::instance(), &ACtions::updateAll,mMediaUpdate,&MediaUpdate::updateAllDirectories);
+    connect(ACtions::instance(), &ACtions::volumeDownChanged,mPlayer,&Player::setVolumeDown);
+    connect(ACtions::instance(), &ACtions::volumeUpChanged,mPlayer,&Player::setVolumeUp);
+    connect(ACtions::instance(), &ACtions::muteUnmuteChanged,mPlayer,&Player::setVolumeMuteUnmute);
+    connect(ACtions::instance(), &ACtions::showSearchChanged,mSearchBar,&SearchBar::showHid);
+
+    //--------------------------------------------------------------------------------
 
     connect(mWPlayList,  &WidgetPlayList::rmovePlaylistItem,  mPlayer,    &Player::rmovePlaylistItem);
     connect(mWPlayList,  &WidgetPlayList::movCurentItem,      mPlayer,    &Player::moveMedia);
     connect(mWPlayList,  &WidgetPlayList::cleanList,          mPlayer,    &Player::cleanList);
     connect(mWPlayList,  &WidgetPlayList::playbackModeChanged,mPlayer,    &Player::setPlaybackMode);
+    connect(mWPlayList,  &WidgetPlayList::getPropperty,       this,       &MainWindow::showPropertyDialog);
 
     connect(mPlayer,     &Player::imageChanged,               mImageInfo,  &WidgetImageInfo::setImage);
     connect(mPlayer,     &Player::titleChanged,               mImageInfo,  &WidgetImageInfo::setTitle);
-  //  connect(mPlayer,     &Player::infoChanged,                mImageInfo,  &WidgetImageInfo::setInfo);
-    connect(mPlayer,     &Player::updateSong,                 mMediaUpdate,&MediaUpdate::updateFile);
+    //  connect(mPlayer,     &Player::infoChanged,                mImageInfo,  &WidgetImageInfo::setInfo);
+    //   connect(mPlayer,     &Player::updateSong,                 mMediaUpdate,&MediaUpdate::addupdates);
     connect(mPlayer,     &Player::titleChanged,               this      ,  &MainWindow::setwTitle);
-
-    connect(this,        &MainWindow::iconsChanged,           mPlayer,     &Player::iconsChanged);
-    connect(this,        &MainWindow::iconsChanged,           mWPlayList,  &WidgetPlayList::setupIcons);
 
     connect(mMediaUpdate,&MediaUpdate::updated,               this, &MainWindow::rechargeAlbums);
     connect(mMediaUpdate,&MediaUpdate::progressMaxChanged,    this, &MainWindow::progressShow);
@@ -146,13 +186,12 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(mTVAudio,    &TreeViewAudio::treeAudioClicked,    this, &MainWindow::onTreeAudioClicked);
     connect(mTVAudio,    &TreeViewAudio::updateCurent,        this, &MainWindow::chargeListItemes);
     connect(mTVAudio,    &TreeViewAudio::activated,           this, &MainWindow::onTreeAudioActivated);
+    connect(mTVAudio,    &TreeViewAudio::getProperty,         this,    &MainWindow::showPropertyDialog);
 
     connect(mListView,        &ListView::activated,           this,&MainWindow::onListViewActivated);
     connect(mSliderIconSize,  &QSlider::valueChanged,          this,&MainWindow::setIconSize);
 
-
     connect(mPlayer,&Player::playBackChanged,this->ui->statusBar,&QStatusBar::showMessage);
-    //connect(ui->actionaddDir, &QAction::triggered,  mMediaUpdate,&MediaUpdate::getDirListOptions);
     connect(ui->comboBoxSwichCat,QOverload<int>::of(&QComboBox::currentIndexChanged),this,&MainWindow::setAlbumPath);
 
     connect(mSearchBar,  &SearchBar::searchTextChanged,          this,&MainWindow::searchAudios);
@@ -199,7 +238,7 @@ void MainWindow::switchViewMode(bool mini)
         mImageInfo->setHorizontal(true);
 
     }
-
+   ACtions::swichMimiPlayerAct()->setChecked(mini);
     settings.endGroup();
 
 }
@@ -221,10 +260,23 @@ void MainWindow::setIconSize(int value)
         setlabelImage();
     // ui->labelAlbumImage->setMinimumSize(value,value);
 }
+
 MainWindow::~MainWindow()
 {
+   saveSettings();
+    delete ui;
+}
 
-    // QString file=D_CACHE+"/playlist";
+void MainWindow::onQuit()
+{
+    saveSettings();
+   mPlayer->saveList();
+   close();
+    qApp->quit();
+}
+
+void MainWindow::saveSettings()
+{
     QSettings settings;
     settings.beginGroup("Recent");
 
@@ -243,26 +295,23 @@ MainWindow::~MainWindow()
 
     settings.beginGroup("Window");
 
-    if(!mActSwich->isChecked()){
+    if(!ACtions::swichMimiPlayerAct()->isChecked()){
         settings.setValue("Geometry",this->saveGeometry());
         settings.setValue("SState",ui->splitter->saveState());
     }
-    settings.setValue("MiniPlayer",mActSwich->isChecked());
+    settings.setValue("MiniPlayer",ACtions::swichMimiPlayerAct()->isChecked());
     settings.setValue("IconSize",mIconSize);
 
     settings.endGroup();
-
-    delete ui;
-
 }
-
 // ------------------------------------------------------
 void MainWindow::changeEvent(QEvent *event)
 {
-    if(event->type()==QEvent::StyleChange)
+    if(event->type()==QEvent::StyleChange || event->type()==QEvent::PaletteChange)
     {
         changeStyleSheet();
     }
+
 }
 
 // ------------------------------------------------------
@@ -272,12 +321,18 @@ void MainWindow::changeStyleSheet()
     QColor col=this->palette().text().color();
     QColor coled=this->palette().highlight().color();
     QString colControl=this->palette().window().color().dark().name();
-    qDebug()<<colControl;
+
     if (mcoloor==col.name()+coled.name())
         return;
 
     mcoloor=col.name()+coled.name();
-    //Tumb::setIconColor(col,coled);
+
+    int h=mSearchBar->height();
+    int tb_h=h-2;
+
+    qDebug()<<mSearchBar->height()<<h<<tb_h;
+ /*
+   //Tumb::setIconColor(col,coled);
     QString leftBorder , rightBorder;
 
     if(isRightToLeft()){
@@ -293,8 +348,7 @@ void MainWindow::changeStyleSheet()
 
     }
 
-    int h=mSearchBar->height()/2;
-    int tb_h=h-2;
+
 
     QString style=QString(
 
@@ -302,7 +356,7 @@ void MainWindow::changeStyleSheet()
                 //                  "  background-color: %5;"
                 //                  "  color: palette(light);"
                 //               " }"
-                /*-- search bar --*/
+
                 "QWidget#SearchBar{"
                 "   background-color: palette(base);"
                 "   border:1px solid palette(highlight);"
@@ -315,7 +369,7 @@ void MainWindow::changeStyleSheet()
                 "}"
                 "QToolButton#TBSearch:hover{ background-color: palette(shadow);}"
                 "QToolButton#TBSearch:pressed{background-color: palette(highlight);}"
-                /*-- TreeView ListView --*/
+
                 "QTreeView{"
                 "background-color: transparent;"
                 //   "border: 1px solid palette(midlight);"
@@ -327,7 +381,7 @@ void MainWindow::changeStyleSheet()
                 " border-color: palette(Window);"
                 "color:palette(window-text);"
                 " }"
-                /*-- Player Control --*/
+
                 "QToolButton#PrevButton{"
                 " border: 1px solid palette(shadow);"
                 "%1"
@@ -361,20 +415,21 @@ void MainWindow::changeStyleSheet()
                 "QToolButton#VolumeButton:pressed ,#tButtonMenu:pressed{"
                 // "border: 1px solid palette(shadow);"
                 "background-color:palette(highlight)"
-                "}").arg(leftBorder).arg(rightBorder).arg(h).arg(tb_h).arg("#1c1e25");
+                "}").arg(leftBorder).arg(rightBorder).arg(h).arg(tb_h);
+*/
+    setStyleSheet(ACtions::stylShete(h,tb_h)) ;
 
-    setStyleSheet(style) ;
-    qDebug()<<style;
     setupIcons();
-    mWPlayList->setupIcons();
-    emit iconsChanged();
+    ACtions::instance()->setupIcons();
+  //  mWPlayList->setupIcons();
+ //   emit iconsChanged();
 }
 
 // ------------------------------------------------------
 void MainWindow::chargeRecent()
 {
     // mMyTreeModel->chargeCategory(CAT_GENRE,CAT_ALBUM);
-    QString file=D_CACHE+"/playlist";
+    QString file=CACHE+"/playlist";
     QSettings settings;
 
     settings.beginGroup("Recent");
@@ -409,7 +464,7 @@ void MainWindow::chargeRecent()
     if(trayicon &&  QSystemTrayIcon::isSystemTrayAvailable())
         creatTrayIcon();
 
-    mActSwich->setChecked(mini);
+
     switchViewMode(mini);
 }
 
@@ -446,6 +501,7 @@ void MainWindow::rechargeAlbums()
     ui->progressBarUpdate->setVisible(false);
     int cur=ui->comboBoxSwichCat->currentIndex();
     setAlbumPath(cur);
+    chargeListItemes();
 }
 
 // ------------------------------------------------------
@@ -508,7 +564,6 @@ void MainWindow::changeStatusPathText()
         ui->labelStatus->setText(QString("<html><head/><body><p><img src='%1'/> %2 </p></body></html>")
                                  .arg(logo(id)).arg(nTxt));
     }
-
 
 
 }
@@ -830,9 +885,9 @@ void MainWindow::changeImageAlbum(int id ,const QString Name)
     img= img.scaled(256,256,Qt::KeepAspectRatio,Qt::SmoothTransformation);
 
     if(id==COL_I_ALBUM)
-        img.save(D_ALBUM_CACHE+"/"+Name+".jpg","jpg");
+        img.save(CACHE_ALBUM+"/"+Name+".jpg","jpg");
     else if(id==COL_I_ARTIST)
-        img.save(D_ARTIST_CACHE+"/"+Name+".jpg","jpg");
+        img.save(CACHE_ARTIST+"/"+Name+".jpg","jpg");
 
 }
 
@@ -908,6 +963,8 @@ void MainWindow::onActionopentriggered()
     delete dlg;
 }
 
+
+
 void MainWindow::setUrl(const QString &file)
 {
     mPlayer->setFile(file);
@@ -934,12 +991,23 @@ void MainWindow:: creatTrayIcon()
     if(!trayIcon){
         trayIcon= new QSystemTrayIcon(QIcon::fromTheme("goldfinch",QIcon(":/icons/goldfinch-24")));
         QMenu *trayIconMenu=new QMenu;
-        trayIconMenu->addAction(Tumb::icon(I_PLAY), tr("Play"),    mPlayer,&Player::play);
-        trayIconMenu->addAction(Tumb::icon(I_PAUSE),tr("Pause"),   mPlayer,&Player::pause);
-        trayIconMenu->addAction(Tumb::icon(I_NEXT), tr("Next"),    mPlayer,&Player::next);
-        trayIconMenu->addAction(Tumb::icon(I_PREV), tr("Previous"),mPlayer,&Player::previous);
+//        trayIconMenu->addAction(Tumb::icon(I_PLAY), tr("Play"),    mPlayer,&Player::play);
+//        trayIconMenu->addAction(Tumb::icon(I_PAUSE),tr("Pause"),   mPlayer,&Player::pause);
+//        trayIconMenu->addAction(Tumb::icon(I_NEXT), tr("Next"),    mPlayer,&Player::next);
+//        trayIconMenu->addAction(Tumb::icon(I_PREV), tr("Previous"),mPlayer,&Player::previous);
+//        trayIconMenu->addSeparator();
+
+//        trayIconMenu->addAction(Tumb::icon(I_PLAY), tr("Quit"),    qApp,&QApplication::quit);
+
+        trayIconMenu->addAction(ACtions::PlayAct());
+        trayIconMenu->addAction(ACtions::PauseAct());
+        trayIconMenu->addAction(ACtions::NextAct());
+        trayIconMenu->addAction(ACtions::PrevAct());
         trayIconMenu->addSeparator();
-        trayIconMenu->addAction(Tumb::icon(I_PLAY), tr("Quit"),    this,&MainWindow::close);
+        trayIconMenu->addAction(ACtions::quitAct());
+
+
+
         trayIcon->setContextMenu(trayIconMenu);
         connect(trayIcon, &QSystemTrayIcon::activated, this, &MainWindow::trayIconActivated);
     }
@@ -974,14 +1042,15 @@ bool Notify(const QString &app_name, const QString &app_icon,
 void MainWindow::setwTitle(const QString &title,const QString &info)
 {
     setWindowTitle(title);
-    qDebug()<<windowState();
-    if(isHidden()|| windowState()==Qt::WindowMinimized){
+
+   // if(isHidden()|| windowState()==Qt::WindowMinimized){
 
 #ifdef Q_OS_UNIX
 
+        QString tumbcach=TEMP_CACH+"/"+title+".png";
         if(Notify( QApplication::applicationName(),
-                   QApplication::applicationName(),
-                   title,info, 5000))
+                   tumbcach,
+                   title,info,  -1))
         { return; }
 
 #endif
@@ -990,7 +1059,7 @@ void MainWindow::setwTitle(const QString &title,const QString &info)
         if(trayIcon)
             trayIcon->showMessage(QApplication::applicationDisplayName(),title+"\n"
                                   +info,ico);
-    }
+   // }
 
 }
 
@@ -998,9 +1067,21 @@ void MainWindow::setwTitle(const QString &title,const QString &info)
 void MainWindow::trayIconActivated(QSystemTrayIcon::ActivationReason reason)
 {
     switch (reason) {
-    case QSystemTrayIcon::Trigger: isHidden()?show():hide(); break;
+    case QSystemTrayIcon::Trigger: isHidden()?showRaise():hide(); break;
     case QSystemTrayIcon::DoubleClick: break;
     case QSystemTrayIcon::MiddleClick: break;
     default: break  ;
     }
 }
+
+void MainWindow::showPropertyDialog(bool isRead,const QString &file)
+{
+
+    PropertiesFile *dlg=new PropertiesFile(file,isRead);
+     dlg->exec();
+    delete dlg;
+
+
+}
+
+

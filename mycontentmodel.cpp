@@ -21,6 +21,7 @@
 
 #include "mycontentmodel.h"
 #include "tumb.h"
+#include "setting.h"
 //#include <QDebug>
 #include <QSettings>
 MyContentModel::MyContentModel (QObject *parent) :
@@ -67,8 +68,9 @@ void MyContentModel::chargeCategory(int root, int child, int children)
         item->setData(root,USER_ID);
         item->setData(child,USER_CHILD_ID);
         if(root==COL_I_ALBUM){
-            QSettings s(D_CACHE+"/albums",QSettings::IniFormat);
-            QString imgPath=s.value(name).toString();
+//            QSettings s(CACHE+"/albums",QSettings::IniFormat);
+//            QString imgPath=s.value(name).toString();
+              QString imgPath=Setting::albumImgPath(name);
             item->setData(imgPath,USER_IMGPATH);
             //  item->setIcon(QIcon(":/icons/cover-16"));
             item->setIcon(Tumb::icon(I_ALBUM_SMALL));
@@ -141,8 +143,9 @@ QList<QStandardItem *> MyContentModel::addChilds(QString prentName, int parentCo
         //         item->setData(parentColumn,USER_PARENT_ID);
         item->setData(prentName,USER_PARENT_NAME);
         if(child==COL_I_ALBUM){
-            QSettings s(D_CACHE+"/albums",QSettings::IniFormat);
-            QString imgPath=s.value(name).toString();
+//            QSettings s(CACHE+"/albums",QSettings::IniFormat);
+//            QString imgPath=s.value(name).toString();
+              QString imgPath=Setting::albumImgPath(name);
             item->setData(imgPath,USER_IMGPATH);
             item->setIcon(Tumb::icon(I_ALBUM_SMALL));
         }else  if(child==COL_I_ARTIST){
