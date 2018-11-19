@@ -14,6 +14,7 @@ Goldfinch a Qt app Organize your audio files
 
 - qt5-multimedia 
 - qt5-svg
+- taglib
 
 ### Optional dependencies:
 
