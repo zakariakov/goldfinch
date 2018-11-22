@@ -190,3 +190,28 @@ void PlayerAdaptor::propertiesChanged(QVariantMap changedProps)
   QMetaObject::invokeMethod(parent(), "setFile", Q_ARG(QString, url));
  // QMetaObject::invokeMethod(parent(), "playLast");
  }
+
+ bool PlayerAdaptor::Notify(const QString &app_name, const QString &app_icon,
+                    const QString &summary, const QString &body,
+                        int expire_timeout)
+ {
+
+     QDBusInterface kdbus("org.freedesktop.Notifications",
+                         "/org/freedesktop/Notifications",
+                         "org.freedesktop.Notifications");
+
+     if (!kdbus.isValid()) {  return false; }
+
+     QList<QVariant> args;
+     args.append(app_name);       // Application Name
+     args.append(0123U);         // Replaces ID (0U)
+     args.append(app_icon);     // Notification Icon
+     args.append( summary);       // Summary
+     args.append(body);          // Body
+     args.append(QStringList()); // Actions
+     args.append(QVariantMap());
+     args.append(expire_timeout);
+     kdbus.callWithArgumentList(QDBus::NoBlock, "Notify", args);
+
+     return  true;
+ }

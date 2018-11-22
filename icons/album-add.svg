@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" version="1.1">
+  <path
+     style="color:#5c616c;fill:currentColor"
+     d="M 1,1 V 3 H 15 V 1 Z"
+ />
+  <path
+     style="color:#5c616c;fill:currentColor;stroke-width:0.78299224"
+     d="m 10.095385,5.0039062 v 2 H 15 v -2 z"
+  />
+  <path
+     style="color:#5c616c;fill:currentColor;stroke-width:0.78103316"
+     d="m 15,9 -4.880102,0.0039 v 1.999996 L 15,11 Z"
+ />
+  <path
+     style="color:#5c616c;fill:currentColor"
+     d="m 1,13 v 2 h 14 v -2 z"
+ />
+  <path
+     style="color:#5c616c;fill:currentColor;stroke-width:1.01197517"
+     d="m 1.0392177,6.8644068 v 2 h 8.1927506 v -2 z"
+ />
+  <path
+     style="color:#5c616c;fill:currentColor;stroke-width:1.01197517"
+     d="M 6.2440514,3.7060961 4.2440849,3.6945107 4.196627,11.887124 6.1965935,11.89871 Z"
+ />
+</svg>

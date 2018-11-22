@@ -538,12 +538,18 @@ void Player::setduration(qint64 duration)
     QString title=mMetaDataMap.value("xesam:title").toString();
 
     QModelIndex i=mPlaylistView->currentIndex();
-
+QString info=    mMetaDataMap.value("xesam:artist").toString()+"-"+
+        mMetaDataMap.value("xesam:album").toString();
     title=title.isEmpty() ?  mPlaylistModel->data(i ).toString(): title;
 
     emit titleChanged(title,
                       mMetaDataMap.value("xesam:artist").toString()+"-"+
                       mMetaDataMap.value("xesam:album").toString());
+
+// QString tumbcach=TEMP_CACH+"/"+title+".png";
+//  mPlayerAdaptor->Notify(APP_NAME,
+//               tumbcach,
+//               title,info,  -1);
 
     // DATABASE
     QString mDur=QTime::fromMSecsSinceStartOfDay(QVariant(duration).toInt()).toString();

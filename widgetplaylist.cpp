@@ -46,14 +46,16 @@ WidgetPlayList::WidgetPlayList(QWidget *parent) : QWidget(parent)
 // connect(ACtions::instance(), &ACtions::removeItem, this, &WidgetPlayList::rmoveItem);
     tbMoveItemUp->setIconSize(QSize(16,16));
     tbMoveItemUp->setAutoRaise(true);
-    tbMoveItemUp->setArrowType(Qt::UpArrow);
+   // tbMoveItemUp->setArrowType(Qt::UpArrow);
+     tbMoveItemUp->setIcon(Tumb::icon(I_AROW_UP));
     tbMoveItemUp->setToolTip(tr("Move Up Current "));
     connect(tbMoveItemUp,SIGNAL(clicked()),SLOT(moveItemUp()));
 
     tbMoveItemDown->setIconSize(QSize(16,16));
     tbMoveItemDown->setAutoRaise(true);
     tbMoveItemDown->setToolTip(tr("Move Down Current "));
-    tbMoveItemDown->setArrowType(Qt::DownArrow);
+ //   tbMoveItemDown->setArrowType(Qt::DownArrow);
+     tbMoveItemDown->setIcon(Tumb::icon(I_AROW_DOWN));
     connect(tbMoveItemDown,SIGNAL(clicked()),SLOT(moveItemDown()));
 
     tbCleanList->setIconSize(QSize(16,16));

@@ -162,6 +162,9 @@ public Q_SLOTS: // METHODS
     void setPos(qint64 p);
     void propertiesChanged(QVariantMap changedProps);
     void SetUrl(const QString &url);
+    static bool Notify(const QString &app_name, const QString &app_icon,
+                       const QString &summary, const QString &body,
+                           int expire_timeout);
 private slots:
 
     //   FreeDesktopAdaptor* mFreeDesktopAdaptor;

@@ -216,8 +216,8 @@ QIcon Tumb::icon(int name)
     case I_M_REPEAT:   return iconColorized(":/icons/media-repeat",color);
     case I_M_REPEAT_ONE:return iconColorized(":/icons/media-repeat-one",color);
     case I_M_PLAY_ONE: return iconColorized(":/icons/media-paly-one",color);
-    case I_AROW:       return iconColorized(":/icons/arow",color);
-    case I_AROW_RTL:   return iconColorized(":/icons/arow-rtl",color);
+    case I_AROW_UP:       return iconColorized(":/icons/pan-up",color);
+    case I_AROW_DOWN:   return iconColorized(":/icons/pan-down",color);
     case I_FAVO:       return iconColorized(":/icons/favo",color);
     case I_MENU:       return iconColorized(":/icons/menu",color);
     case I_PROPERTIES: return iconColorized(":/icons/properties",color);

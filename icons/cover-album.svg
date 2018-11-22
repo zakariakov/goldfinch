@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" version="1.1">
+  <defs
+     id="defs3">
+    <style
+       id="current-color-scheme"
+       type="text/css">
+   .ColorScheme-Text { color:#5c616c; } .ColorScheme-Highlight { color:#5294e2; }
+  </style>
+  </defs>
+  <path
+     style="color:#5c616c;fill:currentColor;stroke-width:1.07142842"
+     class="ColorScheme-Text"
+     d="m 8,0.5000007 c -4.11675,0 -7.5,3.3832497 -7.5,7.4999992 C 0.5,12.11675 3.88325,15.5 8,15.5 c 4.11675,0 7.5,-3.38325 7.5,-7.5000001 C 15.5,3.8832504 12.11675,0.5000007 8,0.5000007 Z m 0,5.3571424 c 1.177071,0 2.142857,0.965732 2.142857,2.1428568 0,1.1771251 -0.965732,2.1428571 -2.142857,2.1428571 -1.177125,0 -2.142857,-0.9657428 -2.142857,-2.1428571 C 5.857143,6.822886 6.822875,5.8571431 8,5.8571431 Z"
+     id="path5"
+     inkscape:connector-curvature="0" />
+</svg>

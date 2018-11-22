@@ -4,41 +4,42 @@
         <file>icons/artist-16.png</file>
         <file>icons/cover-16.png</file>
         <file>icons/genre-16.png</file>
-        <file>icons/pause.png</file>
-        <file>icons/add.png</file>
-        <file>icons/album-add.png</file>
         <file>icons/pane-hide.png</file>
         <file>icons/pane-show.png</file>
-        <file>icons/next.png</file>
-        <file>icons/prev.png</file>
-        <file>icons/preview.png</file>
         <file>icons/volume-off.png</file>
         <file>icons/volume.png</file>
-        <file>icons/stared.png</file>
-        <file>icons/star.png</file>
         <file>icons/list-remove.png</file>
-        <file>icons/cleanup.png</file>
         <file>icons/media-paly-one.png</file>
         <file>icons/media-repeat-one.png</file>
         <file>icons/media-repeat.png</file>
         <file>icons/media-sequential.png</file>
         <file>icons/media-shuffle.png</file>
-        <file>icons/favo.png</file>
         <file>icons/properties.png</file>
         <file>icons/menu.png</file>
-        <file>icons/goldfinch.svg</file>
         <file>icons/artist.png</file>
-        <file>icons/play-rtl.png</file>
         <file>icons/mask.svg</file>
-        <file>icons/cover-album.png</file>
         <file>icons/favorite.png</file>
-        <file>icons/goldfinch-24.svg</file>
+        <file>icons/goldfinch.svg</file>
         <file>icons/edit-clear-rtl.svg</file>
         <file>icons/edit-clear.svg</file>
         <file>icons/find.svg</file>
         <file>icons/window-close.svg</file>
         <file>icons/find-16.svg</file>
-        <file>icons/play.png</file>
         <file>icons/stop.svg</file>
+        <file>icons/pan-down.svg</file>
+        <file>icons/pan-up.svg</file>
+        <file>icons/add.svg</file>
+        <file>icons/cleanup.svg</file>
+        <file>icons/cover-album.svg</file>
+        <file>icons/preview.svg</file>
+        <file>icons/play.svg</file>
+        <file>icons/play-rtl.svg</file>
+        <file>icons/pause.svg</file>
+        <file>icons/album-add.svg</file>
+        <file>icons/next.svg</file>
+        <file>icons/prev.svg</file>
+        <file>icons/stared.svg</file>
+        <file>icons/star.svg</file>
+        <file>icons/favo.svg</file>
     </qresource>
 </RCC>
