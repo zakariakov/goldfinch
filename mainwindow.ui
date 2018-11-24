@@ -424,20 +424,8 @@ QToolButton:hover {
             </item>
             <item>
              <widget class="QStackedWidget" name="stackedWidgetView">
-              <property name="styleSheet">
-               <string notr="true">QTreeView{
-                   background-color: transparent;
-                   border-color: palette(Window);
-color:palette(window-text);
-                   }
-QListView{
-                   background-color: transparent;
-                   border-color: palette(Window);
-                  color:palette(window-text);
-                   }</string>
-              </property>
               <property name="currentIndex">
-               <number>1</number>
+               <number>0</number>
               </property>
               <widget class="QWidget" name="page_View">
                <layout class="QVBoxLayout" name="vLayoutView">
@@ -535,7 +523,7 @@ QListView{
                         <string>Add curent Album</string>
                        </property>
                        <property name="icon">
-                        <iconset resource="icons.qrc">
+                        <iconset>
                          <normaloff>:/icons/album-add.png</normaloff>:/icons/album-add.png</iconset>
                        </property>
                        <property name="autoRaise">
@@ -549,7 +537,7 @@ QListView{
                         <string>Add album to favorit</string>
                        </property>
                        <property name="icon">
-                        <iconset resource="icons.qrc">
+                        <iconset>
                          <normaloff>:/icons/star.png</normaloff>:/icons/star.png</iconset>
                        </property>
                        <property name="checkable">
@@ -566,7 +554,7 @@ QListView{
                         <string>change cover image</string>
                        </property>
                        <property name="icon">
-                        <iconset resource="icons.qrc">
+                        <iconset>
                          <normaloff>:/icons/preview.png</normaloff>:/icons/preview.png</iconset>
                        </property>
                        <property name="autoRepeat">
@@ -592,7 +580,7 @@ QListView{
                         <string/>
                        </property>
                        <property name="icon">
-                        <iconset resource="icons.qrc">
+                        <iconset>
                          <normaloff>:/icons/play.png</normaloff>:/icons/play.png</iconset>
                        </property>
                        <property name="autoRaise">
@@ -640,7 +628,7 @@ QListView{
      <x>0</x>
      <y>0</y>
      <width>764</width>
-     <height>23</height>
+     <height>24</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">

@@ -232,6 +232,7 @@ int b_radius=w_radius-2;
                 //                  "  background-color: %5;"
                 //                  "  color: palette(light);"
                 //               " }"
+
                 /*-- search bar --*/
                 "QWidget#SearchBar{"
                 "   background-color: palette(base);"
@@ -252,14 +253,13 @@ int b_radius=w_radius-2;
                 "QToolButton#TBSearch:pressed{background-color: palette(highlight);}"
                 /*-- TreeView ListView --*/
                 "QTreeView{"
-                "background-color: transparent;"
-                //   "border: 1px solid palette(midlight);"
-                // "border-color: palette(highlight);"
+                "background-color: palette(Window);"
+                  " border-color: palette(Window);"
                 "color:palette(window-text);"
                 "}"
                 " QListView{"
-                " background-color: transparent;"
-                " border-color: palette(Window);"
+                "background-color: palette(Window);"
+                  " border-color: palette(Window);"
                 "color:palette(window-text);"
                 " }"
                 /*-- Player Control --*/
