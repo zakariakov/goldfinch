@@ -96,7 +96,7 @@
     </message>
     <message>
         <location filename="../../../../../actions.cpp" line="73"/>
-        <source>Add/Update Directory</source>
+        <source>Settings</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -120,68 +120,68 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../../../actions.cpp" line="94"/>
+        <location filename="../../../../../actions.cpp" line="95"/>
         <source>PlayBack Mode</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../../../actions.cpp" line="96"/>
+        <location filename="../../../../../actions.cpp" line="97"/>
         <source>Current Once</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../../../actions.cpp" line="100"/>
+        <location filename="../../../../../actions.cpp" line="101"/>
         <source>Current Loop</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../../../actions.cpp" line="104"/>
+        <location filename="../../../../../actions.cpp" line="105"/>
         <source>Sequential</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../../../actions.cpp" line="108"/>
+        <location filename="../../../../../actions.cpp" line="109"/>
         <source>Plylist Loop</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../../../actions.cpp" line="112"/>
+        <location filename="../../../../../actions.cpp" line="113"/>
         <source>Random</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../../../actions.cpp" line="116"/>
+        <location filename="../../../../../actions.cpp" line="117"/>
         <source>Remove</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../../../actions.cpp" line="117"/>
+        <location filename="../../../../../actions.cpp" line="118"/>
         <source>Remove Current </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../../../actions.cpp" line="120"/>
         <location filename="../../../../../actions.cpp" line="121"/>
+        <location filename="../../../../../actions.cpp" line="122"/>
         <source>Clear PlayList</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../../../actions.cpp" line="139"/>
+        <location filename="../../../../../actions.cpp" line="140"/>
         <source>Help</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../../../actions.cpp" line="141"/>
+        <location filename="../../../../../actions.cpp" line="142"/>
         <source>About</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../../../actions.cpp" line="143"/>
+        <location filename="../../../../../actions.cpp" line="144"/>
         <source>About Qt</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../../../actions.cpp" line="192"/>
+        <location filename="../../../../../actions.cpp" line="195"/>
         <source>About...Goldfinch</source>
         <translation type="unfinished"></translation>
     </message>
@@ -209,47 +209,72 @@
     <name>DialogOptions</name>
     <message>
         <location filename="../../../../../dialogoptions.ui" line="14"/>
-        <source>Options</source>
+        <source>Settings</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../../../dialogoptions.ui" line="20"/>
+        <location filename="../../../../../dialogoptions.ui" line="24"/>
+        <source>Directories</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../../../../dialogoptions.ui" line="30"/>
         <source>Select any directory for adding to librery or updating .</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../../../dialogoptions.ui" line="32"/>
+        <location filename="../../../../../dialogoptions.ui" line="49"/>
         <source>Add new directory</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../../../dialogoptions.ui" line="35"/>
-        <location filename="../../../../../dialogoptions.ui" line="49"/>
+        <location filename="../../../../../dialogoptions.ui" line="52"/>
+        <location filename="../../../../../dialogoptions.ui" line="66"/>
         <source>...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../../../dialogoptions.ui" line="46"/>
+        <location filename="../../../../../dialogoptions.ui" line="63"/>
         <source>Remove Selected</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../../../dialogoptions.ui" line="78"/>
+        <location filename="../../../../../dialogoptions.ui" line="96"/>
+        <source>General</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../../../../dialogoptions.ui" line="102"/>
+        <source>If the value is default, the style will be changed only when the program is restarted</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../../../../dialogoptions.ui" line="118"/>
+        <source>Style:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../../../../dialogoptions.ui" line="40"/>
         <source>Delete all previous data</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../../../dialogoptions.cpp" line="70"/>
+        <location filename="../../../../../dialogoptions.cpp" line="64"/>
+        <source>Default</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../../../../dialogoptions.cpp" line="79"/>
         <source>Open Directory</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../../../dialogoptions.cpp" line="122"/>
+        <location filename="../../../../../dialogoptions.cpp" line="129"/>
         <source>Warning</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../../../dialogoptions.cpp" line="122"/>
+        <location filename="../../../../../dialogoptions.cpp" line="129"/>
         <source>This process will delete all your data and previous edits</source>
         <translation type="unfinished"></translation>
     </message>
@@ -334,53 +359,59 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../../../mainwindow.ui" line="535"/>
+        <location filename="../../../../../mainwindow.ui" line="523"/>
         <source>Add curent Album</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../../../mainwindow.ui" line="549"/>
+        <location filename="../../../../../mainwindow.ui" line="537"/>
         <source>Add album to favorit</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../../../mainwindow.ui" line="566"/>
+        <location filename="../../../../../mainwindow.ui" line="554"/>
         <source>change cover image</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../../../mainwindow.ui" line="586"/>
+        <location filename="../../../../../mainwindow.ui" line="574"/>
         <source>play curent album</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../../../mainwindow.ui" line="648"/>
+        <location filename="../../../../../mainwindow.ui" line="636"/>
         <source>&amp;File</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../../../mainwindow.ui" line="653"/>
+        <location filename="../../../../../mainwindow.ui" line="641"/>
         <source>&amp;Edit</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../../../mainwindow.ui" line="658"/>
+        <location filename="../../../../../mainwindow.ui" line="646"/>
         <source>&amp;Help</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../../../mainwindow.cpp" line="107"/>
+        <location filename="../../../../../mainwindow.cpp" line="96"/>
         <source>Search</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../../../mainwindow.cpp" line="848"/>
-        <location filename="../../../../../mainwindow.cpp" line="865"/>
+        <location filename="../../../../../mainwindow.cpp" line="446"/>
+        <location filename="../../../../../mainwindow.cpp" line="447"/>
+        <source>Default</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../../../../mainwindow.cpp" line="839"/>
+        <location filename="../../../../../mainwindow.cpp" line="856"/>
         <source>Unknown</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../../../mainwindow.cpp" line="877"/>
+        <location filename="../../../../../mainwindow.cpp" line="868"/>
         <source>Open File</source>
         <translation type="unfinished"></translation>
     </message>
@@ -619,32 +650,32 @@ Please check the media service plugins are installed.</source>
 <context>
     <name>WidgetPlayList</name>
     <message>
-        <location filename="../../../../../widgetplaylist.cpp" line="50"/>
+        <location filename="../../../../../widgetplaylist.cpp" line="51"/>
         <source>Move Up Current </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../../../widgetplaylist.cpp" line="55"/>
+        <location filename="../../../../../widgetplaylist.cpp" line="56"/>
         <source>Move Down Current </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../../../widgetplaylist.cpp" line="134"/>
+        <location filename="../../../../../widgetplaylist.cpp" line="136"/>
         <source>Move Up</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../../../widgetplaylist.cpp" line="135"/>
+        <location filename="../../../../../widgetplaylist.cpp" line="137"/>
         <source>Move Down</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../../../widgetplaylist.cpp" line="139"/>
+        <location filename="../../../../../widgetplaylist.cpp" line="141"/>
         <source>Edit tags</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../../../widgetplaylist.cpp" line="140"/>
+        <location filename="../../../../../widgetplaylist.cpp" line="142"/>
         <source>Properties</source>
         <translation type="unfinished"></translation>
     </message>

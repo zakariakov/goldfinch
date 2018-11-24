@@ -28,6 +28,7 @@
 #include <QSettings>
 #include <QApplication>
 #include <QMessageBox>
+#include <QStyleFactory>
 DialogOptions::DialogOptions(QWidget *parent) :
     QDialog(parent),
     ui(new Ui::DialogOptions)
@@ -57,6 +58,14 @@ DialogOptions::DialogOptions(QWidget *parent) :
     }
     
     settings.endArray();
+
+    //-------------------------------------------------------------------------
+    QStringList list=QStyleFactory::keys();
+    list.insert(0,tr("Default"));
+    ui->comboBoxStyls->addItems(list);
+        settings.beginGroup("Window");
+        ui->comboBoxStyls->setCurrentText(settings.value("Style").toString());
+      settings.endGroup();
     
 }
 
@@ -91,7 +100,6 @@ void DialogOptions::on_toolButtonRemove_clicked()
 void DialogOptions::on_buttonBox_accepted()
 {
 
-
     QSettings settings;
 
     settings.beginWriteArray("Directory");
@@ -105,7 +113,6 @@ void DialogOptions::on_buttonBox_accepted()
         QString dir =item->text();
         Qt::CheckState ch=item->checkState();
         bool cheked=ch==Qt::Checked ? true : false;
-
 
         settings.setArrayIndex(i);
         settings.setValue("Dir", dir);
@@ -126,3 +133,15 @@ void DialogOptions::on_checkBoxRemove_toggled(bool checked)
  {
      return ui->checkBoxRemove->isChecked();
  }
+
+void DialogOptions::on_comboBoxStyls_activated(const QString &arg1)
+{
+    if(ui->comboBoxStyls->currentIndex()!=0)
+         QApplication::setStyle( QStyleFactory::create(arg1));
+
+    QSettings settings;
+        settings.beginGroup("Window");
+        settings.setValue("Style",arg1);
+        settings.endGroup();
+
+}

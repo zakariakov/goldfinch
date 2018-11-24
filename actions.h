@@ -38,7 +38,7 @@ public:
     //-- Main
     static QAction  *openFilesAct(){return instance()->actOpenFile;}
     static QAction  *openOpenUrlsAct(){return instance()->actOpenUrl;}
-    static QAction  *addUpdateDirsAct(){return instance()->actAddDirs;}
+    static QAction  *showSettingsAct(){return instance()->actShowSettings;}
     static QAction  *swichMimiPlayerAct(){return instance()->actSwich;}
     static QAction  *quitAct(){return instance()->actQuit;}
     static QAction  *updateAllAct(){return instance()->actUpdateAll;}
@@ -74,11 +74,12 @@ signals:
     //-- Main
     void openFiles();
     void openOpenUrls();
-    void addUpdateDirs();
+    void showSettingsClicked();
     void swichMimiPlayer(bool);
      void updateAll( );
     void quit();
 void showSearchChanged();
+void showOptions();
     //-- PLayalist
     void playbackModeChanged(int);
     void removeItem();
@@ -101,11 +102,12 @@ private:
     //-- Main
     QAction *actOpenFile;
     QAction *actOpenUrl;
-    QAction *actAddDirs;
+    QAction *actShowSettings;
     QAction *actSwich;
     QAction *actQuit;
    QAction *actUpdateAll;
   QAction *actSearch;
+   // QAction *actOptions;
     //-- PlayList Mode
     QMenu *mnuPlayMode;
     QActionGroup *actGroup;

@@ -23,18 +23,6 @@
 #include "ui_mainwindow.h"
 #include "actions.h"
 
-//#include "taglib/tag_c.h"
-//#include <stdio.h>
-//#include "taglib/tstring.h"
-//#include <iostream>
-//#include <iomanip>
-//#include <stdio.h>
-
-
-
-//#include "tumb.h"
-//#include "dialogoptions.h"
-//#include <QDebug>
 #include "propertiesfile.h"
 #include <QMediaMetaData>
 #include <QFileInfo>
@@ -47,6 +35,7 @@
 #include <QFileDialog>
 #include <QStandardPaths>
 #include <QComboBox>
+#include <QStyleFactory>
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
@@ -69,11 +58,11 @@ MainWindow::MainWindow(QWidget *parent) :
     //--menuFile
     ui->menuFile->addAction(ACtions::openFilesAct());
      ui->menuFile->addSeparator();
-    ui->menuFile->addAction(ACtions::addUpdateDirsAct());
+    ui->menuFile->addAction(ACtions::showSettingsAct());
      ui->menuFile->addSeparator();
      ui->menuFile->addAction(ACtions::searchAct());
     ui->menuFile->addAction(ACtions::swichMimiPlayerAct());
-    ui->menuFile->addSeparator();
+     ui->menuFile->addSeparator();
     ui->menuFile->addAction(ACtions::updateAllAct());
     ui->menuFile->addSeparator();
     ui->menuFile->addAction(ACtions::quitAct());
@@ -145,7 +134,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
     //   ------------------------        CONNECTIONS      ------------------------
 
-    connect(ACtions::instance(), &ACtions::addUpdateDirs, mMediaUpdate,&MediaUpdate::getDirListOptions);
+    connect(ACtions::instance(), &ACtions::showSettingsClicked, mMediaUpdate,&MediaUpdate::showSettings);
     connect(ACtions::instance(), &ACtions::swichMimiPlayer, this,&MainWindow::switchViewMode);
     connect(ACtions::instance(), &ACtions::quit, this,&MainWindow::onQuit);
     connect(ACtions::instance(), &ACtions::openFiles,this,&MainWindow::onActionopentriggered);
@@ -454,7 +443,9 @@ void MainWindow::chargeRecent()
     mSliderIconSize->setValue(mIconSize);
     bool trayicon=settings.value("TrayIcon",true).toBool();
     bool mini=settings.value("MiniPlayer",false).toBool();
-
+   QString style=    settings.value("Style",tr("Default")).toString();
+   if(style!=tr("Default"))
+      QApplication::setStyle( QStyleFactory::create(style));
     settings.endGroup();
 
     ui->comboBoxSwichCat->setCurrentIndex(index);
@@ -1061,5 +1052,4 @@ void MainWindow::showPropertyDialog(bool isRead,const QString &file)
 
 
 }
-
 

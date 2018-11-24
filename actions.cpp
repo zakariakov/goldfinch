@@ -70,9 +70,9 @@ ACtions::ACtions(QObject *parent) : QObject(parent)
     actOpenUrl=new QAction(tr("Open Urls"));
     connect(actOpenUrl,&QAction::triggered,this,&ACtions::openOpenUrls);
 
-    actAddDirs=new QAction(tr("Add/Update Directory"));
-    actAddDirs->setShortcut(QKeySequence("Ctrl+Shift+A"));
-    connect(actAddDirs,&QAction::triggered,this,&ACtions::addUpdateDirs);
+    actShowSettings=new QAction(Tumb::icon(I_PROPERTIES),tr("Settings"));
+    actShowSettings->setShortcut(QKeySequence("Ctrl+Shift+O"));
+    connect(actShowSettings,&QAction::triggered,this,&ACtions::showSettingsClicked);
 
     actSwich=new QAction(tr("Mini player"));
     actSwich->setShortcut(QKeySequence("Ctrl+M"));
@@ -90,6 +90,7 @@ ACtions::ACtions(QObject *parent) : QObject(parent)
     actSearch=new QAction(Tumb::icon(I_FIND),tr("Search"),this);
     actSearch->setShortcut(QKeySequence("Ctrl+F"));
     connect(actSearch,&QAction::triggered,this,&ACtions::showSearchChanged);
+
     // -- playlist Mode
     mnuPlayMode=new QMenu(tr("PlayBack Mode"));
 
@@ -175,6 +176,8 @@ void ACtions::setupIcons()
 
     actRemoveItem->setIcon(Tumb::icon(I_LIST_REMOVE));
     actCleanList->setIcon(Tumb::icon(I_CLEAN));
+
+       actShowSettings->setIcon(Tumb::icon(I_PROPERTIES));
 }
 
 void ACtions::help()

@@ -136,7 +136,7 @@ QString getffmpegDuration(QString filePath)
 
 
 //![0] from mainwindow
-void MediaUpdate::getDirListOptions()
+void MediaUpdate::showSettings()
 {
     DialogOptions *dlg=new DialogOptions;
     if(dlg->exec()==QDialog::Accepted){

@@ -73,7 +73,7 @@ public slots:
     //!  تحديث مجلدات
     void setUpdateDirs(bool update);
     //!
-    void getDirListOptions();
+    void showSettings();
    void  updateAllDirectories();
 
 private slots:
