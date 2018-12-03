@@ -73,13 +73,13 @@ public slots:
     //!  تحديث مجلدات
     void setUpdateDirs(bool update);
     //!
-    void showSettings();
+   // void showSettings();
    void  updateAllDirectories();
-
-private slots:
-
    //!  اضافة او تحديث مجلدات
    void addUpdateDirectories(bool all=true);
+private slots:
+
+
     //!  تحميل المجلدات المراقبة
     void chargeDirectoryWatcher();
     //!   اشارة عند نغير مجلد

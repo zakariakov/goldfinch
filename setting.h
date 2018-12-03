@@ -35,7 +35,9 @@ public:
     static  QString        albumImgPath(const QString &title);
     static  void             setAlbumImgPath(const QString &album, const QString &file);
     static  QStringList  favoretedAlbum();
-
+   static  void            saveRecent(QVariantMap map, int index);
+   static  QVariantMap          getRecentMap();
+    static  int          getRecentndex();
 };
 
 #endif // SETTING_H

@@ -123,7 +123,6 @@ void TagId::setMediaTags( QVariantMap mMap)
 
         qDebug()<<"tag saved:"<<file<<title<<album<<artist<<genre;
 
-        //TODO :Add update file tag
        emit instance()->updateFile(file);
     }
 }

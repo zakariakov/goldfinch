@@ -28,7 +28,7 @@
  #define APP_D_NAME  "Goldfinch"
 #define APP_VERTION  "0.1"
 #define TEMP           QStandardPaths::writableLocation(QStandardPaths::TempLocation)
-#define TEMP_CACH      TEMP+"/"+APP_NAME
+#define TEMP_CACH      TEMP+"/"+APP_NAME+"-"+qgetenv("USER")
 #define CACHE          QStandardPaths::writableLocation(QStandardPaths::CacheLocation)
 #define CACHE_ARTIST   CACHE+"/artistArt"
 #define CACHE_ALBUM    CACHE+"/albmArt"

@@ -77,3 +77,30 @@ void Setting::setAlbumImgPath(const QString &album,const QString &file)
     QSettings s(CACHE+"/albums",QSettings::IniFormat);
     s.setValue( album,file);
    }
+
+
+ void  Setting::saveRecent(QVariantMap map, int index)
+ {
+     QSettings settings;
+     settings.beginGroup("Recent");
+
+     settings.setValue("Index", index);
+     settings.setValue("Map",  map);
+
+     settings.endGroup();
+ }
+
+   QVariantMap  Setting:: getRecentMap()
+   {
+       QSettings settings;
+       settings.beginGroup("Recent");
+       return  settings.value("Map").toMap();
+
+   }
+    int  Setting:: getRecentndex()
+    {
+        QSettings settings;
+        settings.beginGroup("Recent");
+        return  settings.value("Index").toInt();
+
+    }

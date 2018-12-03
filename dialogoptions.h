@@ -50,6 +50,12 @@ private slots:
 
     void on_comboBoxStyls_activated(const QString &arg1);
 
+    void on_checkBoxNotify_toggled(bool checked);
+
+    void on_checkBoxTrayIcon_toggled(bool checked);
+
+    void on_comboBoxLanguage_activated(const QString &arg1);
+
 private:
     Ui::DialogOptions *ui;
 };

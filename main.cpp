@@ -82,21 +82,32 @@ int main(int argc, char *argv[])
     appDir.cdUp();
     QString dirPath=  appDir.absolutePath()+"/share/"+a.applicationName();
 
-    QString   locale = QLocale::system().name().section("_",0,0);
+    QString   localeSymbol = QLocale::system().name().section("_",0,0);
+       QSettings settings;
+        settings.beginGroup("Window");
+        QString userLocal=settings.value("Language").toString();
+        settings.endGroup();
+
+        if(!userLocal.isEmpty())    localeSymbol=userLocal;
+
+
     /// اللغة الحالية لجميع البرنامج
-    QLocale::setDefault(QLocale(locale));
+    QLocale::setDefault(QLocale(localeSymbol));
     /// جلب ترجمات كيوتي
     QString translatorFileName = QLatin1String("qt_");
-    translatorFileName += locale;
+    translatorFileName += localeSymbol;
     QTranslator *translatorsys = new QTranslator;
     if (translatorsys->load(translatorFileName, QLibraryInfo::location(QLibraryInfo::TranslationsPath)))
         QApplication::installTranslator(translatorsys);
     /// جلب ترجمة البرنامج
-    QString translatorPath=dirPath+"/translations/"+locale+"/"+a.applicationName();
+
+
+
+    QString translatorPath=dirPath+"/translations/"+localeSymbol+"/"+a.applicationName();
     QTranslator translator;
     translator.load(translatorPath);
     a.installTranslator(&translator);
-    QLocale lx=QLocale(locale);
+    QLocale lx=QLocale(localeSymbol);
     a.setLayoutDirection(lx.textDirection());
   //   a.setLayoutDirection(Qt::LeftToRight);
 

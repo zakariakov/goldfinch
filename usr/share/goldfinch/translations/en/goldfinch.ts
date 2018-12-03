@@ -254,28 +254,54 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <location filename="../../../../../dialogoptions.ui" line="128"/>
+        <source>Language:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../../../../dialogoptions.ui" line="138"/>
+        <source>Show notifications when the window is hidden or minimized</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../../../../dialogoptions.ui" line="158"/>
+        <source>Show in tray icon</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="../../../../../dialogoptions.ui" line="40"/>
         <source>Delete all previous data</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../../../dialogoptions.cpp" line="64"/>
+        <location filename="../../../../../dialogoptions.cpp" line="42"/>
+        <location filename="../../../../../dialogoptions.cpp" line="51"/>
         <source>Default</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../../../dialogoptions.cpp" line="79"/>
+        <location filename="../../../../../dialogoptions.cpp" line="115"/>
         <source>Open Directory</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../../../dialogoptions.cpp" line="129"/>
+        <location filename="../../../../../dialogoptions.cpp" line="165"/>
         <source>Warning</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../../../dialogoptions.cpp" line="129"/>
+        <location filename="../../../../../dialogoptions.cpp" line="165"/>
         <source>This process will delete all your data and previous edits</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../../../../dialogoptions.cpp" line="205"/>
+        <source>Information</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../../../../dialogoptions.cpp" line="205"/>
+        <source>the language %1  will be changed only when the program is restarted</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -399,19 +425,19 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../../../mainwindow.cpp" line="446"/>
         <location filename="../../../../../mainwindow.cpp" line="447"/>
+        <location filename="../../../../../mainwindow.cpp" line="448"/>
         <source>Default</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../../../mainwindow.cpp" line="839"/>
-        <location filename="../../../../../mainwindow.cpp" line="856"/>
+        <location filename="../../../../../mainwindow.cpp" line="840"/>
+        <location filename="../../../../../mainwindow.cpp" line="857"/>
         <source>Unknown</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../../../mainwindow.cpp" line="868"/>
+        <location filename="../../../../../mainwindow.cpp" line="869"/>
         <source>Open File</source>
         <translation type="unfinished"></translation>
     </message>
@@ -493,20 +519,20 @@ Please check the media service plugins are installed.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../../../player.cpp" line="403"/>
-        <location filename="../../../../../player.cpp" line="405"/>
+        <location filename="../../../../../player.cpp" line="404"/>
+        <location filename="../../../../../player.cpp" line="406"/>
         <source>Stopped</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../../../player.cpp" line="409"/>
-        <location filename="../../../../../player.cpp" line="411"/>
+        <location filename="../../../../../player.cpp" line="410"/>
+        <location filename="../../../../../player.cpp" line="412"/>
         <source>Playing</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../../../player.cpp" line="415"/>
-        <location filename="../../../../../player.cpp" line="417"/>
+        <location filename="../../../../../player.cpp" line="416"/>
+        <location filename="../../../../../player.cpp" line="418"/>
         <source>Paused</source>
         <translation type="unfinished"></translation>
     </message>

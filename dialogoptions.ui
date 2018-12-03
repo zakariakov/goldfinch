@@ -17,7 +17,7 @@
    <item>
     <widget class="QTabWidget" name="tabWidget">
      <property name="currentIndex">
-      <number>0</number>
+      <number>1</number>
      </property>
      <widget class="QWidget" name="tab">
       <attribute name="title">
@@ -122,7 +122,24 @@
        <item row="1" column="1">
         <widget class="QComboBox" name="comboBoxStyls"/>
        </item>
+       <item row="2" column="0">
+        <widget class="QLabel" name="label_4">
+         <property name="text">
+          <string>Language:</string>
+         </property>
+        </widget>
+       </item>
        <item row="2" column="1">
+        <widget class="QComboBox" name="comboBoxLanguage"/>
+       </item>
+       <item row="4" column="0" colspan="2">
+        <widget class="QCheckBox" name="checkBoxNotify">
+         <property name="text">
+          <string>Show notifications when the window is hidden or minimized</string>
+         </property>
+        </widget>
+       </item>
+       <item row="5" column="1">
         <spacer name="verticalSpacer_2">
          <property name="orientation">
           <enum>Qt::Vertical</enum>
@@ -134,6 +151,13 @@
           </size>
          </property>
         </spacer>
+       </item>
+       <item row="3" column="0" colspan="2">
+        <widget class="QCheckBox" name="checkBoxTrayIcon">
+         <property name="text">
+          <string>Show in tray icon</string>
+         </property>
+        </widget>
        </item>
       </layout>
      </widget>

@@ -391,6 +391,7 @@ void Player::playPause()
     case QMediaPlayer::PlayingState:    pause(); break;
     }
 
+
 }
 
 void Player::stateChanged(QMediaPlayer::State state)
@@ -422,6 +423,14 @@ void Player::stateChanged(QMediaPlayer::State state)
     map["PlaybackStatus"]=pStatu;
     mPlayerAdaptor->propertiesChanged(map);
 
+//    QString title=mMetaDataMap.value("xesam:title").toString();
+//    QString tumbcach=TEMP_CACH+"/"+title+".png";
+
+
+//    if(PlayerAdaptor::Notify( QApplication::applicationName(),
+//               tumbcach,
+//               mPlaybackStatus,"info",  -1))
+//    { return; }
 }
 
 //---------------------------------------------------------------------------

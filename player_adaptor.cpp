@@ -178,7 +178,7 @@ void PlayerAdaptor::propertiesChanged(QVariantMap changedProps)
     signal << QStringList();
 
     if (QDBusConnection::sessionBus().send(signal))
-        qDebug()<<"PlayerAdaptor::propertiesChanged :signal emited";
+        qDebug()<<"PlayerAdaptor::propertiesChanged :signal emited"<<changedProps;
     else
         qDebug()<<"PlayerAdaptor::propertiesChanged :signal No Emited";
 }
@@ -195,7 +195,13 @@ void PlayerAdaptor::propertiesChanged(QVariantMap changedProps)
                     const QString &summary, const QString &body,
                         int expire_timeout)
  {
+     QDBusConnection connection = QDBusConnection::sessionBus();
 
+      if ( connection.registerService("org.freedesktop.Notifications"))
+      {
+          connection.unregisterService("org.freedesktop.Notifications");
+          return  false;
+      }
      QDBusInterface kdbus("org.freedesktop.Notifications",
                          "/org/freedesktop/Notifications",
                          "org.freedesktop.Notifications");
@@ -211,7 +217,7 @@ void PlayerAdaptor::propertiesChanged(QVariantMap changedProps)
      args.append(QStringList()); // Actions
      args.append(QVariantMap());
      args.append(expire_timeout);
-     kdbus.callWithArgumentList(QDBus::NoBlock, "Notify", args);
+     kdbus.callWithArgumentList(QDBus::AutoDetect, "Notify", args);
 
      return  true;
  }

@@ -64,7 +64,7 @@ private:
     //! تكوين ايقونة صينية النظام
     void creatTrayIcon();
     //! المعلومات العامة عن النوان الحالي للعرض
-    QMap<QString,QString>mMap;
+  QVariantMap mMap; //TODO Change to qvariant
     //! موديول قائمة النفاصبل
     MyContentModel *mMyTreeModel;
     //! موديول القائمة الايقونات
@@ -99,9 +99,12 @@ private:
     int mIconSize=94;
     //! لون العام للبرناج يتم مقارنته في حال تغير السمة
     QString mcoloor;
+       QString mTitle;
     //! ايقونة صينية النظام
-    QSystemTrayIcon *trayIcon=nullptr;
+    QSystemTrayIcon *mTrayIcon=nullptr;
 
+    //!
+    bool mShowNotification=false;
 
 private slots:
     //! جلب النافذة الى الاعلى
@@ -176,6 +179,8 @@ private slots:
     void onQuit();
 
     void saveSettings();
+
+    void showSettings();
 };
 
 #endif // MAINWINDOW_H

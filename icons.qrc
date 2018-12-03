@@ -19,7 +19,6 @@
         <file>icons/artist.png</file>
         <file>icons/mask.svg</file>
         <file>icons/favorite.png</file>
-        <file>icons/goldfinch.svg</file>
         <file>icons/edit-clear-rtl.svg</file>
         <file>icons/edit-clear.svg</file>
         <file>icons/find.svg</file>
@@ -41,5 +40,6 @@
         <file>icons/stared.svg</file>
         <file>icons/star.svg</file>
         <file>icons/favo.svg</file>
+        <file>icons/goldfinch.png</file>
     </qresource>
 </RCC>

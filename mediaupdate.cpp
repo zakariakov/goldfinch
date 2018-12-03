@@ -135,7 +135,7 @@ QString getffmpegDuration(QString filePath)
 
 
 
-//![0] from mainwindow
+/*
 void MediaUpdate::showSettings()
 {
     DialogOptions *dlg=new DialogOptions;
@@ -154,6 +154,7 @@ void MediaUpdate::showSettings()
 
     delete dlg;
 }
+*/
 void MediaUpdate::updateAllDirectories()
 {
     addUpdateDirectories(true);
