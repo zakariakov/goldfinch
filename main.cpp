@@ -27,23 +27,67 @@
 #include <QApplication>
 #include <QDBusConnection>
 #include <QTranslator>
+
+void help()
+{
+    printf("Usage: goldfinch [OPTION]\n");
+    printf("Usage: goldfinch <url>\n");
+    puts("goldfinch v: 0.1 \n" );
+    puts("OPTION:\n");
+    puts(" -h --help        Print this help.");
+    puts(" -play        ");
+    puts(" -Pause       ");
+    puts(" -playpause   ");
+    puts(" -next        ");
+    puts(" -previous    ");
+    puts(" -hide        ");
+    puts(" -raise       ");
+
+}
+
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
     //-----------------------------------------------------------------APP INFO
     a.setApplicationName(APP_NAME);
-    a.setApplicationDisplayName(QObject::tr(APP_D_NAME));
+    a.setApplicationDisplayName(QObject::tr("Goldfinch"));
     a.setApplicationVersion(APP_VERTION);
     a.setOrganizationName(APP_NAME);
 
     //-----------------------------------------------------------------ARGUMENTS
     QStringList args = a.arguments();
     QUrl  pathUrl;
+bool play=false;
+bool pause=false;
+bool playpause=false;
+bool next=false;
+bool previous=false;
+bool hide=false;
+bool raise=false;
 
     if(args.count()>1)
     {
-        pathUrl=QUrl::fromLocalFile(args.at(1));
-        qDebug()<<"Main url:"<<pathUrl;
+        if(args.at(1)=="-h"||args.at(1)=="--help"){
+           help();
+           return 0;
+        }
+        else if(args.at(1)=="-play")     play=true;
+        else if(args.at(1)=="-pause")    pause=true;
+        else if(args.at(1)=="-playpause")playpause=true;
+        else if(args.at(1)=="-next")     next=true;
+        else if(args.at(1)=="-previous") previous=true;
+        else if(args.at(1)=="-hide")     hide=true;
+        else if(args.at(1)=="-raise")    raise=true;
+
+        else{
+//            QString str;
+//            for (int i = 1; i < args.count(); ++i) {
+//                str+=args.at(i)+" ";
+//            }
+            pathUrl=QUrl::fromLocalFile(args.at(1));
+            qDebug()<<"Main url:"<<pathUrl;
+        }
+
     }
 
     //-----------------------------------------------------------------DBUS
@@ -60,6 +104,14 @@ int main(int argc, char *argv[])
 
         if (!dbus.isValid()) { printf ("QDBusInterface is not valid!");return 0; }
 
+        if(play)     { dbus.call("Play");return 0;}
+        if(pause)    { dbus.call("Pause");return 0;}
+        if(playpause){ dbus.call("PlayPause");return 0;}
+        if(next)     { dbus.call("Next");return 0;}
+        if(previous) { dbus.call("Previous");return 0;}
+
+
+
         if(!pathUrl.isEmpty()){
             printf ("QDBusInterface is  valid!!!!!");
             dbus.call("SetUrl",pathUrl.toLocalFile());
@@ -69,8 +121,10 @@ int main(int argc, char *argv[])
                             "org.mpris.MediaPlayer2");
          if (!dbus2.isValid()) { printf ("QDBusInterface 2 is not valid!");return 0; }
 
-         dbus2.call("Raise");
-        return 0;
+      if(hide) dbus2.call("Hide");
+      else     dbus2.call("Raise");
+
+       return 0;
     }
 
     //-----------------------------------------------------------------ICONS
@@ -116,9 +170,13 @@ int main(int argc, char *argv[])
 //     new PlayerAdaptor(w.player());
 //          new MainAdaptor(w.player());
 //         connection.registerObject(QString("/org/mpris/MediaPlayer2"),QString("Player"), w.player());
+if(!pathUrl.isEmpty()){
+    w.setUrl(pathUrl.toLocalFile());
+  qDebug()<<"Main url2:"<<pathUrl;
+}
+ w.show();
 
-    w.show();
-    if(!pathUrl.isEmpty()){  w.setUrl(pathUrl.toLocalFile()); }
+
 
     return a.exec();
 }

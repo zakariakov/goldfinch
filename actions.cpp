@@ -208,7 +208,7 @@ void ACtions::setPlayMode(QAction *action)
     }
 }
 
-QString ACtions::stylShete(int h,int tb_h)
+QString ACtions::stylShete(int h/*,int tb_h*/)
 {
 int w_radius=h/2;
 int b_radius=w_radius-2;
@@ -231,10 +231,15 @@ int b_radius=w_radius-2;
 
     QString style=QString(
 
-                //               " QWidget#widgetControl{"
-                //                  "  background-color: %5;"
-                //                  "  color: palette(light);"
-                //               " }"
+                " QWidget#widgetCurAlbum{"
+                   "  background-color:palette(Window);"
+                   "  color: palette(window-text);"
+                " }"
+
+               " QWidget#widgetView{"
+               "  border:1px solid palette(highlight);"
+               "  border-radius:2px;"
+               " }"
 
                 /*-- search bar --*/
                 "QWidget#SearchBar{"
@@ -247,7 +252,7 @@ int b_radius=w_radius-2;
                 "}"
                 "QToolButton#TBSearch{"
                 "   background-color: palette(base);"
-                "    border:0px ;"
+                "   border:0px ;"
                 "   border-radius: %4px;"
                  " min-height: %6px;"
                  " min-width: %6px;"
@@ -257,26 +262,28 @@ int b_radius=w_radius-2;
                 /*-- TreeView ListView --*/
                 "QTreeView{"
                 "background-color: palette(Window);"
-                  " border-color: palette(Window);"
+//                " border-color: palette(Window);"
                 "color:palette(window-text);"
+                "background-attachment: scroll;"
                 "}"
                 " QListView{"
                 "background-color: palette(Window);"
-                  " border-color: palette(Window);"
+//                  " border-color: palette(Window);"
                 "color:palette(window-text);"
                 " }"
+
                 /*-- Player Control --*/
                 "QToolButton#PrevButton{"
-                " border: 1px solid palette(shadow);"
+                " border: 1px outset  palette(shadow );"
                 "%1"
                 "}"
                 "QToolButton#PlayButton{"
-                " border: 1px solid palette(shadow);"
+                " border: 1px outset  palette(shadow );"
                 "border-left-color:transparent;"
                 "border-right-color:transparent;"
                 "}"
                 "QToolButton#NextButton{"
-                " border: 1px solid palette(shadow);"
+                " border: 1px outset palette( shadow);"
                 "%2"
                 "}"
                 "QToolButton#PrevButton:hover,#PlayButton:hover,#NextButton:hover{"
@@ -294,11 +301,11 @@ int b_radius=w_radius-2;
                 "}"
                 "QToolButton#VolumeButton:hover ,#tButtonMenu:hover{"
                 // "border: 1px solid palette(highlight);"
-                "background-color:palette(shadow)"
+                "background-color:palette(highlight)"
                 "}"
                 "QToolButton#VolumeButton:pressed ,#tButtonMenu:pressed{"
                 // "border: 1px solid palette(shadow);"
-                "background-color:palette(highlight)"
+                "background-color:palette(shadow)"
                 "}").arg(leftBorder).arg(rightBorder).arg(w_radius).arg(b_radius).arg(h).arg(h-4);
     return style;
 

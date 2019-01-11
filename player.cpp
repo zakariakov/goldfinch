@@ -112,8 +112,8 @@ Player::Player(QListView *playlist, QWidget *parent)
         mPlaylistView->setEnabled(false);
     }
 
-    QTimer::singleShot(10,this,&Player::openSavedList);
-
+   // QTimer::singleShot(10,this,&Player::openSavedList);
+openSavedList();
 }
 
 Player::~Player()
@@ -189,8 +189,11 @@ void Player::addToPlaylist( QList<QUrl> &urls)
 void Player::setFile(const QString &file)
 {
     QUrl url=QUrl::fromLocalFile(file);
+      qDebug()<<"Player::setFile:"<<url;
     mPlaylist->addMedia(url);
-    playLast();
+    mPlayer->setPosition(0);
+    QTimer::singleShot(1200,this,&Player:: playLast);
+
 }
 
 //----------------------------------------------------------------------------
@@ -291,9 +294,10 @@ void Player::playLast()
     QModelIndex idx=mPlaylistModel->index( mPlaylist->mediaCount()-1,0);
     if (idx.isValid()) {
         mPlaylist->setCurrentIndex(idx.row());
+        mPlayer->setPosition(0);
         mPlayer->play();
         metaDataChanged()  ;
-        mPlayer->durationChanged(mPlayer->duration());
+        durationChanged(mPlayer->duration());
     }
 
 }
@@ -327,7 +331,7 @@ void Player::setSeek(int seconds)
 
 //----------------------------------------------------------------------------
 void Player::seek(qlonglong Offset)
-{ mPlayer->setPosition(Offset /1000);}
+{ mPlayer->setPosition(Offset);}
 
 //-----------------------------------------------------------------------------
 void Player::statusChanged(QMediaPlayer::MediaStatus status)
@@ -516,9 +520,13 @@ void Player::openSavedList()
     setduration(duration);
 
     if (mOldPos>300) {
-        mPlayer->setMuted(true);
+      //  qDebug()<<"mOldPos<<<<<<<<<<<"<<mOldPos;
+
+  mPlayer->setMuted(true);
         mPlayer->play();
-        QTimer::singleShot(700,this,&Player::setseekold);
+         mPlayer->setPosition(mOldPos);
+       QTimer::singleShot(1000,this,&Player::setseekold);
+
     }
 
 }
@@ -526,9 +534,12 @@ void Player::openSavedList()
 //-----------------------------------------------------------------------------
 void Player::setseekold()
 {
+
+    mPlayer->setPosition(mOldPos);
     mPlayer->pause();
     mPlayer->setMuted(false);
-    mPlayer->setPosition(mOldPos);
+
+     qDebug()<<"mPlayer<<<<<<<<<<<"<<mPlayer->position();
     mOldPos=0;
 }
 

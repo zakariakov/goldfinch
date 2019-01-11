@@ -41,6 +41,8 @@ TreeViewAudio::TreeViewAudio()
     setEditTriggers(QAbstractItemView::NoEditTriggers);
     connect(this,SIGNAL(customContextMenuRequested(QPoint)),this,SLOT(customContextMenu(QPoint)));
     setContextMenuPolicy(Qt::CustomContextMenu);
+    if(isRightToLeft())
+    setTextElideMode(Qt::ElideNone);
 }
 
 void TreeViewAudio::resizeEvent(QResizeEvent *event)

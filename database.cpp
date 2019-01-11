@@ -1,4 +1,4 @@
-/***************************************************************************
+﻿/***************************************************************************
  *      Project created by QtCreator 2018-06-01T17:15:24                   *
  *                                                                         *
  *    goldfinch Copyright (C) 2014 AbouZakaria <yahiaui@gmail.com>         *
@@ -89,21 +89,29 @@ void DataBase::openDataBase()
                "'modified' TEXT"
                ");");
 
- query.exec("CREATE UNIQUE INDEX `idx` ON `books` ( `path`	ASC)");
+     query.exec("CREATE UNIQUE INDEX `idx` ON `books` ( `path`	ASC)");
 
-
+     query.exec("CREATE TABLE 'main'.'albums' ("
+                "'title'  PRIMARY KEY  NOT NULL,"
+                "'path' TEXT"
+                ");");
     //  query.exec("CREATE UNIQUE INDEX `index_nom` ON `table` (`colonne1`)");
 }
+
 bool  DataBase::clearDatabase()
 {
      QSqlQuery query(instance()->db);
     QString  txt="DROP TABLE books";
+     QString  txt2="DROP TABLE albums";
     if(query.exec(txt)){
+        query.exec(txt2);
         openDataBase();
         return true;
     } else{
         qDebug()<<"DataBase::clearDatabase::"<<query.lastError().text();
     }
+
+
     return false;
 }
 
@@ -191,7 +199,7 @@ bool DataBase::removeSong(const QString &path)
     if(query.exec(text))
         return true;
     else
-        qDebug()<<query.lastError().text();
+        qDebug()<<"DataBase::removeSong"<<query.lastError().text();
     return false;
 }
 //_____________________________________________________________________
@@ -248,6 +256,44 @@ void  DataBase::addNewSong(const QString &title,   const QString &artist,
         qDebug()<< query.lastError().text();
     }
 }
+
+ void  DataBase::addNewAlbumImgPath(const QString &title,const QString &path)
+ {
+     QSqlQuery query(instance()->db);
+     QString txt=QString("insert into albums values('%1','%2')")
+             .arg(inTxt(title))
+             .arg(inTxt(path))
+             ;
+
+
+
+     if(query.exec(txt)){
+         // qDebug()<<"add new song"<<title<<artist<<album<<genre<<path<<duration<<favo<<tags;
+     }else{
+         QString txt=QString("UPDATE albums "
+                             " SET %1 ='%2' "
+                             " WHERE title='%3' ")
+                 .arg(COL_S_PATH).arg(inTxt(path)).arg(inTxt(title));
+         query.exec(txt);
+         qDebug()<<"addNewAlbumImgPath"<< txt;
+         qDebug()<<"addNewAlbumImgPath"<< query.lastError().text();
+     }
+
+ }
+
+ QString  DataBase::getAlbumImgPath(const QString &title)
+ {
+     QString   txt=QString("select path from albums WHERE title='%1'")
+             .arg(inTxt(title));
+     QSqlQuery query(instance()->db);
+     query.exec(txt);
+     while(query.next())
+     {
+         QString txt=outTxt(query.value(0).toString());
+         return txt;
+     }
+     return QString();
+ }
 
 bool DataBase::updateSong(const QString &title,   const QString &artist,
                           const QString &album,   const QString &genre,

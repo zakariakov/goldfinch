@@ -22,7 +22,7 @@
 #include "tumb.h"
 #include <QImageReader>
 #include <QDir>
-//#include <QDebug>
+#include <QDebug>
 #include <QPainter>
 #include <QApplication>
 #include <QBitmap>
@@ -87,7 +87,7 @@ QPixmap pix=QPixmap(iconPath).scaled(size,size,Qt::KeepAspectRatio,Qt::SmoothTra
 
 QString Tumb::imageAlbumPath(const QString &title,const QString &dirPath)
 {
-    //qDebug()<<"Art"<<title<<dirPath;
+   qDebug()<<"Art"<<title<<dirPath;
     // Imge from user in cache
     // QString title=index.data().toString()+".jpg";
     if(QFile::exists(CACHE_ALBUM+"/"+title+".jpg"))

@@ -298,6 +298,7 @@ void MediaUpdate::removelast(const QString &key){
 
 void  MediaUpdate::addupdates(const QString file)
 {
+
     if(!listFiles.contains(file)&& !file.isEmpty())
        listFiles.append(file);
 
@@ -348,7 +349,8 @@ void Thread::run()
        QFileInfo fi(mFile);
 //       QSettings s(CACHE+"/albums",QSettings::IniFormat);
 //       s.setValue( map.value(COL_S_ALBUM).toString(),fi.absolutePath());
-Setting::setAlbumImgPath( map.value(COL_S_ALBUM).toString(),fi.absolutePath());
+      // Setting::setAlbumImgPath( map.value(COL_S_ALBUM).toString(),fi);
+        DataBase::addNewAlbumImgPath(map.value(COL_S_ALBUM).toString(),fi.absolutePath());
    }
 
 

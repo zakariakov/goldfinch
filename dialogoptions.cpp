@@ -91,6 +91,7 @@ DialogOptions::DialogOptions(QWidget *parent) :
     ui->checkBoxNotify->setChecked(settings.value("ShowNotification",false).toBool());
     ui->comboBoxStyls->setCurrentText(settings.value("Style").toString());
     ui->checkBoxTrayIcon->setChecked(settings.value("TrayIcon",true).toBool());
+    ui->checkBoxShowMenu->setChecked(settings.value("ShowMenu",false).toBool());
 
     QLocale local(settings.value("Language").toString());
        ui->comboBoxLanguage->setCurrentText(local.nativeLanguageName());
@@ -207,4 +208,12 @@ void DialogOptions::on_comboBoxLanguage_activated(const QString &arg1)
            settings.beginGroup("Window");
            settings.setValue("Language",ui->comboBoxLanguage->currentData().toString());
            settings.endGroup();
+}
+
+void DialogOptions::on_checkBoxShowMenu_toggled(bool checked)
+{
+    QSettings settings;
+        settings.beginGroup("Window");
+        settings.setValue("ShowMenu",checked);
+        settings.endGroup();
 }

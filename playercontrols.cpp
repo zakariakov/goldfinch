@@ -83,7 +83,7 @@ PlayerControls::PlayerControls(QWidget *parent)
 //    connect(ACtions::instance(), &ACtions::previous, this, &PlayerControls::previous);
 
     QBoxLayout *layout = new QHBoxLayout;
-    layout->setMargin(0);
+    layout->setMargin(6);
     layout->setSpacing(0);
 
     layout->addWidget(m_previousButton);

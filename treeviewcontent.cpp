@@ -25,4 +25,6 @@ TreeViewContent::TreeViewContent()
 {
 setEditTriggers(QAbstractItemView::NoEditTriggers);
 setFrameShape(QFrame::NoFrame);
+if(isRightToLeft())
+setTextElideMode(Qt::ElideNone);
 }

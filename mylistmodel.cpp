@@ -92,8 +92,8 @@ void MyListModel::chargeCategory(QString curentName, int curent, int child,int p
         item->setData(QVariant::fromValue(Iditoring()),Qt::EditRole);
 
         int favo=Setting::albumIsFavorited(title);
-        QString imgPath=Setting::albumImgPath(title);
-
+     //   QString imgPath=Setting::albumImgPath(title);
+ QString imgPath=DataBase::getAlbumImgPath(title);
         //  QString imgPath=s.value(title).toString();
         item->setData(favo,USER_RATED);
         item->setData(imgPath,USER_IMGPATH);
@@ -129,7 +129,8 @@ void MyListModel::chargeFavoritedAlbum()
        item->setData(QVariant::fromValue(Iditoring()),Qt::EditRole);
 
         bool favo=Setting::albumIsFavorited(title);
-        QString imgPath=Setting::albumImgPath(title);
+       // QString imgPath=Setting::albumImgPath(title);
+        QString imgPath=DataBase::getAlbumImgPath(title);
         //  QString imgPath=s.value(title).toString();
         item->setData(favo,USER_RATED);
         item->setData(imgPath,USER_IMGPATH);

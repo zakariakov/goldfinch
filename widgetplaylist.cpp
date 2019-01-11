@@ -117,10 +117,17 @@ WidgetPlayList::WidgetPlayList(QWidget *parent) : QWidget(parent)
     hLayout->addWidget(tbRemoveItem);
     hLayout->addSpacing(5);
 
-    QVBoxLayout *vLayout = new QVBoxLayout;
-    vLayout->setMargin(0);
+   QFrame *line = new QFrame;
+    line->setFrameShape(QFrame::HLine);
+    line->setFrameShadow(QFrame::Sunken);
+
+
+    vLayout = new QVBoxLayout;
+    vLayout->setMargin(2);
+     vLayout->setSpacing(0);
     vLayout->addLayout(hLayout);
     vLayout->addWidget(mPlayListView);
+    vLayout->addWidget(line);
 
     setLayout(vLayout);
 mPlayListView->setContextMenuPolicy(Qt::CustomContextMenu);

@@ -105,7 +105,7 @@ private:
 
     //!
     bool mShowNotification=false;
-
+QToolButton *tButtonMenu;
 private slots:
     //! جلب النافذة الى الاعلى
     void showRaise(){showNormal();raise();}
@@ -181,6 +181,7 @@ private slots:
     void saveSettings();
 
     void showSettings();
+
 };
 
 #endif // MAINWINDOW_H

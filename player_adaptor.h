@@ -54,7 +54,7 @@ class MainAdaptor: public QDBusAbstractAdaptor
                 "    <property name=\"CanRaise\" type=\"b\" access=\"read\" />\n"
                 "    <method name=\"Quit\" />\n"
                  "    <method name=\"Raise\" />\n"
-
+                 "    <method name=\"Hide\" />\n"
                 "  </interface>\n"
                 )
 public:
@@ -65,6 +65,7 @@ public Q_SLOTS: // METHODS
 
     void Quit();
     void Raise();
+    void Hide();
     bool CanQuit() {return true;}
     bool CanRaise(){return true;}
 
@@ -135,7 +136,7 @@ public:
     virtual ~PlayerAdaptor();
 
 Q_SIGNALS: // SIGNALS
-    void Seeked(qint64);
+    void Seeked(qlonglong);
 
 public Q_SLOTS: // METHODS
 

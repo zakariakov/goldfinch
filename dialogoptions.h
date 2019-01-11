@@ -56,6 +56,8 @@ private slots:
 
     void on_comboBoxLanguage_activated(const QString &arg1);
 
+    void on_checkBoxShowMenu_toggled(bool checked);
+
 private:
     Ui::DialogOptions *ui;
 };

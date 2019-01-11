@@ -22,6 +22,8 @@
 #include "setting.h"
 #include "defines.h"
 #include <QDir>
+#include <QDebug>
+#include <QUrl>
 Setting::Setting(QObject *parent ):QSettings(parent)
 {
 }
@@ -67,15 +69,19 @@ QStringList  Setting::favoretedAlbum()
 QString Setting::albumImgPath(const QString &title)
 {
   QSettings s(CACHE+"/albums",QSettings::IniFormat);
-  //         QSettings s(APP_NAME,"albums");
+s.setIniCodec("UTF_8");
+     //   qDebug()<<"albumImgPath"<<title<<s.value(title).toString().replace("%"," ");
+
     return s.value(title).toString();
 
 }
 
-void Setting::setAlbumImgPath(const QString &album,const QString &file)
+void Setting::setAlbumImgPath(const QString &album,const QFileInfo &file)
    {
     QSettings s(CACHE+"/albums",QSettings::IniFormat);
-    s.setValue( album,file);
+    s.setIniCodec("UTF_8");
+
+    s.setValue( album,file.absolutePath());
    }
 
 

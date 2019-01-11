@@ -66,6 +66,9 @@ signals:
     void infoChanged(QString);
     void durationChanged(qint64 duration);
     void positionChanged(qint64 progress);
+    void appCloseChanged();
+    void appRaiseChanged();
+    void appHideChanged();
 //    void updateSong(QVariantMap,QString);
 // void propertiesChanged(QString,QVariantMap,QStringList);
 
@@ -76,6 +79,9 @@ public slots:
   void  setVolumeMuteUnmute(bool mute){mPlayer->setMuted(mute);}
 
     // dbus
+    void appHide()  {emit appHideChanged();}
+    void appQuit()  {emit appCloseChanged();}
+    void showRaise(){emit appRaiseChanged();}
     void play()   {    mPlayer->play();    }
     void pause(){   mPlayer->pause();  }
     void stop()  {    mPlayer->stop();    }

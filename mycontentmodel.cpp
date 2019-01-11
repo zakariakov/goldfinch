@@ -70,7 +70,8 @@ void MyContentModel::chargeCategory(int root, int child, int children)
         if(root==COL_I_ALBUM){
 //            QSettings s(CACHE+"/albums",QSettings::IniFormat);
 //            QString imgPath=s.value(name).toString();
-              QString imgPath=Setting::albumImgPath(name);
+            //  QString imgPath=Setting::albumImgPath(name);
+              QString imgPath=DataBase::getAlbumImgPath(name);
             item->setData(imgPath,USER_IMGPATH);
             //  item->setIcon(QIcon(":/icons/cover-16"));
             item->setIcon(Tumb::icon(I_ALBUM_SMALL));
@@ -145,7 +146,8 @@ QList<QStandardItem *> MyContentModel::addChilds(QString prentName, int parentCo
         if(child==COL_I_ALBUM){
 //            QSettings s(CACHE+"/albums",QSettings::IniFormat);
 //            QString imgPath=s.value(name).toString();
-              QString imgPath=Setting::albumImgPath(name);
+             // QString imgPath=Setting::albumImgPath(name);
+               QString imgPath=DataBase::getAlbumImgPath(name);
             item->setData(imgPath,USER_IMGPATH);
             item->setIcon(Tumb::icon(I_ALBUM_SMALL));
         }else  if(child==COL_I_ARTIST){

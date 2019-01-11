@@ -36,11 +36,13 @@ MainAdaptor::~MainAdaptor()
 }
 
 void MainAdaptor:: Quit()
-{  QMetaObject::invokeMethod(parent()->parent()->parent()->parent(), "close"); }
+{  QMetaObject::invokeMethod(parent(), "appQuit"); }
 
 void MainAdaptor:: Raise()
-{  QMetaObject::invokeMethod(parent()->parent()->parent()->parent(), "showRaise"); }
+{  QMetaObject::invokeMethod(parent(), "showRaise"); }
 
+void MainAdaptor:: Hide()
+{  QMetaObject::invokeMethod(parent(), "appHide"); }
 
 //----------------------------------------------------------PlayerAdaptor
 PlayerAdaptor::PlayerAdaptor(QObject *parent)
@@ -67,7 +69,7 @@ void PlayerAdaptor::Seek(qlonglong Offset)
 void PlayerAdaptor::SetPosition(const QDBusObjectPath &TrackId, qlonglong Position)
 {
      qDebug()<<"PlayerAdaptor::SetPosition========================"<<Position<<&TrackId;
- //   Q_UNUSED(TrackId);
+    Q_UNUSED(TrackId);
       QMetaObject::invokeMethod(parent(), "seek", Q_ARG(qlonglong, Position));
 }
 
@@ -178,7 +180,7 @@ void PlayerAdaptor::propertiesChanged(QVariantMap changedProps)
     signal << QStringList();
 
     if (QDBusConnection::sessionBus().send(signal))
-        qDebug()<<"PlayerAdaptor::propertiesChanged :signal emited"<<changedProps;
+        qDebug()<<"PlayerAdaptor::propertiesChanged :signal emited"/*<<changedProps*/;
     else
         qDebug()<<"PlayerAdaptor::propertiesChanged :signal No Emited";
 }

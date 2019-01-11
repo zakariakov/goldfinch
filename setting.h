@@ -24,6 +24,7 @@
 
 #include <QObject>
 #include <QSettings>
+#include <QFileInfo>
 class Setting : public QSettings
 {
     Q_OBJECT
@@ -33,7 +34,7 @@ public:
     static  void             setAlbumFavo(const QString &title,bool favo);
     static  bool             albumIsFavorited(const QString &title);
     static  QString        albumImgPath(const QString &title);
-    static  void             setAlbumImgPath(const QString &album, const QString &file);
+    static  void             setAlbumImgPath(const QString &album, const QFileInfo &file);
     static  QStringList  favoretedAlbum();
    static  void            saveRecent(QVariantMap map, int index);
    static  QVariantMap          getRecentMap();

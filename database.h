@@ -60,6 +60,7 @@ public:
    static  QList<QVariantMap> searchAudios(int col ,const QString &text);
 
    static QVariantMap filePropery(const QString & file);
+
 signals:
 
 public slots:
@@ -72,6 +73,10 @@ public slots:
     static void  addNewSong(const QString &title,const QString &artist,
                             const QString &album,const QString &genre,
                             const QString &path, const QString &duration);
+
+    static void  addNewAlbumImgPath(const QString &title,const QString &path);
+ static QString  getAlbumImgPath(const QString &title);
+
     //! حذف مسار من البيانلت
     static bool removeSong(const QString &path);
 

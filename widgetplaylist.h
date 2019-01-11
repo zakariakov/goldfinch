@@ -27,7 +27,7 @@
 #include <QToolButton>
 #include <QListView>
 #include <QMenu>
-
+#include <QVBoxLayout>
 class WidgetPlayList : public QWidget
 {
     Q_OBJECT
@@ -35,12 +35,14 @@ public:
     explicit WidgetPlayList(QWidget *parent = nullptr);
 
     QListView *playListView(){return mPlayListView;}
+      void addWidget(QWidget *w){vLayout->addWidget(w);}
 signals:
     void rmovePlaylistItem(QModelIndex);
     void movCurentItem(int,int);
     void cleanList();
     void playbackModeChanged(int);
     void getPropperty(bool,const QString &);
+
 public slots:
   //  void setupIcons();
 private slots:
@@ -60,7 +62,7 @@ private:
     QToolButton *tbPlayMode;
 
     QListView *mPlayListView;
-
+  QVBoxLayout *vLayout ;
 
 //    QActionGroup *actGroup ;
 //    QAction *actPlayOne;

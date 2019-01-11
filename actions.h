@@ -57,7 +57,7 @@ public:
 
 
     //-- Style
-    static QString stylShete(int h,int tb_h);
+    static QString stylShete(int h);
 signals:
     //--  playBack
     void play();
