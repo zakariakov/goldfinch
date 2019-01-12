@@ -35,13 +35,14 @@ void help()
     puts("goldfinch v: 0.1 \n" );
     puts("OPTION:\n");
     puts(" -h --help        Print this help.");
-    puts(" -play        ");
-    puts(" -Pause       ");
-    puts(" -playpause   ");
-    puts(" -next        ");
-    puts(" -previous    ");
-    puts(" -hide        ");
-    puts(" -raise       ");
+    puts(" -play        Play curent song");
+    puts(" -pause       Pause curent song");
+    puts(" -pp          play/pause curent song");
+    puts(" -next        Next song");
+    puts(" -prev        previous song");
+    puts(" -hide        Hide window");
+    puts(" -showhiden   Show window hiden");
+    puts(" -raise       Show and raise window");
 
 }
 
@@ -64,7 +65,7 @@ bool next=false;
 bool previous=false;
 bool hide=false;
 bool raise=false;
-
+bool showhiden=false;
     if(args.count()>1)
     {
         if(args.at(1)=="-h"||args.at(1)=="--help"){
@@ -73,11 +74,12 @@ bool raise=false;
         }
         else if(args.at(1)=="-play")     play=true;
         else if(args.at(1)=="-pause")    pause=true;
-        else if(args.at(1)=="-playpause")playpause=true;
+        else if(args.at(1)=="-pp")playpause=true;
         else if(args.at(1)=="-next")     next=true;
-        else if(args.at(1)=="-previous") previous=true;
+        else if(args.at(1)=="-prev") previous=true;
         else if(args.at(1)=="-hide")     hide=true;
         else if(args.at(1)=="-raise")    raise=true;
+        else if(args.at(1)=="-showhiden")    showhiden=true;
 
         else{
 //            QString str;
@@ -174,7 +176,10 @@ if(!pathUrl.isEmpty()){
     w.setUrl(pathUrl.toLocalFile());
   qDebug()<<"Main url2:"<<pathUrl;
 }
- w.show();
+if(showhiden)
+    w.hide();
+else
+     w.show();
 
 
 
