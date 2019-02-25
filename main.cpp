@@ -42,8 +42,7 @@ void help()
     puts(" -prev        previous song");
     puts(" -hide        Hide window");
     puts(" -showhiden   Show window hiden");
-    puts(" -raise       Show and raise window");
-
+    puts(" -togglehide  Toggle show/hide window");
 }
 
 int main(int argc, char *argv[])
@@ -58,19 +57,20 @@ int main(int argc, char *argv[])
     //-----------------------------------------------------------------ARGUMENTS
     QStringList args = a.arguments();
     QUrl  pathUrl;
-bool play=false;
-bool pause=false;
-bool playpause=false;
-bool next=false;
-bool previous=false;
-bool hide=false;
-bool raise=false;
-bool showhiden=false;
+    bool play=false;
+    bool pause=false;
+    bool playpause=false;
+    bool next=false;
+    bool previous=false;
+    bool hide=false;
+   // bool raise=false;
+    bool showhiden=false;
+    bool toggleHide=false;
     if(args.count()>1)
     {
         if(args.at(1)=="-h"||args.at(1)=="--help"){
-           help();
-           return 0;
+            help();
+            return 0;
         }
         else if(args.at(1)=="-play")     play=true;
         else if(args.at(1)=="-pause")    pause=true;
@@ -78,14 +78,14 @@ bool showhiden=false;
         else if(args.at(1)=="-next")     next=true;
         else if(args.at(1)=="-prev") previous=true;
         else if(args.at(1)=="-hide")     hide=true;
-        else if(args.at(1)=="-raise")    raise=true;
+       /// else if(args.at(1)=="-raise")    raise=true;
         else if(args.at(1)=="-showhiden")    showhiden=true;
-
+        else if(args.at(1)=="-togglehide")    toggleHide=true;
         else{
-//            QString str;
-//            for (int i = 1; i < args.count(); ++i) {
-//                str+=args.at(i)+" ";
-//            }
+            //            QString str;
+            //            for (int i = 1; i < args.count(); ++i) {
+            //                str+=args.at(i)+" ";
+            //            }
             pathUrl=QUrl::fromLocalFile(args.at(1));
             qDebug()<<"Main url:"<<pathUrl;
         }
@@ -119,14 +119,15 @@ bool showhiden=false;
             dbus.call("SetUrl",pathUrl.toLocalFile());
         }
         QDBusInterface dbus2("org.mpris.MediaPlayer2.goldfinch",
-                            "/org/mpris/MediaPlayer2",
-                            "org.mpris.MediaPlayer2");
-         if (!dbus2.isValid()) { printf ("QDBusInterface 2 is not valid!");return 0; }
+                             "/org/mpris/MediaPlayer2",
+                             "org.mpris.MediaPlayer2");
+        if (!dbus2.isValid()) { printf ("QDBusInterface 2 is not valid!");return 0; }
+        if(toggleHide) { dbus2.call("ToggleHide");return 0;}
 
-      if(hide) dbus2.call("Hide");
-      else     dbus2.call("Raise");
+        if(hide) dbus2.call("Hide");
+        else     dbus2.call("Raise");
 
-       return 0;
+        return 0;
     }
 
     //-----------------------------------------------------------------ICONS
@@ -139,12 +140,12 @@ bool showhiden=false;
     QString dirPath=  appDir.absolutePath()+"/share/"+a.applicationName();
 
     QString   localeSymbol = QLocale::system().name().section("_",0,0);
-       QSettings settings;
-        settings.beginGroup("Window");
-        QString userLocal=settings.value("Language").toString();
-        settings.endGroup();
+    QSettings settings;
+    settings.beginGroup("Window");
+    QString userLocal=settings.value("Language").toString();
+    settings.endGroup();
 
-        if(!userLocal.isEmpty())    localeSymbol=userLocal;
+    if(!userLocal.isEmpty())    localeSymbol=userLocal;
 
 
     /// اللغة الحالية لجميع البرنامج
@@ -165,23 +166,22 @@ bool showhiden=false;
     a.installTranslator(&translator);
     QLocale lx=QLocale(localeSymbol);
     a.setLayoutDirection(lx.textDirection());
-  //   a.setLayoutDirection(Qt::LeftToRight);
+    //   a.setLayoutDirection(Qt::LeftToRight);
 
     //-----------------------------------------------------------------EXEC
     MainWindow w;
-//     new PlayerAdaptor(w.player());
-//          new MainAdaptor(w.player());
-//         connection.registerObject(QString("/org/mpris/MediaPlayer2"),QString("Player"), w.player());
-if(!pathUrl.isEmpty()){
-    w.setUrl(pathUrl.toLocalFile());
-  qDebug()<<"Main url2:"<<pathUrl;
-}
-if(showhiden)
-    w.hide();
-else
-     w.show();
+    //     new PlayerAdaptor(w.player());
+    //          new MainAdaptor(w.player());
+    //         connection.registerObject(QString("/org/mpris/MediaPlayer2"),QString("Player"), w.player());
+    if(!pathUrl.isEmpty()){
+        w.setUrl(pathUrl.toLocalFile());
+        qDebug()<<"Main url2:"<<pathUrl;
+    }
 
-
+    if(showhiden)
+        w.hide();
+    else
+        w.show();
 
     return a.exec();
 }

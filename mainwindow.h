@@ -176,6 +176,8 @@ private slots:
 
     void showPropertyDialog(bool isRead, const QString &file);
 
+    void toggleHide(){isHidden() ? show() : hide();}
+
     void onQuit();
 
     void saveSettings();

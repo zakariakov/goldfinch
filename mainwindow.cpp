@@ -162,6 +162,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(mPlayer,     &Player::appCloseChanged,            this,  &MainWindow::onQuit);
     connect(mPlayer,     &Player::appRaiseChanged,            this,&MainWindow::showRaise);
     connect(mPlayer,     &Player::appHideChanged,             this,&MainWindow::hide);
+    connect(mPlayer,     &Player::apptoggleHideChanged,       this,&MainWindow::toggleHide);
 
     connect(mPlayer,     &Player::titleChanged,               this      ,  &MainWindow::setwTitle);
 

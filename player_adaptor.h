@@ -55,6 +55,7 @@ class MainAdaptor: public QDBusAbstractAdaptor
                 "    <method name=\"Quit\" />\n"
                  "    <method name=\"Raise\" />\n"
                  "    <method name=\"Hide\" />\n"
+                "    <method name=\"ToggleHide\" />\n"
                 "  </interface>\n"
                 )
 public:
@@ -66,6 +67,7 @@ public Q_SLOTS: // METHODS
     void Quit();
     void Raise();
     void Hide();
+    void ToggleHide();
     bool CanQuit() {return true;}
     bool CanRaise(){return true;}
 

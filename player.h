@@ -69,6 +69,7 @@ signals:
     void appCloseChanged();
     void appRaiseChanged();
     void appHideChanged();
+    void apptoggleHideChanged();
 //    void updateSong(QVariantMap,QString);
 // void propertiesChanged(QString,QVariantMap,QStringList);
 
@@ -82,6 +83,7 @@ public slots:
     void appHide()  {emit appHideChanged();}
     void appQuit()  {emit appCloseChanged();}
     void showRaise(){emit appRaiseChanged();}
+    void toggleHide(){emit apptoggleHideChanged();}
     void play()   {    mPlayer->play();    }
     void pause(){   mPlayer->pause();  }
     void stop()  {    mPlayer->stop();    }

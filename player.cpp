@@ -405,19 +405,19 @@ void Player::stateChanged(QMediaPlayer::State state)
     switch (state) {
     case QMediaPlayer::StoppedState:
         ACtions::setPlayIcon();
-        mPlaybackStatus=tr("Stopped");
+        mPlaybackStatus=("Stopped");
         pStatu="Stopped";
         emit playBackChanged(QString("%1 | %2").arg(mTrackInfo).arg(tr("Stopped")));
         break;
     case QMediaPlayer::PlayingState:
         ACtions::setPauseIcon();
-        mPlaybackStatus=tr("Playing");
+        mPlaybackStatus=("Playing");
         pStatu="Playing";
         emit playBackChanged(QString("%1 | %2").arg(mTrackInfo).arg(tr("Playing")));
         break;
     case QMediaPlayer::PausedState:
         ACtions::setPlayIcon();
-        mPlaybackStatus=tr("Paused");
+        mPlaybackStatus=("Paused");
         pStatu="Paused";
         emit playBackChanged(QString("%1 | %2").arg(mTrackInfo).arg(tr("Paused")));
         break;

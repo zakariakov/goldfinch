@@ -44,6 +44,9 @@ void MainAdaptor:: Raise()
 void MainAdaptor:: Hide()
 {  QMetaObject::invokeMethod(parent(), "appHide"); }
 
+void MainAdaptor:: ToggleHide()
+{  QMetaObject::invokeMethod(parent(), "toggleHide"); }
+
 //----------------------------------------------------------PlayerAdaptor
 PlayerAdaptor::PlayerAdaptor(QObject *parent)
     : QDBusAbstractAdaptor(parent)
