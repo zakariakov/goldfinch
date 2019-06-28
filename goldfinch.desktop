@@ -17,7 +17,7 @@ Comment[ar]=تشغيل وتنظيم مجموعة الموسيقى الخاصة �
 Comment[fr]=Lit et organise votre collection de musique
 Comment[es]=Reproduce y organiza tu colección de música
 
-Exec=goldfinch
+Exec=goldfinch %F
 TryExec=goldfinch
 Icon=goldfinch
 Categories=AudioVideo;Audio;Player;Qt;
