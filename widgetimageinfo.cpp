@@ -34,7 +34,7 @@ setToolTip(mTitle);
 void WidgetImageInfo::paintEvent(QPaintEvent *event)
 {
 
-    Q_UNUSED(event);
+    Q_UNUSED(event)
 
     QPainter painter(this);
     QRect rect=this->rect();
@@ -51,33 +51,34 @@ void WidgetImageInfo::paintEvent(QPaintEvent *event)
     if(isLeftToRight())txtOption.setAlignment(Qt::AlignLeft|Qt::AlignVCenter);
     else txtOption.setAlignment(Qt::AlignRight|Qt::AlignVCenter);
     txtOption.setWrapMode(QTextOption::NoWrap);
+    QImage imgG=mImage.scaled(rect.height(),rect.height(),Qt::KeepAspectRatio,Qt::SmoothTransformation);
 
     if(mHorisontal){
 
-        int _w=rect.width()-mImage48.rect().width();
-        int _h=rect.height()/2;
+      int _w=rect.width()-imgG.rect().width();
+//        int _h=rect.height()/2;
         QFontMetrics fm(font);
-        QRect textRect;
+ //       QRect textRect;
 
         if(isLeftToRight()){
-            painter.drawImage(mImage48.rect(),mImage48,mImage48.rect());
-            textRect=QRect(mImage48.rect().width()+3,0,_w,_h);
+            painter.drawImage(imgG.rect(),imgG,imgG.rect());
+           // textRect=QRect(imgG.rect().width()+3,0,_w,_h);
         }else{
-            painter.drawImage(QPoint(_w,0),mImage48,mImage48.rect());
-            textRect=QRect(0,0,_w-3,_h);
+            painter.drawImage(QPoint(_w,0),imgG,imgG.rect());
+           // textRect=QRect(0,0,_w-3,_h);
         }
 
         // TITLE
-        painter.setPen(txtcolor);
-        painter.setFont(font);
-        QString title=fm.elidedText(mTitle,Qt::ElideRight,_w);
-        painter.drawText(textRect,title, txtOption);
-        // INFO
-        textRect.moveTop(_h);
-        font.setBold(false);
-        painter.setFont(font);
-        QString info=fm.elidedText(mInfo,Qt::ElideRight,_w);
-        painter.drawText(textRect, info,txtOption);
+//        painter.setPen(txtcolor);
+//        painter.setFont(font);
+//        QString title=fm.elidedText(mTitle,Qt::ElideRight,_w);
+//        painter.drawText(textRect,title, txtOption);
+//        // INFO
+//        textRect.moveTop(_h);
+//        font.setBold(false);
+//        painter.setFont(font);
+//        QString info=fm.elidedText(mInfo,Qt::ElideRight,_w);
+//        painter.drawText(textRect, info,txtOption);
 
         return;
     }

@@ -36,7 +36,7 @@
 #include "playercontrols.h"
 #include "setting.h"
 #include "widgetplaylist.h"
-#include "widgetimageinfo.h"
+//#include "widgetimageinfo.h"
 #include "searchbar.h"
 #include <QSystemTrayIcon>
 namespace Ui {
@@ -84,7 +84,7 @@ private:
     //! وحدة القراءة
     Player *mPlayer;
     //! واجهة عرض صورة الالبوم والمعلومات
-    WidgetImageInfo *mImageInfo;
+  //  WidgetImageInfo *mImageInfo;
     //! تحديث المقطوعات من الجهاز
     MediaUpdate *mMediaUpdate;
     //! وحدة التحكم في الاضافة والتحديث

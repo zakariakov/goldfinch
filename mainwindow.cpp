@@ -1,4 +1,4 @@
-/***************************************************************************
+﻿/***************************************************************************
  *      Project created by QtCreator 2018-06-01T17:15:24                   *
  *                                                                         *
  *    goldfinch Copyright (C) 2014 AbouZakaria <yahiaui@gmail.com>         *
@@ -51,7 +51,7 @@ MainWindow::MainWindow(QWidget *parent) :
     mTVAudio=       new TreeViewAudio;
     mLIDelegate=    new ListItemDelegate;
     mTItemDelegate= new TreeItemDelegate;
-    mImageInfo=     new WidgetImageInfo;
+   // mImageInfo=     new WidgetImageInfo;
     mSearchBar=     new SearchBar(this);
     mWPlayList=     new WidgetPlayList;
     mPlayer=        new Player(mWPlayList->playListView(),this);
@@ -120,11 +120,13 @@ MainWindow::MainWindow(QWidget *parent) :
 
     mTVAudio->setModel(mMyListModel);
 
-    ui->hlLayoutAudios->addWidget(mTVAudio);
+    ui->verticalLayoutAudio->addWidget(mTVAudio);
 
     ui->splitter->addWidget(mWPlayList);
 
 // ui->hLayoutControle->insertWidget(0,mPlayer);
+    // ui->toolBar->setMinimumWidth(550);
+  //  ui->toolBar->addWidget(mImageInfo);
   ui->toolBar->addWidget(mPlayer);
   ui->toolBar->addWidget(tButtonMenu);
         ui->vLayoutViewAll->insertWidget(0,mSearchBar);
@@ -157,8 +159,9 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(mWPlayList,  &WidgetPlayList::playbackModeChanged,mPlayer,    &Player::setPlaybackMode);
     connect(mWPlayList,  &WidgetPlayList::getPropperty,       this,       &MainWindow::showPropertyDialog);
 
-    connect(mPlayer,     &Player::imageChanged,               mImageInfo,  &WidgetImageInfo::setImage);
-    connect(mPlayer,     &Player::titleChanged,               mImageInfo,  &WidgetImageInfo::setTitle);
+ //   connect(mPlayer,     &Player::imageChanged,               mImageInfo,  &WidgetImageInfo::setImage);
+   // connect(mPlayer,     &Player::titleChanged,               mImageInfo,  &WidgetImageInfo::setTitle);
+
     connect(mPlayer,     &Player::appCloseChanged,            this,  &MainWindow::onQuit);
     connect(mPlayer,     &Player::appRaiseChanged,            this,&MainWindow::showRaise);
     connect(mPlayer,     &Player::appHideChanged,             this,&MainWindow::hide);
@@ -210,36 +213,46 @@ MainWindow::MainWindow(QWidget *parent) :
 
 void MainWindow::switchViewMode(bool mini)
 {
+    qDebug()<<"toolbar"<<ui->toolBar->sizeHint().height();
+    qDebug()<<"toolbar"<<ui->toolBar->contentsMargins();
+     qDebug()<<"toolbar"<<ui->menuBar->palette().color(QPalette::Window).name();
+     int _h=ui->toolBar->sizeHint().height();
     QSettings settings;
     settings.beginGroup("Window");
+ // mImageInfo->setHorizontal(true);
 
+    ACtions::swichMimiPlayerAct()->setChecked(mini);
     if(mini){
+
         settings.setValue("Geometry",this->saveGeometry());
 
         ui->widgetLibrery->setVisible(false);
         ui->statusBar->setVisible(false);
-        ui->vLayout_Center->addWidget(mImageInfo);
-        mImageInfo->setHorizontal(false);
-        mImageInfo->setMinimumSize(QSize(0,0));
+       // ui->vLayout_Center->addWidget(mImageInfo);
+       // mImageInfo->setHorizontal(false);
+       // mImageInfo->setMinimumSize(QSize(0,0));
         showNormal();
-        resize(360,360);
+        resize(550,_h);
         adjustSize();
-        resize(360,360);
+         // setSizePolicy(QSizePolicy::Preferred,QSizePolicy::Fixed);
+       resize(550,_h);
         //
     }else{
+       // setSizePolicy(QSizePolicy::Preferred,QSizePolicy::Preferred);
         restoreGeometry(settings.value("Geometry").toByteArray());
 
         ui->widgetLibrery->setVisible(true);
         ui->statusBar->setVisible(true);
         //  ui->hLayoutControle->insertWidget(0,mImageInfo);
         //     ui->vLayoutContent->addWidget(mImageInfo);
-        //     ui->toolBar->addWidget(mImageInfo);
-        mWPlayList->addWidget(mImageInfo);
-        mImageInfo->setMinimumSize(QSize(50,50));
-        mImageInfo->setHorizontal(true);
+        //ui->toolBar->addWidget(mImageInfo);
+       // mWPlayList->addWidget(mImageInfo);
+       // mImageInfo->setMinimumSize(QSize(150,50));
+//        mImageInfo->setHorizontal(true);
 
     }
-    ACtions::swichMimiPlayerAct()->setChecked(mini);
+    //mImageInfo->setMinimumSize(QSize(_h-10,_h-10));
+
     settings.endGroup();
 
 }
@@ -355,7 +368,7 @@ void MainWindow::chargeRecent()
         creatTrayIcon();
 
 
-    switchViewMode(mini);
+    switchViewMode(false);
 }
 
 // ------------------------------------------------------
@@ -885,7 +898,7 @@ void MainWindow:: creatTrayIcon()
        if(!QSystemTrayIcon::isSystemTrayAvailable())return;
     if(!mTrayIcon){
 
-    mTrayIcon= new QSystemTrayIcon(/*QIcon::fromTheme("goldfinch",*/QIcon(":/icons/goldfinch"));
+    mTrayIcon= new QSystemTrayIcon(QIcon::fromTheme("audio-player-symbolic",QIcon(":/icons/goldfinch")));
 
     //  trayIcon= new QSystemTrayIcon;
         QMenu *trayIconMenu=new QMenu;

@@ -1,4 +1,4 @@
-/***************************************************************************
+﻿/***************************************************************************
  *      Project created by QtCreator 2018-06-01T17:15:24                   *
  *                                                                         *
  *    goldfinch Copyright (C) 2014 AbouZakaria <yahiaui@gmail.com>         *
@@ -31,16 +31,99 @@
 #include <QAudio>
 #include <QTime>
 #include <QLabel>
+#include <QTextOption>
+#include <QPainter>
+
+
+//-----------------------------------------------------------------WidgetImg
+void WidgetImg::paintEvent(QPaintEvent *event)
+{
+
+    Q_UNUSED(event)
+
+    QPainter painter(this);
+    QRect rect=this->rect();
+
+    QImage imgG=mImage.scaled(rect.height(),rect.height(),Qt::KeepAspectRatio,Qt::SmoothTransformation);
+
+    QRect imgRec=imgG.rect();
+    int _x=(rect.width()-imgRec.width())/2;
+    int _y=(rect.height()-imgRec.height())/2;
+    //painter.drawImage(imgG.rect(),imgG,rect);
+    painter.drawImage(QPoint(_x,_y),imgG,imgRec);
+
+
+}
+
+
+//-----------------------------------------------------------------WidgetInfo
+void WidgetInfo::paintEvent(QPaintEvent *event)
+{
+
+    Q_UNUSED(event)
+
+
+
+    QPainter painter(this);
+    QRect rect=this->rect();
+    QFont font=this->font();
+    font.setBold(true);
+
+    int _w=rect.width();
+    int _h=rect.height()/2;
+    QColor txtcolor=this->palette().windowText().color();
+
+    QTextOption txtOption;
+
+    if(isLeftToRight())txtOption.setAlignment(Qt::AlignLeft|Qt::AlignVCenter);
+    else txtOption.setAlignment(Qt::AlignRight|Qt::AlignVCenter);
+    txtOption.setWrapMode(QTextOption::NoWrap);
+
+
+
+
+        QFontMetrics fm(font);
+        QRect textRect;
+
+            textRect=QRect(0,0,_w,_h);
+
+
+        // TITLE
+        painter.setPen(txtcolor);
+        painter.setFont(font);
+        QString title=fm.elidedText(mTitle,Qt::ElideRight,_w);
+        painter.drawText(textRect,title, txtOption);
+        // INFO
+        textRect.moveTop(_h);
+        font.setBold(false);
+        painter.setFont(font);
+        QString info=fm.elidedText(mInfo,Qt::ElideRight,_w);
+        painter.drawText(textRect, info,txtOption);
+
+
+
+
+
+
+}
+
+//-----------------------------------------------------------------
 PlayerControls::PlayerControls(QWidget *parent)
     : QWidget(parent)
 {
-//ACtions::instance();
+
     setSizePolicy(QSizePolicy::Preferred,QSizePolicy::Preferred);
+
+    m_WidgetInfo=new WidgetInfo;
+    m_WidgetImg =new WidgetImg;
+    m_WidgetImg->setMinimumSize(QSize(50,50));
+    connect(this,&PlayerControls::imageChanged, m_WidgetImg,  &WidgetImg::setImage);
 
     m_volumeSlider = new QSlider(Qt::Horizontal, this);
     m_volumeSlider->setRange(0, 100);
     m_volumeSlider->setMaximumWidth(100);
-    m_volumeSlider->setVisible(false);
+    m_volumeSlider->setMinimumWidth(80);
+
     connect(m_volumeSlider, &QSlider::valueChanged, this, &PlayerControls::onVolumeSliderValueChanged);
 
     m_playButton = new QToolButton(this);
@@ -69,68 +152,92 @@ PlayerControls::PlayerControls(QWidget *parent)
     m_muteButton->setIconSize(QSize(16,16));
     m_muteButton->setCheckable(true);
     m_muteButton->setAutoRaise(true);
-    m_muteButton->setDefaultAction(ACtions::volumeAct());
-
-   // connect(m_muteButton, &QAbstractButton::toggled, m_volumeSlider,&QSlider::setVisible);
-    connect(ACtions::instance()->volumeAct(), &QAction::toggled, m_volumeSlider,&QSlider::setVisible);
+    m_muteButton->setDefaultAction(ACtions::muteUnmuteAct());
 
     m_slider = new Slider;
 
-    m_labelDuration = new QLabel(this);
+    m_labelDuration= new QLabel(this);
 
-//    connect(ACtions::instance(), &ACtions::playPause, this, &PlayerControls::playClicked);
-//    connect(ACtions::instance(), &ACtions::next, this, &PlayerControls::next);
-//    connect(ACtions::instance(), &ACtions::previous, this, &PlayerControls::previous);
+    QBoxLayout *vlayoutInfo = new QVBoxLayout;
+    vlayoutInfo->addWidget(m_WidgetInfo);
 
+
+    QBoxLayout *layoutDuration = new QHBoxLayout;
+    QBoxLayout *hlayout = new QHBoxLayout;
+    QBoxLayout *vlayout = new QVBoxLayout;
     QBoxLayout *layout = new QHBoxLayout;
-    layout->setMargin(6);
-    layout->setSpacing(0);
+    layoutDuration->setMargin(0);
+    hlayout->setMargin(3);
+    vlayout->setMargin(3);
+    layout->setMargin(3);
 
-    layout->addWidget(m_previousButton);
-    layout->addWidget(m_playButton);
-    layout->addWidget(m_nextButton);
-    layout->addSpacing(5);
-    layout->addWidget(m_slider);
-    layout->addWidget(m_labelDuration);
+    layoutDuration->setSpacing(0);
+    hlayout->setSpacing(0);
+    vlayout->setSpacing(0);
+   layout->setSpacing(3);
+
+    hlayout->addLayout(vlayoutInfo);
+    //   hlayout->addStretch();
+
+    hlayout->addWidget(m_previousButton);
+    hlayout->addWidget(m_playButton);
+    hlayout->addWidget(m_nextButton);
+
+    //hlayout->addStretch();
+    hlayout->addSpacing(10);
+    hlayout->addWidget(m_muteButton);
+    hlayout->addWidget(m_volumeSlider);
+
+
+
+    layoutDuration->addWidget(m_slider);
+    layoutDuration->addWidget(m_labelDuration);
+
+
+    vlayout->addLayout(hlayout);
+    layout->addSpacing(9);
+    vlayout->addLayout(layoutDuration);
+
+    layout->addWidget(m_WidgetImg);
     layout->addSpacing(3);
-    layout->addWidget(m_muteButton);
-    layout->addWidget(m_volumeSlider);
-
+    layout->addLayout(vlayout);
     setLayout(layout);
- //   setupIcons();
+    setupIcons();
 
 }
 
 //----------------------------------------
 void PlayerControls::setupIcons()
 {
-    // QColor col=this->palette().text().color();
+
     playIcon=Tumb::icon(I_PLAY);
     pauseIcon=Tumb::icon(I_PAUSE);
-  //  m_playButton->setIcon(playIcon);
-
     m_nextButton->setIcon(Tumb::icon(I_NEXT));
     m_previousButton->setIcon(Tumb::icon(I_PREV));
     m_muteButton->setIcon(Tumb::icon(I_VOLUME));
 
 }
 
+void PlayerControls::setLabTitle(const QString title, const QString info)
+{
+
+    m_WidgetInfo->setTitle(title,info);
+}
+
+
+
+void PlayerControls::setMutedChanged(bool mute)
+{
+   if(mute)
+        m_muteButton->setIcon(Tumb::icon(I_VOLUME_OF));
+   else {
+        m_muteButton->setIcon(Tumb::icon(I_VOLUME));
+   }
+}
 QMediaPlayer::State PlayerControls::state() const
 {
     return m_playerState;
 }
-
-//void PlayerControls::setState(QMediaPlayer::State state)
-//{
-//    if (state != m_playerState) {
-//        m_playerState = state;
-//        switch (state) {
-//        case QMediaPlayer::StoppedState: ACtions::setPlayIcon();  break;
-//        case QMediaPlayer::PlayingState: ACtions::setPauseIcon(); break;
-//        case QMediaPlayer::PausedState:  ACtions::setPlayIcon();  break;
-//        }
-//    }
-//}
 
 
 int PlayerControls::volume() const
@@ -156,19 +263,6 @@ bool PlayerControls::isMuted() const
     return m_playerMuted;
 }
 
-//void PlayerControls::playClicked()
-//{
-//    switch (m_playerState) {
-//    case QMediaPlayer::StoppedState:
-//    case QMediaPlayer::PausedState:
-//        emit play();
-//        break;
-//    case QMediaPlayer::PlayingState:
-//        emit pause();
-//        break;
-//    }
-//}
-
 void PlayerControls::onVolumeSliderValueChanged()
 {
     emit changeVolume(volume());
@@ -178,16 +272,15 @@ void PlayerControls::onVolumeSliderValueChanged()
 void PlayerControls::durationChanged(qint64 duration)
 {
 
-
     m_duration = duration / 1000;
     m_slider->setMaximum(QVariant(m_duration).toInt());
 }
 
 void PlayerControls::positionChanged(qint64 progress)
 {
-  //// qDebug()<<progress;
+
     QVariant value=progress / 1000;
- //   m_pos=value.toInt();
+
     if (!m_slider->isSliderDown())
         m_slider->setValue(value.toInt());
 
@@ -217,8 +310,8 @@ void PlayerControls:: setSeeked(int val)
     int value=/*m_pos+*/val;
     if(value>m_duration)value=QVariant(m_duration).toInt();
     if(value<0)value=0;
- QMetaObject::invokeMethod(parent(), "setSeek",Q_ARG(int,value));
-  //  emit seek(value*1000);
+    QMetaObject::invokeMethod(parent(), "setSeek",Q_ARG(int,value));
+
 }
 
 

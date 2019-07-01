@@ -45,15 +45,15 @@ ACtions::ACtions(QObject *parent) : QObject(parent)
 
 
     //-Volume
-    actVolumeUp     =new QAction(tr("Increase volume"));;
+    actVolumeUp     =new QAction(tr("Increase volume"));
     actVolumeUp->setShortcut(QKeySequence("Ctrl+Shift++"));
     connect(actVolumeUp,&QAction::triggered,this,&ACtions::volumeUpChanged);
 
-    actVolumeDown=new QAction(tr("Decrease volume"));;
+    actVolumeDown=new QAction(tr("Decrease volume"));
     actVolumeDown->setShortcut(QKeySequence("Ctrl+Shift+-"));
     connect(actVolumeDown,&QAction::triggered,this,&ACtions::volumeDownChanged);
 
-    actMuteUnmute=new QAction(tr("Mute/Unmute"));;
+    actMuteUnmute=new QAction(tr("Mute/Unmute"));
     actMuteUnmute->setShortcut(QKeySequence("Ctrl+Shift+M"));
     connect(actMuteUnmute,&QAction::triggered,this,&ACtions::muteUnmuteChanged);
     actMuteUnmute->setCheckable(true);

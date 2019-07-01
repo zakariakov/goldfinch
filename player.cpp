@@ -74,10 +74,12 @@ Player::Player(QListView *playlist, QWidget *parent)
 
     connect(mPlayer, &QMediaPlayer::durationChanged, mControls, &PlayerControls::durationChanged);
     connect(mPlayer, &QMediaPlayer::durationChanged, this, &Player::setduration);
+    connect(mPlayer, &QMediaPlayer::mutedChanged, mControls, &PlayerControls::setMutedChanged);
 
     connect(mPlayer, &QMediaPlayer::positionChanged, mControls, &PlayerControls::positionChanged);
     // connect(mPlayer, &QMediaPlayer::positionChanged, mPlayerAdaptor, &PlayerAdaptor::setPos);
     connect(mPlayerAdaptor, &PlayerAdaptor::Seeked, this, &Player::seek);
+
 
     connect(ACtions::instance(), &ACtions::playPause, this, &Player::playPause);
     connect(ACtions::instance(), &ACtions::next,  mPlaylist, &QMediaPlaylist::next);
@@ -94,6 +96,8 @@ Player::Player(QListView *playlist, QWidget *parent)
 
     connect(mPlayer, &QMediaPlayer::stateChanged, this, &Player::stateChanged);
     connect(mPlayer, &QMediaPlayer::volumeChanged, mControls, &PlayerControls::setVolume);
+    connect(this, &Player::titleChanged, mControls, &PlayerControls::setLabTitle);
+    connect(this, &Player::imageChanged, mControls, &PlayerControls::imageChanged);
 
     QHBoxLayout *hLayout = new QHBoxLayout;
     hLayout->setMargin(0);
@@ -401,7 +405,7 @@ void Player::playPause()
 void Player::stateChanged(QMediaPlayer::State state)
 {
 
-    QString pStatu;;
+    QString pStatu;
     switch (state) {
     case QMediaPlayer::StoppedState:
         ACtions::setPlayIcon();

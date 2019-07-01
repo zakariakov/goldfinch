@@ -26,7 +26,7 @@
 
 #include <QWidget>
 #include <QIcon>
-
+#include <QDebug>
 QT_BEGIN_NAMESPACE
 class QToolButton;
 class QAbstractButton;
@@ -36,26 +36,76 @@ class QSlider;
 class QLabel;
 QT_END_NAMESPACE
 
+//---------------------------------- WidgetInfo ---------------------------------
+class WidgetImg : public QWidget
+{
+    Q_OBJECT
+public:
+    explicit WidgetImg(){}
+    virtual void paintEvent(QPaintEvent *event);
+signals:
+
+public slots:
+    void setImage(QImage img){
+          mImage=img;
+          update();
+    }
+
+private:
+
+    QImage mImage;
+
+
+};
+//---------------------------------- WidgetInfo ---------------------------------
+class WidgetInfo : public QWidget
+{
+    Q_OBJECT
+public:
+    explicit WidgetInfo(){}
+   virtual void paintEvent(QPaintEvent *event);
+signals:
+
+public slots:
+
+    void setTitle(const QString &tit,const QString &info){
+        mTitle=tit;mInfo=info;update();
+        setToolTip(mTitle+"\n"+mInfo);
+    }
+
+private:
+    QString mTitle;
+    QString mInfo;
+};
+
+//---------------------------------- PlayerControls ---------------------------------
 class PlayerControls : public QWidget
 {
     Q_OBJECT
 
 public:
     explicit PlayerControls(QWidget *parent = nullptr);
-
+    void resizeEvent(QResizeEvent *event)
+    {
+        Q_UNUSED(event)
+        m_WidgetImg->setMinimumWidth(this->sizeHint().height()-5);
+        qDebug()<<this->sizeHint().height()-5;
+    }
     QMediaPlayer::State state() const;
 
     bool isMuted() const;
     int volume() const;
 
+
 public slots:
+
 //    void setState(QMediaPlayer::State state);
     void setVolume(int volume);
-
+ void setLabTitle(const QString title,const QString info);
      void setupIcons();
     void durationChanged(qint64 duration);
     void positionChanged(qint64 progress);
-
+    void setMutedChanged(bool mute);
 signals:
     void play();
     void pause();
@@ -65,6 +115,7 @@ signals:
     void changeVolume(int volume);
     void changeRate(qreal rate);
     void seek(int);
+    void imageChanged(QImage img);
 private slots:
   //  void playClicked();
     void onVolumeSliderValueChanged();
@@ -74,6 +125,8 @@ private slots:
      void setSeeked(int val);
 
 private:
+     WidgetInfo *m_WidgetInfo;
+     WidgetImg *m_WidgetImg;
   QToolButton *m_playButton = nullptr;
 
     QToolButton *m_nextButton = nullptr;
@@ -82,7 +135,6 @@ private:
     QAbstractSlider *m_volumeSlider = nullptr;
     Slider *m_slider = nullptr;
     QLabel *m_labelDuration = nullptr;
-
 
     QIcon playIcon;
     QIcon pauseIcon;
