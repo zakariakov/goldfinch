@@ -492,12 +492,18 @@ border: 0px;
                       <property name="toolTip">
                        <string>Add album to favorit</string>
                       </property>
+                      <property name="text">
+                       <string>Add album to favorit</string>
+                      </property>
                       <property name="icon">
                        <iconset>
                         <normaloff>:/icons/star.png</normaloff>:/icons/star.png</iconset>
                       </property>
                       <property name="checkable">
                        <bool>true</bool>
+                      </property>
+                      <property name="toolButtonStyle">
+                       <enum>Qt::ToolButtonTextBesideIcon</enum>
                       </property>
                       <property name="autoRaise">
                        <bool>true</bool>
@@ -509,6 +515,9 @@ border: 0px;
                       <property name="toolTip">
                        <string>change cover image</string>
                       </property>
+                      <property name="text">
+                       <string>change cover image</string>
+                      </property>
                       <property name="icon">
                        <iconset>
                         <normaloff>:/icons/preview.png</normaloff>:/icons/preview.png</iconset>
@@ -518,6 +527,9 @@ border: 0px;
                       </property>
                       <property name="autoExclusive">
                        <bool>true</bool>
+                      </property>
+                      <property name="toolButtonStyle">
+                       <enum>Qt::ToolButtonTextBesideIcon</enum>
                       </property>
                       <property name="autoRaise">
                        <bool>true</bool>
@@ -533,11 +545,14 @@ border: 0px;
                        <string notr="true"/>
                       </property>
                       <property name="text">
-                       <string/>
+                       <string>play curent album</string>
                       </property>
                       <property name="icon">
                        <iconset>
                         <normaloff>:/icons/play.png</normaloff>:/icons/play.png</iconset>
+                      </property>
+                      <property name="toolButtonStyle">
+                       <enum>Qt::ToolButtonTextBesideIcon</enum>
                       </property>
                       <property name="autoRaise">
                        <bool>true</bool>
@@ -549,9 +564,15 @@ border: 0px;
                       <property name="toolTip">
                        <string>Add curent Album</string>
                       </property>
+                      <property name="text">
+                       <string>Add curent Album</string>
+                      </property>
                       <property name="icon">
                        <iconset>
                         <normaloff>:/icons/album-add.png</normaloff>:/icons/album-add.png</iconset>
+                      </property>
+                      <property name="toolButtonStyle">
+                       <enum>Qt::ToolButtonTextBesideIcon</enum>
                       </property>
                       <property name="autoRaise">
                        <bool>true</bool>
@@ -590,7 +611,7 @@ border: 0px;
      <x>0</x>
      <y>0</y>
      <width>764</width>
-     <height>20</height>
+     <height>22</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
