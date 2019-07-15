@@ -43,7 +43,7 @@ public:
     static QAction  *quitAct(){return instance()->actQuit;}
     static QAction  *updateAllAct(){return instance()->actUpdateAll;}
     static QAction  *searchAct(){return instance()->actSearch;}
-
+    static QAction  *rmNonExistAct(){return instance()->actRmNonExist;}
     //-- Paylist
     static QMenu  *menuPlayBackMode(){return instance()->mnuPlayMode;}
     static QAction  *modeAct(){return instance()->actMode;}
@@ -76,7 +76,8 @@ signals:
     void openOpenUrls();
     void showSettingsClicked();
     void swichMimiPlayer(bool);
-     void updateAll( );
+     void updateAll();
+     void rmNonExist();
     void quit();
 void showSearchChanged();
 void showOptions();
@@ -107,6 +108,7 @@ private:
     QAction *actQuit;
    QAction *actUpdateAll;
   QAction *actSearch;
+   QAction *actRmNonExist;
    // QAction *actOptions;
     //-- PlayList Mode
     QMenu *mnuPlayMode;

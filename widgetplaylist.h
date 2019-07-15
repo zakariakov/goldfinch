@@ -21,7 +21,7 @@
 
 #ifndef WIDGETPLAYLIST_H
 #define WIDGETPLAYLIST_H
-//#include "playlistview.h"
+
 #include <QObject>
 #include <QWidget>
 #include <QToolButton>

@@ -75,8 +75,7 @@ void WidgetInfo::paintEvent(QPaintEvent *event)
 
     QTextOption txtOption;
 
-    if(isLeftToRight())txtOption.setAlignment(Qt::AlignLeft|Qt::AlignVCenter);
-    else txtOption.setAlignment(Qt::AlignRight|Qt::AlignVCenter);
+    txtOption.setAlignment(Qt::AlignHCenter|Qt::AlignVCenter);
     txtOption.setWrapMode(QTextOption::NoWrap);
 
 
@@ -106,11 +105,57 @@ void WidgetInfo::paintEvent(QPaintEvent *event)
 
 
 }
-
+//----------------------------------------------------------------
+//                        PlayerControls
 //-----------------------------------------------------------------
 PlayerControls::PlayerControls(QWidget *parent)
     : QWidget(parent)
 {
+    QString mStyle=
+            " QSlider::groove:horizontal {"
+            "height: 8px;"
+            "background: transparent;"
+            " margin: 6px 0px;"
+            " }"
+
+
+            "QSlider::handle:horizontal {"
+            " background: palette(Highlight);"
+            " width: 14px;"
+            " margin: -3px 0px; "
+            "border-radius: 7px;"
+            "}"  ;
+
+    if(isLeftToRight()){
+        mStyle+=   " QSlider::add-page:horizontal {"
+                   " background:palette(base) ;"
+
+                   " margin: 8px 0; "
+                   "border-radius: 2px;"
+                   " }"
+
+                   " QSlider::sub-page:horizontal {"
+                   " background: palette(Highlight);"
+
+                   " margin: 8px 0; "
+                   "border-radius: 2px;"
+                   " }";
+    }else{
+        mStyle+=   " QSlider::add-page:horizontal {"
+                   " background:palette(Highlight ) ;"
+
+                   " margin: 8px 0; "
+                   "border-radius: 2px;"
+                   " }"
+
+                   " QSlider::sub-page:horizontal {"
+                   " background: palette(base);"
+
+                   " margin: 8px 0; "
+                   "border-radius: 2px;"
+                   " }";
+    }
+
 
     setSizePolicy(QSizePolicy::Preferred,QSizePolicy::Preferred);
 
@@ -123,7 +168,7 @@ PlayerControls::PlayerControls(QWidget *parent)
     m_volumeSlider->setRange(0, 100);
     m_volumeSlider->setMaximumWidth(100);
     m_volumeSlider->setMinimumWidth(80);
-
+    m_volumeSlider->setStyleSheet(mStyle);
     connect(m_volumeSlider, &QSlider::valueChanged, this, &PlayerControls::onVolumeSliderValueChanged);
 
     m_playButton = new QToolButton(this);
@@ -155,11 +200,12 @@ PlayerControls::PlayerControls(QWidget *parent)
     m_muteButton->setDefaultAction(ACtions::muteUnmuteAct());
 
     m_slider = new Slider;
+    // m_slider->setStyleSheet(mStyle);
 
     m_labelDuration= new QLabel(this);
 
-    QBoxLayout *vlayoutInfo = new QVBoxLayout;
-    vlayoutInfo->addWidget(m_WidgetInfo);
+  //  QBoxLayout *vlayoutInfo = new QVBoxLayout;
+   // vlayoutInfo->addWidget(m_WidgetInfo);
 
 
     QBoxLayout *layoutDuration = new QHBoxLayout;
@@ -174,23 +220,23 @@ PlayerControls::PlayerControls(QWidget *parent)
     layoutDuration->setSpacing(0);
     hlayout->setSpacing(0);
     vlayout->setSpacing(0);
-   layout->setSpacing(3);
+    layout->setSpacing(3);
 
-    hlayout->addLayout(vlayoutInfo);
+
     //   hlayout->addStretch();
 
     hlayout->addWidget(m_previousButton);
     hlayout->addWidget(m_playButton);
     hlayout->addWidget(m_nextButton);
-
-    //hlayout->addStretch();
+    hlayout->addSpacing(10);
+    hlayout->addWidget(m_WidgetInfo);
     hlayout->addSpacing(10);
     hlayout->addWidget(m_muteButton);
+    hlayout->addSpacing(5);
     hlayout->addWidget(m_volumeSlider);
 
-
-
     layoutDuration->addWidget(m_slider);
+    layoutDuration->addSpacing(5);
     layoutDuration->addWidget(m_labelDuration);
 
 

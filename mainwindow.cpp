@@ -36,12 +36,17 @@
 #include <QStandardPaths>
 #include <QComboBox>
 #include <QStyleFactory>
+#include <QMessageBox>
+#include <QMimeData>
+#include <QDragEnterEvent>
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
     qDebug()<<"CACHE"<<CACHE;
+
+ setAcceptDrops(true);
 
     mMyTreeModel=   new MyContentModel;
     mMyListModel=   new MyListModel;
@@ -65,6 +70,8 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->menuFile->addAction(ACtions::swichMimiPlayerAct());
      ui->menuFile->addSeparator();
     ui->menuFile->addAction(ACtions::updateAllAct());
+    ui->menuFile->addSeparator();
+    ui->menuFile->addAction(ACtions::rmNonExistAct());
     ui->menuFile->addSeparator();
     ui->menuFile->addAction(ACtions::quitAct());
 
@@ -146,6 +153,8 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ACtions::instance(), &ACtions::quit, this,&MainWindow::onQuit);
     connect(ACtions::instance(), &ACtions::openFiles,this,&MainWindow::onActionopentriggered);
     connect(ACtions::instance(), &ACtions::updateAll,mMediaUpdate,&MediaUpdate::updateAllDirectories);
+    connect(ACtions::instance(), &ACtions::rmNonExist,this,&MainWindow::removeNonExisting);
+
     connect(ACtions::instance(), &ACtions::volumeDownChanged,mPlayer,&Player::setVolumeDown);
     connect(ACtions::instance(), &ACtions::volumeUpChanged,mPlayer,&Player::setVolumeUp);
     connect(ACtions::instance(), &ACtions::muteUnmuteChanged,mPlayer,&Player::setVolumeMuteUnmute);
@@ -211,6 +220,30 @@ MainWindow::MainWindow(QWidget *parent) :
 
 }
 
+void MainWindow::removeNonExisting()
+{
+
+    QMessageBox msgBox;
+     msgBox.setText("Be sure to mount the devices that contain the audio files.");
+     msgBox.setInformativeText("All non-existing files will be deleted from the database.");
+     msgBox.setStandardButtons(QMessageBox::Yes | QMessageBox::Cancel);
+     msgBox.setDefaultButton(QMessageBox::Yes);
+
+     int ret = msgBox.exec();
+     int n=0;
+     switch (ret) {
+        case QMessageBox::Yes:
+            n= DataBase::removeNonExisttingFiles();
+            break;
+        case QMessageBox::Cancel:
+            return;
+        default:
+            return;
+      }
+    QString txt=QString("%1 Files removed").arg(n);
+  QMessageBox::information(this,"",txt);
+
+}
 void MainWindow::switchViewMode(bool mini)
 {
     qDebug()<<"toolbar"<<ui->toolBar->sizeHint().height();
@@ -1003,4 +1036,46 @@ void MainWindow::showSettings()
     settings.endGroup();
 
     delete dlg;
+}
+
+
+//----------------------------------------------------------  السحب والافلات
+
+void MainWindow::dragEnterEvent(QDragEnterEvent *e)
+{
+
+          // Getting URL from mainmenu...
+          if (e->mimeData()->hasUrls())
+          {
+                    e->acceptProposedAction();
+                    return;
+          }
+
+          if (e->source() && e->source()->parent() == this)
+          {
+                    e->acceptProposedAction();
+          }
+}
+
+void MainWindow::dropEvent(QDropEvent *e)
+{
+          const QMimeData *mime = e->mimeData();
+
+          QList<QUrl> duplicates;
+
+          foreach (QUrl url, mime->urls())
+          {
+                    if (duplicates.contains(url))
+                              continue;
+                    else{
+
+
+                        duplicates << url;
+                       }
+
+
+
+          }
+
+       mPlayer->addToPlaylist(duplicates);
 }

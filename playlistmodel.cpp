@@ -55,7 +55,7 @@ QModelIndex PlaylistModel::index(int row, int column, const QModelIndex &parent)
 
 QModelIndex PlaylistModel::parent(const QModelIndex &child) const
 {
-    Q_UNUSED(child);
+    Q_UNUSED(child)
 
     return QModelIndex();
 }
@@ -141,7 +141,7 @@ bool PlaylistModel::setData(const QModelIndex &index, const QVariant &value, int
 {
 
 
-    Q_UNUSED(role);
+    Q_UNUSED(role)
 
     m_data[index] = value;
 
@@ -198,4 +198,35 @@ QString PlaylistModel::mediaTitle(QUrl url)
 
     return  m_dataTitle[url];
 
+}
+
+
+//--------------------------------------------------------------
+bool PlaylistModel::dropMimeData(const QMimeData * data,
+                                     Qt::DropAction action,
+                                     int row,
+                                     int column,
+                                     const QModelIndex & parent )
+{
+    Q_UNUSED ( action )
+    Q_UNUSED ( row )
+    Q_UNUSED ( column )
+     Q_UNUSED ( parent )
+
+        QList<QUrl> files = data->urls();
+        QStringList filesList;
+
+
+        foreach(QUrl item, files) filesList.append(item.path());
+
+
+         qDebug()<<data<<filesList;
+         return false;
+}
+
+QStringList PlaylistModel::mimeTypes() const
+{
+    QStringList types;
+    types << "application/vnd.text.list";
+    return types;
 }

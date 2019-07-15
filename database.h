@@ -43,6 +43,7 @@ public:
     static void openDataBase();
 
 
+
     //! تحمبل المسارات المقطوعات
     static QList<QVariantMap> chargeAudios(QString name,int colm,
                                            QString pName=QString(),int pColm=0,
@@ -61,9 +62,12 @@ public:
 
    static QVariantMap filePropery(const QString & file);
 
+   static int removeNonExisttingFiles();
 signals:
 
 public slots:
+
+
 
     static  bool fileExist(const QString &path);
     //! حذف كل البيانات

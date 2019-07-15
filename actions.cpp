@@ -87,6 +87,10 @@ ACtions::ACtions(QObject *parent) : QObject(parent)
     actUpdateAll->setShortcut(QKeySequence("Ctrl+U"));
     connect(actUpdateAll,&QAction::triggered,this,&ACtions::updateAll);
 
+    actRmNonExist=new QAction(tr("Rmove Non Existing files"));
+    actRmNonExist->setShortcut(QKeySequence("Ctrl+R"));
+    connect(actRmNonExist,&QAction::triggered,this,&ACtions::rmNonExist);
+
     actSearch=new QAction(Tumb::icon(I_FIND),tr("Search"),this);
     actSearch->setShortcut(QKeySequence("Ctrl+F"));
     connect(actSearch,&QAction::triggered,this,&ACtions::showSearchChanged);

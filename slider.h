@@ -35,8 +35,14 @@ public:
     void mousePressEvent(QMouseEvent *ev) ;
     void mouseMoveEvent(QMouseEvent *ev) ;
     void keyPressEvent(QKeyEvent *ev);
+
+    virtual void enterEvent(QEvent *event);
+    virtual void leaveEvent(QEvent *event);
 signals:
     //void seekChanged(int );
+
+private:
+  //  QString myStyle();
 };
 
 #endif // SLIDER_H

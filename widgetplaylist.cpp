@@ -38,6 +38,8 @@ WidgetPlayList::WidgetPlayList(QWidget *parent) : QWidget(parent)
     mPlayListView->setFrameShape(QFrame::NoFrame);
     mPlayListView->setIconSize(QSize(16,16));
 
+
+
     tbRemoveItem->setIconSize(QSize(16,16));
     tbRemoveItem->setAutoRaise(true);
     tbRemoveItem->setDefaultAction(ACtions::removeItemAct());
@@ -46,7 +48,7 @@ WidgetPlayList::WidgetPlayList(QWidget *parent) : QWidget(parent)
 // connect(ACtions::instance(), &ACtions::removeItem, this, &WidgetPlayList::rmoveItem);
     tbMoveItemUp->setIconSize(QSize(16,16));
     tbMoveItemUp->setAutoRaise(true);
-   // tbMoveItemUp->setArrowType(Qt::UpArrow);
+   // .->setArrowType(Qt::UpArrow);
      tbMoveItemUp->setIcon(Tumb::icon(I_AROW_UP));
     tbMoveItemUp->setToolTip(tr("Move Up Current "));
     connect(tbMoveItemUp,SIGNAL(clicked()),SLOT(moveItemUp()));
@@ -127,6 +129,7 @@ WidgetPlayList::WidgetPlayList(QWidget *parent) : QWidget(parent)
      vLayout->setSpacing(0);
     vLayout->addLayout(hLayout);
     vLayout->addWidget(mPlayListView);
+
     vLayout->addWidget(line);
 
     setLayout(vLayout);
@@ -138,7 +141,7 @@ void WidgetPlayList::setCustomMenu(const QPoint &pos)
 {
     if(!mPlayListView->currentIndex().isValid())return;
 
-    Q_UNUSED(pos);
+    Q_UNUSED(pos)
     QMenu mnu;
     mnu.addAction(tr("Move Up"),this,&WidgetPlayList::moveItemUp);
     mnu.addAction(tr("Move Down"),this,&WidgetPlayList::moveItemDown);

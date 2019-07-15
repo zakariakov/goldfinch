@@ -24,7 +24,7 @@
 
 #include <QAbstractItemModel>
 #include <QScopedPointer>
-
+#include <QMimeData>
 QT_BEGIN_NAMESPACE
 class QMediaPlaylist;
 QT_END_NAMESPACE
@@ -39,6 +39,7 @@ public:
         Title = 0,
         ColumnCount
     };
+
 
     explicit PlaylistModel(QObject *parent = nullptr);
    ~PlaylistModel();
@@ -65,7 +66,29 @@ private slots:
     void endRemoveItems();
     void changeItems(int start, int end);
 
+protected:
+ //!    عند عملية السحب والافلات
+
+
+//    virtual QStringList mimeTypes() const;
+//    virtual QMimeData *mimeData(const QModelIndexList &indexes) const;
+//    virtual bool canDropMimeData(const QMimeData *data, Qt::DropAction action,
+//                                 int row, int column, const QModelIndex &parent) const;
+//    virtual bool dropMimeData(const QMimeData *data, Qt::DropAction action,
+//                              int row, int column, const QModelIndex &parent);
+
+
+    bool dropMimeData(const QMimeData * data,
+                     Qt::DropAction action,
+                     int row,
+                     int column,
+                     const QModelIndex & parent ) override;
+
+   QStringList mimeTypes() const override;
+
 private:
+
+
     QScopedPointer<QMediaPlaylist> m_playlist;
     QMap<QModelIndex, QVariant> m_data;
     QMap<QVariant, QString> m_dataTitle;

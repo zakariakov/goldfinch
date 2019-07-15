@@ -48,8 +48,8 @@ void WidgetImageInfo::paintEvent(QPaintEvent *event)
 
     QTextOption txtOption;
 
-    if(isLeftToRight())txtOption.setAlignment(Qt::AlignLeft|Qt::AlignVCenter);
-    else txtOption.setAlignment(Qt::AlignRight|Qt::AlignVCenter);
+    if(isLeftToRight())txtOption.setAlignment(Qt::AlignHCenter|Qt::AlignVCenter);
+    else txtOption.setAlignment(Qt::AlignHCenter|Qt::AlignVCenter);
     txtOption.setWrapMode(QTextOption::NoWrap);
     QImage imgG=mImage.scaled(rect.height(),rect.height(),Qt::KeepAspectRatio,Qt::SmoothTransformation);
 

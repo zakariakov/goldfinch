@@ -22,10 +22,59 @@
 #include "slider.h"
 #include <QWheelEvent>
 #include <QDebug>
+#include <QApplication>
+//------------------------------------------------------
+QString myStyle()
+{
+    QString mStyle=
+            " QSlider::groove:horizontal {"
+            " height: 8px;"
+            " background: transparent;"
+            " margin: 6px 0px;"
+            " }"
+
+            " QSlider::handle:horizontal {"
+            "background:transparent;"/* لاتغير هذه */
+            " width: 14px;"
+            " margin: -3px 0px; "
+            " border-radius: 7px;"
+            "}";
+
+    if(QApplication::isLeftToRight()){
+        mStyle+=   " QSlider::add-page:horizontal {"
+                   " background: palette(base ) ;"
+                   " margin: 8px 0; "
+                   " border-radius: 2px;"
+                   " }"
+
+                   " QSlider::sub-page:horizontal {"
+                   " background: palette(Highlight );"
+                   " margin: 8px 0; "
+                   " border-radius: 2px;"
+                   " }";
+    }else{
+        mStyle+=   " QSlider::add-page:horizontal {"
+                   " background: palette(Highlight ) ;"
+                   " margin: 8px 0; "
+                   "border-radius: 2px;"
+                   " }"
+
+                   " QSlider::sub-page:horizontal {"
+                   " background: palette(base );"
+                   " margin: 8px 0; "
+                   " border-radius: 2px;"
+                   " }";
+    }
+    return mStyle;
+
+}
+
 Slider::Slider()
 {
     setOrientation(Qt::Horizontal);
     setContentsMargins(0,0,0,0);
+
+    setStyleSheet(myStyle());
 }
 void Slider::wheelEvent(QWheelEvent *event)
 {
@@ -34,7 +83,7 @@ void Slider::wheelEvent(QWheelEvent *event)
      setSliderPosition(value()+val);
   //  emit seekChanged(value()+val);
      QMetaObject::invokeMethod(parent()->parent(), "setSeek",Q_ARG(int,value()+val));
-   qDebug()<<"Slider::wheelEvent:"<<value()+val;
+   //qDebug()<<"Slider::wheelEvent:"<<value()+val;
 
     event->accept();
 }
@@ -54,12 +103,12 @@ void Slider::wheelEvent(QWheelEvent *event)
     //  setSliderPosition(val);
      QMetaObject::invokeMethod(parent()->parent(), "setSeek",Q_ARG(int,val));
      setSliderDown(false);
-     qDebug()<<" Slider::mouseReleaseEvent:"<<val;
+     //qDebug()<<" Slider::mouseReleaseEvent:"<<val;
  }
 
 void Slider::mousePressEvent(QMouseEvent *ev)
 {
-    Q_UNUSED(ev);
+    Q_UNUSED(ev)
     setSliderDown(true);
 }
 
@@ -77,7 +126,7 @@ void Slider::mousePressEvent(QMouseEvent *ev)
      if(isRightToLeft())
          val=maximum()-val;
 
-     qDebug()<<"Slider::mouseMoveEvent:"<<val;
+    // qDebug()<<"Slider::mouseMoveEvent:"<<val;
    //  setValue(val);
       setSliderPosition(val);
 
@@ -111,8 +160,25 @@ void Slider::mousePressEvent(QMouseEvent *ev)
      if(val<0)val=0;
      if(val>maximum())val=maximum();
 
-      qDebug()<<"Slider::keyPressEvent:"<<val;
+     // qDebug()<<"Slider::keyPressEvent:"<<val;
      //
        QMetaObject::invokeMethod(parent()->parent(), "setSeek",Q_ARG(int,val));
 
  }
+
+//------------------------------------------------------
+void Slider::enterEvent(QEvent *event)
+{
+    Q_UNUSED(event)
+   // setStyleSheet(myStyle(true));
+setStyleSheet(styleSheet().replace("background:transparent;","background:palette(Highlight);"));
+}
+
+//------------------------------------------------------
+void Slider::leaveEvent(QEvent *event)
+{
+    Q_UNUSED(event)
+   // setStyleSheet(myStyle(false));
+setStyleSheet(styleSheet().replace("background:palette(Highlight);","background:transparent;"));
+}
+

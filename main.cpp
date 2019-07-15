@@ -166,8 +166,8 @@ int main(int argc, char *argv[])
     translator.load(translatorPath);
     a.installTranslator(&translator);
     QLocale lx=QLocale(localeSymbol);
-  a.setLayoutDirection(lx.textDirection());
-     //    a.setLayoutDirection(Qt::LeftToRight);
+   a.setLayoutDirection(lx.textDirection());
+ //       a.setLayoutDirection(Qt::LeftToRight);
 
     //-----------------------------------------------------------------EXEC
     MainWindow w;

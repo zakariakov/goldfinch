@@ -217,10 +217,10 @@ void  DataBase::addNewSong(const QString &title,   const QString &artist,
         //  qDebug ()<<"DATA_NOEXIST: "<<title;
         break;
     case DATA_EXIST:
-        qDebug ()<<"DATA_EXIST: "<<title;;
+        qDebug ()<<"DATA_EXIST: "<<title;
         return;
     case DATA_NEEDUPDATE:
-        qDebug ()<<"DATA_NIDUPDATE: "<<title;;
+        qDebug ()<<"DATA_NIDUPDATE: "<<title;
         updateSong(title,artist,album,genre,path,duration);
         return;
     default:
@@ -339,8 +339,7 @@ bool DataBase::setFavorite(const QString &path,bool value)
                         " SET favo = %1 "
                         " WHERE path= '%2'")
             .arg(QString::number(value))  /*1=2*/
-            .arg(inTxt(path)); /*3=4*/;
-    // qDebug()<<txt;
+            .arg(inTxt(path)); /*3=4*/    // qDebug()<<txt;
     QSqlQuery query(instance()->db);
     if(query.exec(txt))
         return true;
@@ -610,3 +609,27 @@ QList<QVariantMap> DataBase::getAlbumUrls(QString name,
 
      return map;
  }
+
+  int DataBase::removeNonExisttingFiles()
+  {
+int n=0;
+      QString   txt=QString("select path from books");
+
+      QSqlQuery query(instance()->db);
+      query.exec(txt);
+
+      while(query.next())
+      {
+
+         QString path =query.value(0).toString();
+         // qDebug()<<"removeNonExisttingFiles"<<path;
+         QString file= path.replace("$","'");
+         if(!QFile::exists(file)){
+             n++;
+            removeSong(path);
+             qDebug()<<"Non Exist"<<file;
+         }
+
+      }
+      return n;
+  }

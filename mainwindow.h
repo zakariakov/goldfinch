@@ -135,6 +135,12 @@ private slots:
     void searchAudios(int col,const QString &text);
     //! تغيير عموان القائمة
     void setlabelImage();
+    //! حذف الملفات الغير موجودة
+    void removeNonExisting();
+    //! السحب ةالافلات
+    void dragEnterEvent(QDragEnterEvent *e);
+    //! السحب ةالافلات
+    void dropEvent(QDropEvent *e);
     //!
     void onTreeViewContentActivated(const QModelIndex &index);
     //!
