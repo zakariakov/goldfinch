@@ -1,4 +1,4 @@
-﻿/***************************************************************************
+/***************************************************************************
  *      Project created by QtCreator 2018-06-01T17:15:24                   *
  *                                                                         *
  *    goldfinch Copyright (C) 2014 AbouZakaria <yahiaui@gmail.com>         *
@@ -33,8 +33,8 @@
 #include <QLabel>
 #include <QTextOption>
 #include <QPainter>
-
-
+#include <QApplication>
+#include <QGraphicsBlurEffect>
 //-----------------------------------------------------------------WidgetImg
 void WidgetImg::paintEvent(QPaintEvent *event)
 {
@@ -44,12 +44,13 @@ void WidgetImg::paintEvent(QPaintEvent *event)
     QPainter painter(this);
     QRect rect=this->rect();
 
+
     QImage imgG=mImage.scaled(rect.height(),rect.height(),Qt::KeepAspectRatio,Qt::SmoothTransformation);
 
     QRect imgRec=imgG.rect();
     int _x=(rect.width()-imgRec.width())/2;
     int _y=(rect.height()-imgRec.height())/2;
-    //painter.drawImage(imgG.rect(),imgG,rect);
+
     painter.drawImage(QPoint(_x,_y),imgG,imgRec);
 
 
@@ -62,15 +63,17 @@ void WidgetInfo::paintEvent(QPaintEvent *event)
 
     Q_UNUSED(event)
 
-
-
     QPainter painter(this);
     QRect rect=this->rect();
     QFont font=this->font();
     font.setBold(true);
-
+    font.setPointSize(this->font().pointSize()+3);
+    QFontMetrics fm(font);
+    int minH=fm.height()*2;
     int _w=rect.width();
-    int _h=rect.height()/2;
+    setMinimumHeight(minH);
+
+    int _h=minH/2;
     QColor txtcolor=this->palette().windowText().color();
 
     QTextOption txtOption;
@@ -79,96 +82,52 @@ void WidgetInfo::paintEvent(QPaintEvent *event)
     txtOption.setWrapMode(QTextOption::NoWrap);
 
 
+    QRect textRect;
 
+    textRect=QRect(0,0,_w,_h);
 
-        QFontMetrics fm(font);
-        QRect textRect;
-
-            textRect=QRect(0,0,_w,_h);
-
-
-        // TITLE
-        painter.setPen(txtcolor);
-        painter.setFont(font);
-        QString title=fm.elidedText(mTitle,Qt::ElideRight,_w);
-        painter.drawText(textRect,title, txtOption);
-        // INFO
-        textRect.moveTop(_h);
-        font.setBold(false);
-        painter.setFont(font);
-        QString info=fm.elidedText(mInfo,Qt::ElideRight,_w);
-        painter.drawText(textRect, info,txtOption);
-
-
-
-
+    // TITLE
+    painter.setPen(txtcolor);
+    painter.setFont(font);
+    QString title=fm.elidedText(mTitle,Qt::ElideRight,_w);
+    painter.drawText(textRect,title, txtOption);
+    // INFO
+    textRect.moveTop(_h);
+    font.setBold(false);
+    font.setPointSize(this->font().pointSize());
+    painter.setFont(font);
+    QString info=fm.elidedText(mInfo,Qt::ElideRight,_w);
+    painter.drawText(textRect, info,txtOption);
 
 
 }
 //----------------------------------------------------------------
 //                        PlayerControls
 //-----------------------------------------------------------------
+
+
 PlayerControls::PlayerControls(QWidget *parent)
     : QWidget(parent)
 {
-    QString mStyle=
-            " QSlider::groove:horizontal {"
-            "height: 8px;"
-            "background: transparent;"
-            " margin: 6px 0px;"
-            " }"
-
-
-            "QSlider::handle:horizontal {"
-            " background: palette(Highlight);"
-            " width: 14px;"
-            " margin: -3px 0px; "
-            "border-radius: 7px;"
-            "}"  ;
-
-    if(isLeftToRight()){
-        mStyle+=   " QSlider::add-page:horizontal {"
-                   " background:palette(base) ;"
-
-                   " margin: 8px 0; "
-                   "border-radius: 2px;"
-                   " }"
-
-                   " QSlider::sub-page:horizontal {"
-                   " background: palette(Highlight);"
-
-                   " margin: 8px 0; "
-                   "border-radius: 2px;"
-                   " }";
-    }else{
-        mStyle+=   " QSlider::add-page:horizontal {"
-                   " background:palette(Highlight ) ;"
-
-                   " margin: 8px 0; "
-                   "border-radius: 2px;"
-                   " }"
-
-                   " QSlider::sub-page:horizontal {"
-                   " background: palette(base);"
-
-                   " margin: 8px 0; "
-                   "border-radius: 2px;"
-                   " }";
-    }
-
 
     setSizePolicy(QSizePolicy::Preferred,QSizePolicy::Preferred);
 
     m_WidgetInfo=new WidgetInfo;
     m_WidgetImg =new WidgetImg;
+    widgetMini=new QWidget;
+    widgetMini->setVisible(false);
     m_WidgetImg->setMinimumSize(QSize(50,50));
+
     connect(this,&PlayerControls::imageChanged, m_WidgetImg,  &WidgetImg::setImage);
+    connect(this,&PlayerControls::imageChanged, this,  &PlayerControls::setImage);
 
     m_volumeSlider = new QSlider(Qt::Horizontal, this);
+    m_volumeSlider->setObjectName("VolumeSlider");
     m_volumeSlider->setRange(0, 100);
     m_volumeSlider->setMaximumWidth(100);
     m_volumeSlider->setMinimumWidth(80);
-    m_volumeSlider->setStyleSheet(mStyle);
+    // m_volumeSlider->setStyleSheet(myStyleSheet());
+    m_volumeSlider->setCursor(Qt::PointingHandCursor);
     connect(m_volumeSlider, &QSlider::valueChanged, this, &PlayerControls::onVolumeSliderValueChanged);
 
     m_playButton = new QToolButton(this);
@@ -199,59 +158,149 @@ PlayerControls::PlayerControls(QWidget *parent)
     m_muteButton->setAutoRaise(true);
     m_muteButton->setDefaultAction(ACtions::muteUnmuteAct());
 
+    m_toggleButton = new QToolButton(this);
+    m_toggleButton->setObjectName("ToggleButton");
+    m_toggleButton->setIconSize(QSize(16,16));
+    m_toggleButton->setCheckable(true);
+    m_toggleButton->setAutoRaise(true);
+    m_toggleButton->setDefaultAction(ACtions::swichMimiPlayerAct());
+
+
     m_slider = new Slider;
     // m_slider->setStyleSheet(mStyle);
+    connect(m_slider, &Slider::seekChanged, this, &PlayerControls::setSeekSliderValueChanged);
+
+    widgetButtons=new QWidget;
+    widgetButtons->setSizePolicy(QSizePolicy::Fixed,QSizePolicy::Preferred);
+    QHBoxLayout *hbuttonsLayout=new QHBoxLayout;
+    hbuttonsLayout->setMargin(0);
+    hbuttonsLayout->setSpacing(6);
+    widgetButtons->setLayout(hbuttonsLayout);
+    hbuttonsLayout->addWidget(m_previousButton);
+    hbuttonsLayout->addWidget(m_playButton);
+    hbuttonsLayout->addWidget(m_nextButton);
 
     m_labelDuration= new QLabel(this);
+    m_labelCurrentTime= new QLabel(this);
+    HlayoutDuration = new QHBoxLayout;
+    vlayoutDuration = new QVBoxLayout;
 
-  //  QBoxLayout *vlayoutInfo = new QVBoxLayout;
-   // vlayoutInfo->addWidget(m_WidgetInfo);
+    hlayout = new QHBoxLayout;
+    vMainlayout = new QVBoxLayout;
+    hMainlayout = new QHBoxLayout;
 
+    vMinilayout=new QVBoxLayout;
+//    horizontalSpacer=new QSpacerItem(1, 1, QSizePolicy::Expanding, QSizePolicy::Minimum);
+//    horizontalSpacer2=new QSpacerItem(1, 1, QSizePolicy::Expanding, QSizePolicy::Minimum);
 
-    QBoxLayout *layoutDuration = new QHBoxLayout;
-    QBoxLayout *hlayout = new QHBoxLayout;
-    QBoxLayout *vlayout = new QVBoxLayout;
-    QBoxLayout *layout = new QHBoxLayout;
-    layoutDuration->setMargin(0);
-    hlayout->setMargin(3);
-    vlayout->setMargin(3);
-    layout->setMargin(3);
-
-    layoutDuration->setSpacing(0);
-    hlayout->setSpacing(0);
-    vlayout->setSpacing(0);
-    layout->setSpacing(3);
-
-
-    //   hlayout->addStretch();
-
-    hlayout->addWidget(m_previousButton);
-    hlayout->addWidget(m_playButton);
-    hlayout->addWidget(m_nextButton);
-    hlayout->addSpacing(10);
-    hlayout->addWidget(m_WidgetInfo);
-    hlayout->addSpacing(10);
-    hlayout->addWidget(m_muteButton);
-    hlayout->addSpacing(5);
-    hlayout->addWidget(m_volumeSlider);
-
-    layoutDuration->addWidget(m_slider);
-    layoutDuration->addSpacing(5);
-    layoutDuration->addWidget(m_labelDuration);
-
-
-    vlayout->addLayout(hlayout);
-    layout->addSpacing(9);
-    vlayout->addLayout(layoutDuration);
-
-    layout->addWidget(m_WidgetImg);
-    layout->addSpacing(3);
-    layout->addLayout(vlayout);
-    setLayout(layout);
+    widgetMini->setLayout(vMinilayout);
+    widgetMini->setSizePolicy(QSizePolicy::Preferred,QSizePolicy::Fixed);
+    setLayout(hMainlayout);
     setupIcons();
+//setAutoFillBackground(true);
+//  setAttribute(Qt::WA_TranslucentBackground);
+//setAttribute(Qt::WA_OpaquePaintEvent);
+
+
+//QGraphicsBlurEffect *blurEffect=new QGraphicsBlurEffect(this);
+// blurEffect->setBlurRadius(7);
+//setGraphicsEffect(blurEffect);
 
 }
 
+QImage blurred(const QImage& image, const QRect& rect, int radius, bool alphaOnly = false)
+{
+    int tab[] = { 14, 10, 8, 6, 5, 5, 4, 3, 3, 3, 3, 2, 2, 2, 2, 2, 2 };
+    int alpha = (radius < 1)  ? 16 : (radius > 17) ? 1 : tab[radius-1];
+
+    QImage result = image.convertToFormat(QImage::Format_ARGB32_Premultiplied);
+    int r1 = rect.top();
+    int r2 = rect.bottom();
+    int c1 = rect.left();
+    int c2 = rect.right();
+
+    int bpl = result.bytesPerLine();
+    int rgba[4];
+    unsigned char* p;
+
+    int i1 = 0;
+    int i2 = 3;
+
+    if (alphaOnly)
+        i1 = i2 = (QSysInfo::ByteOrder == QSysInfo::BigEndian ? 0 : 3);
+
+    for (int col = c1; col <= c2; col++) {
+        p = result.scanLine(r1) + col * 4;
+        for (int i = i1; i <= i2; i++)
+            rgba[i] = p[i] << 4;
+
+        p += bpl;
+        for (int j = r1; j < r2; j++, p += bpl)
+            for (int i = i1; i <= i2; i++)
+                p[i] = (rgba[i] += ((p[i] << 4) - rgba[i]) * alpha / 16) >> 4;
+    }
+
+    for (int row = r1; row <= r2; row++) {
+        p = result.scanLine(row) + c1 * 4;
+        for (int i = i1; i <= i2; i++)
+            rgba[i] = p[i] << 4;
+
+        p += 4;
+        for (int j = c1; j < c2; j++, p += 4)
+            for (int i = i1; i <= i2; i++)
+                p[i] = (rgba[i] += ((p[i] << 4) - rgba[i]) * alpha / 16) >> 4;
+    }
+
+    for (int col = c1; col <= c2; col++) {
+        p = result.scanLine(r2) + col * 4;
+        for (int i = i1; i <= i2; i++)
+            rgba[i] = p[i] << 4;
+
+        p -= bpl;
+        for (int j = r1; j < r2; j++, p -= bpl)
+            for (int i = i1; i <= i2; i++)
+                p[i] = (rgba[i] += ((p[i] << 4) - rgba[i]) * alpha / 16) >> 4;
+    }
+
+    for (int row = r1; row <= r2; row++) {
+        p = result.scanLine(row) + c2 * 4;
+        for (int i = i1; i <= i2; i++)
+            rgba[i] = p[i] << 4;
+
+        p -= 4;
+        for (int j = c1; j < c2; j++, p -= 4)
+            for (int i = i1; i <= i2; i++)
+                p[i] = (rgba[i] += ((p[i] << 4) - rgba[i]) * alpha / 16) >> 4;
+    }
+
+    return result;
+}
+
+void PlayerControls::paintEvent(QPaintEvent *event)
+{
+
+    Q_UNUSED(event)
+
+    QPainter painter(this);
+    if(!mMinPreview)
+    {
+        painter.restore();
+        return;
+    }
+
+    painter.setOpacity(0.45);
+
+    painter.drawImage(rect(),mImage,mImage.rect());
+
+}
+
+void PlayerControls::setImage(QImage img)
+{
+    mImage=img.scaled(256,256,Qt::IgnoreAspectRatio,Qt:: SmoothTransformation);
+         mImage =  blurred(mImage,mImage.rect(),50,false);
+         update();
+
+}
 //----------------------------------------
 void PlayerControls::setupIcons()
 {
@@ -264,21 +313,140 @@ void PlayerControls::setupIcons()
 
 }
 
+void PlayerControls::togglePreview(bool minPrev)
+{
+    mMinPreview=minPrev;
+    HlayoutDuration->setMargin(0);
+    hlayout->setMargin(0);
+    vMainlayout->setMargin(0);
+    vlayoutDuration->setMargin(0);
+
+
+    HlayoutDuration->setSpacing(5);
+    vMainlayout->setSpacing(0);
+    hMainlayout->setSpacing(6);
+    vlayoutDuration->setSpacing(0);
+    hlayout->setSpacing(3);
+
+ // vMainlayout->addWidget(m_toggleButton);
+
+    if(!minPrev){  // Full View
+
+        //-- Remove Widgets from Laouts
+        HlayoutDuration->removeWidget(m_slider);
+        HlayoutDuration->removeWidget(m_labelDuration);
+        HlayoutDuration->removeWidget(m_labelCurrentTime);
+
+        hlayout->removeWidget(widgetButtons);
+
+         vMainlayout->removeWidget(m_toggleButton);
+        vMainlayout->removeWidget(m_WidgetImg);
+        vMainlayout->removeWidget(widgetMini);
+        vMinilayout->removeWidget(m_WidgetInfo);
+        vMinilayout->removeItem(hlayout);
+        vMinilayout->removeItem(HlayoutDuration);
+        hMainlayout->removeItem(vMainlayout);
+
+        //-- Add Widgets To Laouts
+        setSizePolicy(QSizePolicy::Preferred,QSizePolicy::Fixed);
+        m_muteButton->setVisible(true);
+        m_volumeSlider->setVisible(true);
+        widgetMini->setVisible(false);
+      // m_toggleButton->setVisible(false);
+        m_labelCurrentTime->setVisible(false);
+        hMainlayout->setMargin(6);
+
+        HlayoutDuration->addWidget(m_muteButton);
+        HlayoutDuration->addWidget(m_volumeSlider);
+
+
+        vlayoutDuration->addLayout(HlayoutDuration);
+        vlayoutDuration->addWidget(m_labelDuration);
+
+         hlayout->addWidget(m_toggleButton);
+        hlayout->addWidget(widgetButtons);
+        hlayout->addWidget(m_WidgetInfo);
+        hlayout->addLayout(vlayoutDuration);
+
+
+        vMainlayout->addLayout(hlayout);
+        vMainlayout->addWidget(m_slider);
+
+        hMainlayout->addWidget(m_WidgetImg);
+     //   hMainlayout->addLayout(vMainlayout);
+
+
+    }else{   // Mimi View
+
+        //-- Remove Widgets from Laouts
+        HlayoutDuration->removeWidget(m_muteButton);
+        HlayoutDuration->removeWidget(m_volumeSlider);
+        vlayoutDuration->removeWidget(m_labelDuration);
+        vlayoutDuration->removeItem(HlayoutDuration);
+
+        hlayout->removeWidget(widgetButtons);
+        hlayout->removeWidget(m_WidgetInfo);
+        hlayout->removeItem(vlayoutDuration);
+hlayout->removeWidget(m_toggleButton);
+
+        vMainlayout->removeWidget(m_slider);
+        vMainlayout->removeItem(hlayout);
+
+        hMainlayout->removeWidget(m_WidgetImg);
+        hMainlayout->removeItem(vMainlayout);
+
+         //-- Add Widgets To Laouts
+        setSizePolicy(QSizePolicy::Preferred,QSizePolicy::Preferred);
+        m_muteButton->setVisible(false);
+        m_volumeSlider->setVisible(false);
+        widgetMini->setVisible(true);
+        m_labelCurrentTime->setVisible(true);
+        m_toggleButton->setVisible(true);
+
+        hMainlayout->setContentsMargins(20,10,20,20);
+
+
+        HlayoutDuration->addWidget(m_labelCurrentTime);
+        HlayoutDuration->addWidget(m_slider);
+        HlayoutDuration->addWidget(m_labelDuration);
+
+
+        hlayout->addWidget(widgetButtons);
+
+        vMinilayout->addWidget(m_WidgetInfo);
+        vMinilayout->addLayout(HlayoutDuration);
+        vMinilayout->addLayout(hlayout);
+
+   vMainlayout->addWidget(m_toggleButton);
+        vMainlayout->addWidget(m_WidgetImg);
+        vMainlayout->addWidget(widgetMini);
+
+
+
+    }
+
+     hMainlayout->addLayout(vMainlayout);
+}
+
+
+
+
+
 void PlayerControls::setLabTitle(const QString title, const QString info)
 {
 
-    m_WidgetInfo->setTitle(title,info);
+ m_WidgetInfo->setTitle(title,info);
 }
 
 
 
 void PlayerControls::setMutedChanged(bool mute)
 {
-   if(mute)
+    if(mute)
         m_muteButton->setIcon(Tumb::icon(I_VOLUME_OF));
-   else {
+    else {
         m_muteButton->setIcon(Tumb::icon(I_VOLUME));
-   }
+    }
 }
 QMediaPlayer::State PlayerControls::state() const
 {
@@ -336,27 +504,47 @@ void PlayerControls::positionChanged(qint64 progress)
 
 void PlayerControls::updateDurationInfo(qint64 currentInfo)
 {
-    QString tStr;
+
+       qDebug()<<"m_duration"<<m_duration;
+    //QString tStr;
+    QString total,current;
+
     if (currentInfo || m_duration) {
         QTime currentTime((currentInfo / 3600) % 60, (currentInfo / 60) % 60,
                           currentInfo % 60, (currentInfo * 1000) % 1000);
         QTime totalTime((m_duration / 3600) % 60, (m_duration / 60) % 60,
                         m_duration % 60, (m_duration * 1000) % 1000);
+
         QString format = "mm:ss";
         if (m_duration > 3600)
             format = "hh:mm:ss";
-        tStr = currentTime.toString(format) + " / " + totalTime.toString(format);
+
+        total=totalTime.toString(format);
+        //  tStr = currentTime.toString(format) + " / " + totalTime.toString(format);
+        current=currentTime.toString(format);
     }
-    m_labelDuration->setText(tStr);
+
+    if(mMinPreview){
+        m_labelDuration->setText(total);
+        m_labelCurrentTime->setText(current);
+    }else{
+        m_labelDuration->setText(total+ " / " +current) ;
+    }
+
+
+
 }
 
-void PlayerControls:: setSeeked(int val)
+void PlayerControls::setSeekSliderValueChanged(int val)
 {
 
-    int value=/*m_pos+*/val;
-    if(value>m_duration)value=QVariant(m_duration).toInt();
-    if(value<0)value=0;
-    QMetaObject::invokeMethod(parent(), "setSeek",Q_ARG(int,value));
+    if(val>m_duration)
+        val=QVariant(m_duration).toInt();
+
+    if(val<0)
+        val=0;
+
+    QMetaObject::invokeMethod(parent(), "setSeek",Q_ARG(int,val));
 
 }
 

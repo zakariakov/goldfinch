@@ -1,4 +1,4 @@
-﻿/***************************************************************************
+/***************************************************************************
  *      Project created by QtCreator 2018-06-01T17:15:24                   *
  *                                                                         *
  *    goldfinch Copyright (C) 2014 AbouZakaria <yahiaui@gmail.com>         *
@@ -39,6 +39,8 @@
 #include <QMessageBox>
 #include <QMimeData>
 #include <QDragEnterEvent>
+
+// ------------------------------------------------------
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
@@ -46,7 +48,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->setupUi(this);
     qDebug()<<"CACHE"<<CACHE;
 
- setAcceptDrops(true);
+    setAcceptDrops(true);
 
     mMyTreeModel=   new MyContentModel;
     mMyListModel=   new MyListModel;
@@ -56,38 +58,47 @@ MainWindow::MainWindow(QWidget *parent) :
     mTVAudio=       new TreeViewAudio;
     mLIDelegate=    new ListItemDelegate;
     mTItemDelegate= new TreeItemDelegate;
-   // mImageInfo=     new WidgetImageInfo;
+    // mImageInfo=     new WidgetImageInfo;
     mSearchBar=     new SearchBar(this);
     mWPlayList=     new WidgetPlayList;
     mPlayer=        new Player(mWPlayList->playListView(),this);
 
     //--menuFile
     ui->menuFile->addAction(ACtions::openFilesAct());
-     ui->menuFile->addSeparator();
+    ui->menuFile->addSeparator();
     ui->menuFile->addAction(ACtions::showSettingsAct());
-     ui->menuFile->addSeparator();
-     ui->menuFile->addAction(ACtions::searchAct());
+    ui->menuFile->addSeparator();
+    ui->menuFile->addAction(ACtions::searchAct());
     ui->menuFile->addAction(ACtions::swichMimiPlayerAct());
-     ui->menuFile->addSeparator();
+    ui->menuFile->addAction(ACtions::showMenuAct());
+
+    ui->menuFile->addAction(ACtions::toggleLibreryAct());
+    ui->menuFile->addSeparator();
     ui->menuFile->addAction(ACtions::updateAllAct());
     ui->menuFile->addSeparator();
     ui->menuFile->addAction(ACtions::rmNonExistAct());
     ui->menuFile->addSeparator();
     ui->menuFile->addAction(ACtions::quitAct());
+addActions(ui->menuFile->actions());
 
     //--menuEdit
-     ui->menuEdit->addAction(ACtions::PlayPauseAct());
+    ui->menuEdit->addAction(ACtions::PlayPauseAct());
     ui->menuEdit->addAction(ACtions::PlayAct());
     ui->menuEdit->addAction(ACtions::PauseAct());
     ui->menuEdit->addAction(ACtions::PrevAct());
     ui->menuEdit->addAction(ACtions::NextAct());
     ui->menuEdit->addAction(ACtions::StopAct());
+      ui->menuEdit->addSeparator();
+        ui->menuEdit->addAction(ACtions::seekPlusAct());
+          ui->menuEdit->addAction(ACtions::seekMinusAct());
+
     ui->menuEdit->addSeparator();
-      ui->menuEdit->addAction(ACtions::volumeUpAct());
-      ui->menuEdit->addAction(ACtions::volumeDownAct());
-      ui->menuEdit->addAction(ACtions::muteUnmuteAct());
-         ui->menuEdit->addSeparator();
+    ui->menuEdit->addAction(ACtions::volumeUpAct());
+    ui->menuEdit->addAction(ACtions::volumeDownAct());
+    ui->menuEdit->addAction(ACtions::muteUnmuteAct());
+    ui->menuEdit->addSeparator();
     ui->menuEdit->addMenu(ACtions::menuPlayBackMode());
+addActions(ui->menuEdit->actions());
 
     //-- menuHelp
     ui->menuHelp->addAction(ACtions::helpAct());
@@ -107,10 +118,10 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(actSearch,&QAction::triggered,mSearchBar,&SearchBar::showHid);
 
     //--  Menu Mainubutton;
-    tButtonMenu=new QToolButton;
-    tButtonMenu->setObjectName("tButtonMenu");
-   tButtonMenu->setPopupMode(QToolButton::InstantPopup);
-   tButtonMenu->setMenu(ui->menuFile);
+//    tButtonMenu=new QToolButton;
+//    tButtonMenu->setObjectName("tButtonMenu");
+//    tButtonMenu->setPopupMode(QToolButton::InstantPopup);
+//    tButtonMenu->setMenu(ui->menuFile);
 
     //--  TreeViewContent;
     mTVContent->setModel(mMyTreeModel);
@@ -130,13 +141,13 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->verticalLayoutAudio->addWidget(mTVAudio);
 
     ui->splitter->addWidget(mWPlayList);
+  //   ui->horizontalLayout_player->addWidget(mPlayer);
 
-// ui->hLayoutControle->insertWidget(0,mPlayer);
-    // ui->toolBar->setMinimumWidth(550);
-  //  ui->toolBar->addWidget(mImageInfo);
-  ui->toolBar->addWidget(mPlayer);
-  ui->toolBar->addWidget(tButtonMenu);
-        ui->vLayoutViewAll->insertWidget(0,mSearchBar);
+     // ui->toolBar->setMinimumWidth(550);
+    //  ui->toolBar->addWidget(mImageInfo);
+//    ui->toolBar->addWidget(mPlayer);
+ //   ui->toolBar->addWidget(tButtonMenu);
+    ui->vLayoutViewAll->insertWidget(0,mSearchBar);
 
     ui->progressBarUpdate->setVisible(false);
 
@@ -144,12 +155,12 @@ MainWindow::MainWindow(QWidget *parent) :
 
     mSearchBar->setVisible(false);
 
-
-
     //   ------------------------        CONNECTIONS      ------------------------
 
     connect(ACtions::instance(), &ACtions::showSettingsClicked, this,&MainWindow::showSettings);
     connect(ACtions::instance(), &ACtions::swichMimiPlayer, this,&MainWindow::switchViewMode);
+    connect(ACtions::instance(), &ACtions::showMenuChanged, this,&MainWindow::showHideMenu);
+
     connect(ACtions::instance(), &ACtions::quit, this,&MainWindow::onQuit);
     connect(ACtions::instance(), &ACtions::openFiles,this,&MainWindow::onActionopentriggered);
     connect(ACtions::instance(), &ACtions::updateAll,mMediaUpdate,&MediaUpdate::updateAllDirectories);
@@ -158,7 +169,13 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ACtions::instance(), &ACtions::volumeDownChanged,mPlayer,&Player::setVolumeDown);
     connect(ACtions::instance(), &ACtions::volumeUpChanged,mPlayer,&Player::setVolumeUp);
     connect(ACtions::instance(), &ACtions::muteUnmuteChanged,mPlayer,&Player::setVolumeMuteUnmute);
+
+    connect(ACtions::instance(), &ACtions::seekPlusChanged,mPlayer,&Player::setSeekPlus);
+    connect(ACtions::instance(), &ACtions::seekMinusChanged,mPlayer,&Player::setSeekMinus);
+
     connect(ACtions::instance(), &ACtions::showSearchChanged,mSearchBar,&SearchBar::showHid);
+
+    connect(ACtions::instance(), &ACtions::toggleLibreryChanged,this,&MainWindow::playlist_toggled);
 
     //--------------------------------------------------------------------------------
 
@@ -168,8 +185,8 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(mWPlayList,  &WidgetPlayList::playbackModeChanged,mPlayer,    &Player::setPlaybackMode);
     connect(mWPlayList,  &WidgetPlayList::getPropperty,       this,       &MainWindow::showPropertyDialog);
 
- //   connect(mPlayer,     &Player::imageChanged,               mImageInfo,  &WidgetImageInfo::setImage);
-   // connect(mPlayer,     &Player::titleChanged,               mImageInfo,  &WidgetImageInfo::setTitle);
+    //   connect(mPlayer,     &Player::imageChanged,               mImageInfo,  &WidgetImageInfo::setImage);
+    // connect(mPlayer,     &Player::titleChanged,               mImageInfo,  &WidgetImageInfo::setTitle);
 
     connect(mPlayer,     &Player::appCloseChanged,            this,  &MainWindow::onQuit);
     connect(mPlayer,     &Player::appRaiseChanged,            this,&MainWindow::showRaise);
@@ -181,7 +198,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(mMediaUpdate,&MediaUpdate::updated,               this, &MainWindow::rechargeAlbums);
     connect(mMediaUpdate,&MediaUpdate::progressMaxChanged,    this, &MainWindow::progressShow);
     connect(mMediaUpdate,&MediaUpdate::progressValueChanged,  this, &MainWindow::progressSetValue);
-    connect(mMediaUpdate,&MediaUpdate::directoryNeedUpdate,          this->ui->widgetMessage, &QWidget::setVisible);
+    connect(mMediaUpdate,&MediaUpdate::directoryNeedUpdate,   this->ui->widgetMessage, &QWidget::setVisible);
 
     connect(mLIDelegate, &ListItemDelegate::addAlbum,         this, &MainWindow::onAddAlbum);
     connect(mLIDelegate, &ListItemDelegate::playAlbum,        this, &MainWindow::onPlayAlbum);
@@ -206,10 +223,9 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(mSearchBar,  &SearchBar::searchTextChanged,          this,&MainWindow::searchAudios);
     connect(mSearchBar,  &SearchBar::clearSearching,          mMyListModel,&MyListModel::clear);
 
+    ui->vLayout_Center->insertWidget(0,mPlayer);
 
     DataBase::openDataBase();
-
-    //switchViewMode(false);
 
     changeStyleSheet();
 
@@ -220,76 +236,79 @@ MainWindow::MainWindow(QWidget *parent) :
 
 }
 
+// ------------------------------------------------------
 void MainWindow::removeNonExisting()
 {
 
     QMessageBox msgBox;
-     msgBox.setText("Be sure to mount the devices that contain the audio files.");
-     msgBox.setInformativeText("All non-existing files will be deleted from the database.");
-     msgBox.setStandardButtons(QMessageBox::Yes | QMessageBox::Cancel);
-     msgBox.setDefaultButton(QMessageBox::Yes);
+    msgBox.setText("Be sure to mount the devices that contain the audio files.");
+    msgBox.setInformativeText("All non-existing files will be deleted from the database.");
+    msgBox.setStandardButtons(QMessageBox::Yes | QMessageBox::Cancel);
+    msgBox.setDefaultButton(QMessageBox::Yes);
 
-     int ret = msgBox.exec();
-     int n=0;
-     switch (ret) {
-        case QMessageBox::Yes:
-            n= DataBase::removeNonExisttingFiles();
-            break;
-        case QMessageBox::Cancel:
-            return;
-        default:
-            return;
-      }
+    int ret = msgBox.exec();
+    int n=0;
+    switch (ret) {
+    case QMessageBox::Yes:
+        n= DataBase::removeNonExisttingFiles();
+        break;
+    case QMessageBox::Cancel:
+        return;
+    default:
+        return;
+    }
     QString txt=QString("%1 Files removed").arg(n);
-  QMessageBox::information(this,"",txt);
+    QMessageBox::information(this,"",txt);
 
 }
+
+// ------------------------------------------------------
 void MainWindow::switchViewMode(bool mini)
 {
-    qDebug()<<"toolbar"<<ui->toolBar->sizeHint().height();
-    qDebug()<<"toolbar"<<ui->toolBar->contentsMargins();
-     qDebug()<<"toolbar"<<ui->menuBar->palette().color(QPalette::Window).name();
-     int _h=ui->toolBar->sizeHint().height();
+
     QSettings settings;
     settings.beginGroup("Window");
- // mImageInfo->setHorizontal(true);
 
     ACtions::swichMimiPlayerAct()->setChecked(mini);
     if(mini){
-
+        mPlayer->setSizePolicy(QSizePolicy::Preferred,QSizePolicy::Preferred);
         settings.setValue("Geometry",this->saveGeometry());
 
         ui->widgetLibrery->setVisible(false);
         ui->statusBar->setVisible(false);
-       // ui->vLayout_Center->addWidget(mImageInfo);
-       // mImageInfo->setHorizontal(false);
-       // mImageInfo->setMinimumSize(QSize(0,0));
+        ui->menuBar->setVisible(false);
         showNormal();
-        resize(550,_h);
+        resize(300,300);
         adjustSize();
-         // setSizePolicy(QSizePolicy::Preferred,QSizePolicy::Fixed);
-       resize(550,_h);
-        //
+
+        resize(300,300);
+
     }else{
-       // setSizePolicy(QSizePolicy::Preferred,QSizePolicy::Preferred);
+
+       mPlayer->setSizePolicy(QSizePolicy::Preferred,QSizePolicy::Fixed);
         restoreGeometry(settings.value("Geometry").toByteArray());
 
         ui->widgetLibrery->setVisible(true);
         ui->statusBar->setVisible(true);
-        //  ui->hLayoutControle->insertWidget(0,mImageInfo);
-        //     ui->vLayoutContent->addWidget(mImageInfo);
-        //ui->toolBar->addWidget(mImageInfo);
-       // mWPlayList->addWidget(mImageInfo);
-       // mImageInfo->setMinimumSize(QSize(150,50));
-//        mImageInfo->setHorizontal(true);
+        ui->menuBar->setVisible(settings.value("ShowMenu").toBool());
+
 
     }
     //mImageInfo->setMinimumSize(QSize(_h-10,_h-10));
-
+    mPlayer->setMiniPlayer(mini);
     settings.endGroup();
 
 }
 
+void MainWindow::showHideMenu(bool show)
+{
+    QSettings settings;
+    settings.beginGroup("Window");
+    settings.setValue("ShowMenu",show);
+    ui->menuBar->setVisible(show);
+     settings.endGroup();
+}
+// ------------------------------------------------------
 void MainWindow::setIconSize(int value)
 {
     mIconSize=value;
@@ -308,21 +327,24 @@ void MainWindow::setIconSize(int value)
     // ui->labelAlbumImage->setMinimumSize(value,value);
 }
 
+// ------------------------------------------------------
 MainWindow::~MainWindow()
 {
-   saveSettings();
+    saveSettings();
     mPlayer->saveList();
     delete ui;
 }
 
+// ------------------------------------------------------
 void MainWindow::onQuit()
 {
-   saveSettings();
-   mPlayer->saveList();
-   close();
+    saveSettings();
+    mPlayer->saveList();
+    close();
     qApp->quit();
 }
 
+// ------------------------------------------------------
 void MainWindow::saveSettings()
 {
 
@@ -340,6 +362,7 @@ void MainWindow::saveSettings()
 
     settings.endGroup();
 }
+
 // ------------------------------------------------------
 void MainWindow::changeEvent(QEvent *event)
 {
@@ -356,7 +379,7 @@ void MainWindow::changeStyleSheet()
 
     QColor  col=this->palette().text().color();
     QColor  coled=this->palette().highlight().color();
-    QString colControl=this->palette().window().color().dark().name();
+    // QString colControl=this->palette().window().color().darker().name();
 
     if (mcoloor==col.name()+coled.name())
         return;
@@ -376,21 +399,22 @@ void MainWindow::chargeRecent()
 {
 
     mMap=Setting::getRecentMap();
-      int index  =Setting::getRecentndex();
+    int index  =Setting::getRecentndex();
 
-      QSettings settings;
+    QSettings settings;
     settings.beginGroup("Window");
-     ui->menuBar->setVisible(settings.value("ShowMenu",false).toBool());
+    ui->menuBar->setVisible(settings.value("ShowMenu",true).toBool());
+  ACtions::instance()->showMenuAct()->setChecked(settings.value("ShowMenu",true).toBool());
     restoreGeometry(settings.value("Geometry").toByteArray());
     ui->splitter->restoreState(settings.value("SState").toByteArray());
     mIconSize=settings.value("IconSize",128).toInt();
     mSliderIconSize->setValue(mIconSize);
     bool trayicon=settings.value("TrayIcon",true).toBool();
-    bool mini=settings.value("MiniPlayer",false).toBool();
-     mShowNotification =settings.value("ShowNotification",false).toBool();
-   QString style=    settings.value("Style",tr("Default")).toString();
-   if(style!=tr("Default"))
-      QApplication::setStyle( QStyleFactory::create(style));
+    //bool mini=settings.value("MiniPlayer",false).toBool();
+    mShowNotification =settings.value("ShowNotification",false).toBool();
+    QString style=    settings.value("Style",tr("Default")).toString();
+    if(style!=tr("Default"))
+        QApplication::setStyle( QStyleFactory::create(style));
     settings.endGroup();
 
     ui->comboBoxSwichCat->setCurrentIndex(index);
@@ -412,10 +436,10 @@ void MainWindow::setupIcons()
     ui->tb_favoritAlbum->setIcon(Tumb::icon(I_START));
     ui->tb_imgAlbum->    setIcon(Tumb::icon(I_IMG));
     ui->tb_addAlbum->    setIcon(Tumb::icon(I_ADD_ALBUM));
-    ui->tb_paneContent-> setIcon(Tumb::icon(I_PANE_SHOW));
-    ui->tb_panePlaylist->setIcon(Tumb::icon(I_PANE_HIDE));
+//    ui->tb_paneContent-> setIcon(Tumb::icon(I_PANE_SHOW));
+//    ui->tb_panePlaylist->setIcon(Tumb::icon(I_PANE_HIDE));
 
-    tButtonMenu->setIcon(Tumb::icon(I_MENU));
+ //   tButtonMenu->setIcon(Tumb::icon(I_MENU));
 }
 
 // ------------------------------------------------------
@@ -569,13 +593,13 @@ void MainWindow::onTreeViewContentActivated(const QModelIndex &index)
     int isfavo   =index.data(USER_FAVO_DISPLY).toBool();
 
     mMap[MAP_ID]     =index.data(USER_ID).toInt();
-    mMap[MAP_TITLE]  =index.data(USER_TITLE).toString();;
+    mMap[MAP_TITLE]  =index.data(USER_TITLE).toString();
     mMap[MAP_PID]    =pIndex.data(USER_ID).toInt();
-    mMap[MAP_PTITLE] =pIndex.data().toString();;
+    mMap[MAP_PTITLE] =pIndex.data().toString();
     mMap[MAP_GID]    =gIndex.data(USER_ID).toInt();
     mMap[MAP_GTITLE] =gIndex.data().toString();
     mMap[MAP_CHILD]  =index.data(USER_CHILD_ID).toInt();
-    mMap[MAP_IMG]    =index.data(USER_IMGPATH).toString();;
+    mMap[MAP_IMG]    =index.data(USER_IMGPATH).toString();
     mMap[MAP_IS_FAVO]=/*QString::number*/(isfavo);
 
     chargeListItemes();
@@ -716,20 +740,28 @@ void MainWindow::setlabelImage()
 }
 
 // ------------------------------------------------------
-void MainWindow::on_tb_paneContent_toggled(bool checked)
+void MainWindow::playlist_toggled(bool checked)
 {
-    ui->tb_paneContent->setIcon(checked ? Tumb::icon(I_PANE_HIDE):Tumb::icon(I_PANE_SHOW ));
+    mSliderIconSize->setVisible(!checked);
     ui->widgetContent->setVisible(!checked);
+    ui->frame->setVisible(!checked);
 }
 
 // ------------------------------------------------------
-void MainWindow::on_tb_panePlaylist_toggled(bool checked)
-{
+//void MainWindow::on_tb_paneContent_toggled(bool checked)
+//{
+//    ui->tb_paneContent->setIcon(checked ? Tumb::icon(I_PANE_HIDE):Tumb::icon(I_PANE_SHOW ));
+//    ui->widgetContent->setVisible(!checked);
+//}
 
-    ui->tb_panePlaylist->setIcon(checked ? Tumb::icon(I_PANE_SHOW):Tumb::icon(I_PANE_HIDE));
-    mWPlayList->setVisible(!checked);
+//// ------------------------------------------------------
+//void MainWindow::on_tb_panePlaylist_toggled(bool checked)
+//{
 
-}
+//    ui->tb_panePlaylist->setIcon(checked ? Tumb::icon(I_PANE_SHOW):Tumb::icon(I_PANE_HIDE));
+//    mWPlayList->setVisible(!checked);
+
+//}
 
 // ------------------------------------------------------
 void MainWindow::on_tb_favoritAlbum_clicked()
@@ -906,7 +938,7 @@ void MainWindow::onActionopentriggered()
 
 void MainWindow::setUrl(const QString &file)
 {
-      qDebug()<<"MainWindow::setUrl:"<<file;
+    qDebug()<<"MainWindow::setUrl:"<<file;
     mPlayer->setFile(file);
     switchViewMode(true);
 }
@@ -928,12 +960,12 @@ void MainWindow::on_tButtonOkMsg_clicked()
 //----------------------------------- TRAY ICON ---------------------------------------
 void MainWindow:: creatTrayIcon()
 {
-       if(!QSystemTrayIcon::isSystemTrayAvailable())return;
+    if(!QSystemTrayIcon::isSystemTrayAvailable())return;
     if(!mTrayIcon){
 
-    mTrayIcon= new QSystemTrayIcon(QIcon::fromTheme("audio-player-symbolic",QIcon(":/icons/goldfinch")));
+        mTrayIcon= new QSystemTrayIcon(QIcon::fromTheme("audio-player-symbolic",QIcon(":/icons/goldfinch")));
 
-    //  trayIcon= new QSystemTrayIcon;
+        //  trayIcon= new QSystemTrayIcon;
         QMenu *trayIconMenu=new QMenu;
 
         trayIconMenu->addAction(ACtions::PlayAct());
@@ -949,7 +981,7 @@ void MainWindow:: creatTrayIcon()
         connect(mTrayIcon, &QSystemTrayIcon::activated, this, &MainWindow::trayIconActivated);
         mTrayIcon->show();
     }else{
-          mTrayIcon->show();
+        mTrayIcon->show();
     }
 
 
@@ -962,16 +994,16 @@ void MainWindow::setwTitle(const QString &title,const QString &info)
     setWindowTitle(title);
 
     if(mTitle==title)return;
-       mTitle=title;
+    mTitle=title;
 
     if(!mShowNotification)return;
 
-  if(windowState()==Qt::WindowMinimized  || isHidden())
-     qDebug()<<windowState();
-  else   return;
+    if(windowState()==Qt::WindowMinimized  || isHidden())
+        qDebug()<<windowState();
+    else   return;
 
 #ifdef Q_OS_UNIX
-        // TODO  :FIX NOTIFICATION
+    // TODO  :FIX NOTIFICATION
     QString tumbcach=TEMP_CACH+"/"+title+".png";
     if(!QFile::exists(tumbcach))return;
     qDebug()<<"tumbcach"<<tumbcach;
@@ -1005,7 +1037,7 @@ void MainWindow::showPropertyDialog(bool isRead,const QString &file)
 {
 
     PropertiesFile *dlg=new PropertiesFile(file,isRead);
-     dlg->exec();
+    dlg->exec();
     delete dlg;
 
 
@@ -1030,6 +1062,7 @@ void MainWindow::showSettings()
     settings.beginGroup("Window");
     mShowNotification=settings.value("ShowNotification",false).toBool();
     bool trayicon=settings.value("TrayIcon",true).toBool();
+   ui->menuBar->setVisible(settings.value("ShowMenu",true).toBool());
     if(trayicon) {    creatTrayIcon();
     }else{if(mTrayIcon) mTrayIcon->hide(); }
 
@@ -1044,38 +1077,38 @@ void MainWindow::showSettings()
 void MainWindow::dragEnterEvent(QDragEnterEvent *e)
 {
 
-          // Getting URL from mainmenu...
-          if (e->mimeData()->hasUrls())
-          {
-                    e->acceptProposedAction();
-                    return;
-          }
+    // Getting URL from mainmenu...
+    if (e->mimeData()->hasUrls())
+    {
+        e->acceptProposedAction();
+        return;
+    }
 
-          if (e->source() && e->source()->parent() == this)
-          {
-                    e->acceptProposedAction();
-          }
+    if (e->source() && e->source()->parent() == this)
+    {
+        e->acceptProposedAction();
+    }
 }
 
 void MainWindow::dropEvent(QDropEvent *e)
 {
-          const QMimeData *mime = e->mimeData();
+    const QMimeData *mime = e->mimeData();
 
-          QList<QUrl> duplicates;
+    QList<QUrl> duplicates;
 
-          foreach (QUrl url, mime->urls())
-          {
-                    if (duplicates.contains(url))
-                              continue;
-                    else{
-
-
-                        duplicates << url;
-                       }
+    foreach (QUrl url, mime->urls())
+    {
+        if (duplicates.contains(url))
+            continue;
+        else{
 
 
+            duplicates << url;
+        }
 
-          }
 
-       mPlayer->addToPlaylist(duplicates);
+
+    }
+
+    mPlayer->addToPlaylist(duplicates);
 }

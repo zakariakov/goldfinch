@@ -54,7 +54,7 @@ public:
     void addToPlaylist(QList<QVariantMap> &files);
     void addToPlaylist( QList<QUrl> &urls);
     void playLast();
-
+    void setMiniPlayer(bool mini){mControls->togglePreview(mini);}
 
 signals:
 
@@ -91,6 +91,8 @@ public slots:
     void previous();
     void playPause();
     void setSeek(int seconds);
+     void setSeekPlus();
+      void setSeekMinus();
     void seek(qlonglong Offset);
     qint64 position(){return mPlayer->position()*1000; }
     bool canPlay()     { if(!mPlayer->isAvailable()){return false;} else {   return true;}  }

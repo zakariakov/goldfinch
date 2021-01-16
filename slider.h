@@ -39,7 +39,7 @@ public:
     virtual void enterEvent(QEvent *event);
     virtual void leaveEvent(QEvent *event);
 signals:
-    //void seekChanged(int );
+    void seekChanged(int );
 
 private:
   //  QString myStyle();

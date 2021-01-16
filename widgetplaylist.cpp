@@ -34,11 +34,14 @@ WidgetPlayList::WidgetPlayList(QWidget *parent) : QWidget(parent)
     tbMoveItemDown= new QToolButton;
     tbCleanList=    new QToolButton;
     tbPlayMode=     new QToolButton;
+tbToggleLibrery=new QToolButton;
 
     mPlayListView->setFrameShape(QFrame::NoFrame);
     mPlayListView->setIconSize(QSize(16,16));
 
-
+tbToggleLibrery->setIconSize(QSize(16,16));
+tbToggleLibrery->setAutoRaise(true);
+tbToggleLibrery->setDefaultAction(ACtions::toggleLibreryAct());
 
     tbRemoveItem->setIconSize(QSize(16,16));
     tbRemoveItem->setAutoRaise(true);
@@ -110,6 +113,8 @@ WidgetPlayList::WidgetPlayList(QWidget *parent) : QWidget(parent)
     hLayout->setSpacing(0);
     hLayout->setMargin(0);
 
+ hLayout->addWidget(tbToggleLibrery);
+ hLayout->addSpacing(10);
     hLayout->addWidget(tbPlayMode);
     hLayout->addStretch();
     hLayout->addWidget(tbMoveItemDown);

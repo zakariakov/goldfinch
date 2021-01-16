@@ -101,9 +101,9 @@ Player::Player(QListView *playlist, QWidget *parent)
 
     QHBoxLayout *hLayout = new QHBoxLayout;
     hLayout->setMargin(0);
-    hLayout->addSpacing(3);
+    hLayout->addSpacing(0);
     hLayout->addWidget(mControls);
-    hLayout->addSpacing(3);
+   // hLayout->addSpacing(0);
 
     setLayout(hLayout);
 
@@ -337,6 +337,14 @@ void Player::setSeek(int seconds)
 void Player::seek(qlonglong Offset)
 { mPlayer->setPosition(Offset);}
 
+void Player::setSeekPlus()
+{
+    mPlayer->setPosition(mPlayer->position()+ 10000);
+}
+ void Player::setSeekMinus()
+{
+   mPlayer->setPosition(mPlayer->position()- 10000);
+}
 //-----------------------------------------------------------------------------
 void Player::statusChanged(QMediaPlayer::MediaStatus status)
 {

@@ -63,7 +63,7 @@ private:
 
     QListView *mPlayListView;
   QVBoxLayout *vLayout ;
-
+QToolButton *tbToggleLibrery;
 //    QActionGroup *actGroup ;
 //    QAction *actPlayOne;
 //    QAction *actRepeatOne;

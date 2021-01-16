@@ -1,8 +1,9 @@
-#include "actions.h"
+﻿#include "actions.h"
 
 #include  <QAction>
 #include  <QApplication>
 #include  <QMessageBox>
+#include  <QDebug>
 Q_GLOBAL_STATIC(ACtions, ACtionsInstance)
 ACtions *ACtions::instance()
 {
@@ -25,7 +26,7 @@ ACtions::ACtions(QObject *parent) : QObject(parent)
 
     actPause=new QAction(tr("Pause"));
     actPause->setShortcut(Qt::Key_MediaPause);
-    actPause->setToolTip(tr("Next Song \n")+actPause->shortcut().toString());
+    actPause->setToolTip(tr("Pause \n")+actPause->shortcut().toString());
     connect(actPause,&QAction::triggered,this,&ACtions::Pause);
 
     actStop=new QAction(tr("Stop"));
@@ -34,17 +35,37 @@ ACtions::ACtions(QObject *parent) : QObject(parent)
     connect(actStop,&QAction::triggered,this,&ACtions::Stop);
 
     actNext=new QAction(tr("Next"));
-    actNext->setShortcut(QKeySequence("Alt+Left"));
+    actNext->setShortcut(QKeySequence("Ctrl+Shift+Left"));
     actNext->setToolTip(tr("Next Song \n")+actNext->shortcut().toString());
     connect(actNext,&QAction::triggered,this,&ACtions::next);
 
     actPrev=new QAction(tr("previous"));
-    actPrev->setShortcut(QKeySequence("Alt+Right"));
+    actPrev->setShortcut(QKeySequence("Ctrl+Shift+Right"));
     actPrev->setToolTip(tr("Previous Song \n")+actPrev->shortcut().toString());
     connect(actPrev,&QAction::triggered,this,&ACtions::previous);
 
+    //--Seek
+    actSeekPlus=new QAction(tr("seek +10"));
+    actSeekPlus->setShortcut(QKeySequence("Ctrl+Shift+Up"));
+    actSeekPlus->setToolTip(tr("seek +10 second \n")+actSeekPlus->shortcut().toString());
+    connect(actSeekPlus,&QAction::triggered,this,&ACtions::seekPlusChanged);
 
-    //-Volume
+    actSeekMinus=new QAction(tr("seek -10"));
+    actSeekMinus->setShortcut(QKeySequence("Ctrl+Shift+down"));
+    actSeekMinus->setToolTip(tr("seek -10 second \n")+actSeekMinus->shortcut().toString());
+    connect(actSeekMinus,&QAction::triggered,this,&ACtions::seekMinusChanged);
+
+
+
+actToggleLibrery=new QAction(tr("Show/Hide Librery"));
+actToggleLibrery->setShortcut(QKeySequence("Ctrl+T"));
+actToggleLibrery->setToolTip(tr("Show/Hide Librery \n")+actToggleLibrery->shortcut().toString());
+connect(actToggleLibrery,&QAction::triggered,this,&ACtions::toggleLibreryChanged);
+connect(actToggleLibrery,&QAction::triggered,this,&ACtions::toggleLibreryIcon);
+
+actToggleLibrery->setCheckable(true);
+
+//-Volume
     actVolumeUp     =new QAction(tr("Increase volume"));
     actVolumeUp->setShortcut(QKeySequence("Ctrl+Shift++"));
     connect(actVolumeUp,&QAction::triggered,this,&ACtions::volumeUpChanged);
@@ -54,7 +75,7 @@ ACtions::ACtions(QObject *parent) : QObject(parent)
     connect(actVolumeDown,&QAction::triggered,this,&ACtions::volumeDownChanged);
 
     actMuteUnmute=new QAction(tr("Mute/Unmute"));
-    actMuteUnmute->setShortcut(QKeySequence("Ctrl+Shift+M"));
+    actMuteUnmute->setShortcut(QKeySequence("Ctrl+Shift+N"));
     connect(actMuteUnmute,&QAction::triggered,this,&ACtions::muteUnmuteChanged);
     actMuteUnmute->setCheckable(true);
 
@@ -77,7 +98,17 @@ ACtions::ACtions(QObject *parent) : QObject(parent)
     actSwich=new QAction(tr("Mini player"));
     actSwich->setShortcut(QKeySequence("Ctrl+M"));
     actSwich->setCheckable(true);
+    actSwich->setToolTip(tr("Mini player \n")+actSwich->shortcut().toString());
     connect(actSwich,&QAction::triggered,this,&ACtions::swichMimiPlayer);
+
+
+
+            actShowMenu=new QAction(tr("show/hide menu"));
+            actShowMenu->setShortcut(QKeySequence("Ctrl+Shift+M"));
+            actShowMenu->setCheckable(true);
+            actShowMenu->setToolTip(tr("show/hide menu \n")+actShowMenu->shortcut().toString());
+            connect(actShowMenu,&QAction::triggered,this,&ACtions::showMenuChanged);
+
 
     actQuit=new QAction(tr("Quit"));
     actQuit->setShortcut(QKeySequence("Ctrl+Q"));
@@ -168,7 +199,7 @@ void ACtions::setupIcons()
     actPrev->setIcon(Tumb::icon(I_PREV));
     actVolume->setIcon(Tumb::icon(I_VOLUME));
     actStop->setIcon(Tumb::icon(I_STOP));
-
+actToggleLibrery->setIcon(Tumb::icon(I_PANE_SHOW));
     actPlayOne->setIcon(Tumb::icon(I_M_PLAY_ONE));
     actRepeatOne->setIcon(Tumb::icon(I_M_REPEAT_ONE));
     actSquent->setIcon(Tumb::icon(I_M_SEQUEN));
@@ -182,6 +213,7 @@ void ACtions::setupIcons()
     actCleanList->setIcon(Tumb::icon(I_CLEAN));
 
        actShowSettings->setIcon(Tumb::icon(I_PROPERTIES));
+       actSwich->setIcon(Tumb::icon(I_TOGGLE));
 }
 
 void ACtions::help()
@@ -211,29 +243,31 @@ void ACtions::setPlayMode(QAction *action)
 
     }
 }
+void ACtions::toggleLibreryIcon(bool checked)
+{
+    if(checked)
+        actToggleLibrery->setIcon(Tumb::icon(I_PANE_HIDE));
+    else
+        actToggleLibrery->setIcon(Tumb::icon(I_PANE_SHOW));
+
+}
 
 QString ACtions::stylShete(int h/*,int tb_h*/)
 {
 int w_radius=h/2;
 int b_radius=w_radius-2;
+QColor h_color=QGuiApplication::palette().highlight().color();
+QString red=QString::number(h_color.red());
+QString green=QString::number(h_color.green());
+QString blue=QString::number(h_color.blue());
 
-    QString leftBorder ,rightBorder;
+QString h_rgba=QString("rgba(%1,%2,%3,150)").arg(red).arg(green).arg(blue) ;
 
-    if(QApplication::isRightToLeft()){
-        leftBorder="border-top-right-radius: 6px;"
-                   "border-bottom-right-radius: 6px;";
-        rightBorder="border-top-left-radius: 6px;"
-                    "border-bottom-left-radius: 6px;";
-    }else{
-        leftBorder="border-top-left-radius: 6px;"
-                   "border-bottom-left-radius: 6px;";
-        rightBorder="border-top-right-radius: 6px;"
-                    "border-bottom-right-radius: 6px;";
-
-    }
+QString shadow=QString("rgba(%1,%2,%3,100)").arg(red).arg(green).arg(blue) ;
 
 
-    QString style=QString(
+
+     QString style=QString(
 
                 " QWidget#widgetCurAlbum{"
                    "  background-color:palette(Window);"
@@ -249,68 +283,119 @@ int b_radius=w_radius-2;
                 "QWidget#SearchBar{"
                 "   background-color: palette(base);"
                 "   border:1px solid palette(highlight);"
-                "   border-radius:%3px;"
-                " min-height:%5px;"
-                " max-height:%5px;"
+                "   border-radius:%1px;"
+                " min-height:%3px;"
+                " max-height:%3px;"
 
                 "}"
                 "QToolButton#TBSearch{"
                 "   background-color: palette(base);"
                 "   border:0px ;"
-                "   border-radius: %4px;"
-                 " min-height: %6px;"
-                 " min-width: %6px;"
+                "   border-radius: %2px;"
+                 " min-height: %4px;"
+                 " min-width: %4px;"
                 "}"
                 "QToolButton#TBSearch:hover{ background-color: palette(shadow);}"
-                "QToolButton#TBSearch:pressed{background-color: palette(highlight);}"
+                "QToolButton#TBSearch:pressed{background-color: %5;}"
                 /*-- TreeView ListView --*/
                 "QTreeView{"
                 "background-color: palette(Window);"
-//                " border-color: palette(Window);"
-                "color:palette(window-text);"
-                "background-attachment: scroll;"
+                      "color:palette(window-text);"
+                     "background-attachment: scroll;"
                 "}"
                 " QListView{"
-                "background-color: palette(Window);"
-//                  " border-color: palette(Window);"
-                "color:palette(window-text);"
+                    "background-color: palette(Window);"
+                    "color:palette(window-text);"
                 " }"
 
                 /*-- Player Control --*/
-                "QToolButton#PrevButton{"
-                " border: 1px outset  palette(shadow );"
-                "%1"
-                "}"
-                "QToolButton#PlayButton{"
-                " border: 1px outset  palette(shadow );"
-                "border-left-color:transparent;"
-                "border-right-color:transparent;"
-                "}"
-                "QToolButton#NextButton{"
-                " border: 1px outset palette( shadow);"
-                "%2"
-                "}"
-                "QToolButton#PrevButton:hover,#PlayButton:hover,#NextButton:hover{"
-                "background-color:palette(highlight)"
-                "}"
-                "QToolButton#PrevButton:pressed,#PlayButton:pressed,#NextButton:pressed{"
-                "background-color:palette(shadow)"
-                "}"
-                "QToolButton#VolumeButton ,#tButtonMenu{"
+                "QToolButton#PrevButton ,#NextButton ,#VolumeButton{"
                 "border-radius: 15px;"
                 "width: 30px;"
                 "height:30px;"
                 " max-width: 30px;"
                 " max-height:30px;"
+                "background-color:transparent"
                 "}"
-                "QToolButton#VolumeButton:hover ,#tButtonMenu:hover{"
-                // "border: 1px solid palette(highlight);"
-                "background-color:palette(highlight)"
+
+                "QToolButton#PlayButton{"
+                "border-radius: 15px;"
+                "width: 30px;"
+                "height:30px;"
+                " max-width: 30px;"
+                " max-height:30px;"
+                "background-color:%5"
                 "}"
-                "QToolButton#VolumeButton:pressed ,#tButtonMenu:pressed{"
-                // "border: 1px solid palette(shadow);"
+
+                "QToolButton#PrevButton:hover,#PlayButton:hover,#NextButton:hover{"
+                "background-color: palette(Highlight);"
+                "}"
+
+                "QToolButton#PrevButton:pressed,#PlayButton:pressed,#NextButton:pressed{"
                 "background-color:palette(shadow)"
-                "}").arg(leftBorder).arg(rightBorder).arg(w_radius).arg(b_radius).arg(h).arg(h-4);
+                "}"
+
+
+                "QToolButton#VolumeButton:hover ,#VolumeButton:pressed{"
+                                "background-color:%5"
+                "}"
+
+                "QToolButton#ToggleButton{"
+                "border-radius: 5px;"
+                "width: 20px;"
+                "height:20px;"
+                " max-width: 20px;"
+                " max-height:20px;"
+                "background-color:transparent"
+                "}"
+
+                "QToolButton#ToggleButton:hover{"
+                   "background-color:%5"
+                "}"
+
+/*ToggleButton*/
+                /*-- VolumeSlider --*/
+                " QSlider#VolumeSlider::groove:horizontal {"
+                " height: 8px;"
+                " background: transparent;"
+                " margin: 6px 0px;"
+                " }"
+
+                " QSlider#VolumeSlider::handle:horizontal {"
+                " background: palette(Highlight);"
+                " width: 14px;"
+                " margin: -3px 0px; "
+                " border-radius: 7px;"
+                "}"
+                ).arg(w_radius).arg(b_radius).arg(h).arg(h-4).arg(shadow);
+
+    if(QApplication::isLeftToRight()){
+       style+=QString(
+                " QSlider#VolumeSlider::add-page:horizontal {"
+                " background:%1 ;"
+                " margin: 8px 0; "
+                " border-radius: 2px;"
+                " }"
+
+                " QSlider#VolumeSlider::sub-page:horizontal {"
+                " background: palette(Highlight);"
+                " margin: 8px 0; "
+                " border-radius: 2px;"
+                " }").arg(shadow);
+    }else{
+       style+=QString(
+                " QSlider#VolumeSlider::add-page:horizontal {"
+                " background:palette(Highlight ) ;"
+                " margin: 8px 0; "
+                " border-radius: 2px;"
+                " }"
+
+                " QSlider#VolumeSlider::sub-page:horizontal {"
+                " background:%1;"
+                " margin: 8px 0; "
+                " border-radius: 2px;"
+                " }").arg(shadow);
+    }
     return style;
 
 }

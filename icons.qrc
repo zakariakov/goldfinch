@@ -41,5 +41,6 @@
         <file>icons/star.svg</file>
         <file>icons/favo.svg</file>
         <file>icons/goldfinch.png</file>
+        <file>icons/toggle.svg</file>
     </qresource>
 </RCC>

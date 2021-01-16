@@ -27,6 +27,9 @@
 #include <QWidget>
 #include <QIcon>
 #include <QDebug>
+#include <QBoxLayout>
+#include <QGraphicsBlurEffect>
+#include <QLabel>
 QT_BEGIN_NAMESPACE
 class QToolButton;
 class QAbstractButton;
@@ -34,6 +37,7 @@ class QAbstractSlider;
 class QComboBox;
 class QSlider;
 class QLabel;
+
 QT_END_NAMESPACE
 
 //---------------------------------- WidgetInfo ---------------------------------
@@ -41,14 +45,18 @@ class WidgetImg : public QWidget
 {
     Q_OBJECT
 public:
-    explicit WidgetImg(){}
+    explicit WidgetImg(){
+        setAttribute(Qt::WA_PaintUnclipped,false);
+
+
+    }
     virtual void paintEvent(QPaintEvent *event);
 signals:
 
 public slots:
     void setImage(QImage img){
-          mImage=img;
-          update();
+        mImage=img;
+        update();
     }
 
 private:
@@ -62,8 +70,8 @@ class WidgetInfo : public QWidget
 {
     Q_OBJECT
 public:
-    explicit WidgetInfo(){}
-   virtual void paintEvent(QPaintEvent *event);
+    explicit WidgetInfo(){   setSizePolicy(QSizePolicy::Preferred,QSizePolicy::Minimum);}
+    virtual void paintEvent(QPaintEvent *event);
 signals:
 
 public slots:
@@ -71,6 +79,7 @@ public slots:
     void setTitle(const QString &tit,const QString &info){
         mTitle=tit;mInfo=info;update();
         setToolTip(mTitle+"\n"+mInfo);
+        update();
     }
 
 private:
@@ -92,17 +101,17 @@ public:
         qDebug()<<this->sizeHint().height()-5;
     }
     QMediaPlayer::State state() const;
-
+    virtual void paintEvent(QPaintEvent *event);
     bool isMuted() const;
     int volume() const;
-
-
+    void togglePreview(bool minPrev);
 public slots:
 
-//    void setState(QMediaPlayer::State state);
+    //    void setState(QMediaPlayer::State state);
+    void setSeekSliderValueChanged(int val);
     void setVolume(int volume);
- void setLabTitle(const QString title,const QString info);
-     void setupIcons();
+    void setLabTitle(const QString title,const QString info);
+    void setupIcons();
     void durationChanged(qint64 duration);
     void positionChanged(qint64 progress);
     void setMutedChanged(bool mute);
@@ -117,35 +126,45 @@ signals:
     void seek(int);
     void imageChanged(QImage img);
 private slots:
-  //  void playClicked();
+    void setImage(QImage img);
+    //  void playClicked();
     void onVolumeSliderValueChanged();
     void updateDurationInfo(qint64 currentInfo);
 
-//    void setSliderPressed();
-     void setSeeked(int val);
+    //    void setSliderPressed();
+ //   void setSeeked(int val);
 
 private:
-     WidgetInfo *m_WidgetInfo;
-     WidgetImg *m_WidgetImg;
-  QToolButton *m_playButton = nullptr;
-
+    WidgetInfo *m_WidgetInfo;
+    WidgetImg *m_WidgetImg;
+    QWidget *widgetMini;
+    QWidget *widgetButtons;
+    QToolButton *m_playButton = nullptr;
     QToolButton *m_nextButton = nullptr;
     QToolButton *m_previousButton = nullptr;
     QToolButton *m_muteButton = nullptr;
+    QToolButton *m_toggleButton=nullptr;
     QAbstractSlider *m_volumeSlider = nullptr;
     Slider *m_slider = nullptr;
     QLabel *m_labelDuration = nullptr;
-
+    QLabel *m_labelCurrentTime = nullptr;
+    //QLabel *m_labelTitle=nullptr;
     QIcon playIcon;
     QIcon pauseIcon;
-
+    QImage mImage;
     qint64 m_duration;
     QMediaPlayer::State m_playerState = QMediaPlayer::StoppedState;
+    QBoxLayout *HlayoutDuration ;
+    QBoxLayout *hlayout ;
+    QBoxLayout *vMainlayout ;
+    QBoxLayout *hMainlayout;
+    QBoxLayout *vlayoutDuration;
 
-// int m_pos2=0;
- //  int m_pos=0;
-   bool m_playerMuted = false;
-  // bool m_playerMuted2 = false;
+    QBoxLayout *vMinilayout;
+
+    bool m_playerMuted = false;
+
+    bool mMinPreview=false;
 
 };
 

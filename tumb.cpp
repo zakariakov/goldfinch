@@ -221,6 +221,8 @@ QIcon Tumb::icon(int name)
     case I_FAVO:       return iconColorized(":/icons/favo",color);
     case I_MENU:       return iconColorized(":/icons/menu",color);
     case I_PROPERTIES: return iconColorized(":/icons/properties",color);
+    case I_TOGGLE:  return iconColorized(":/icons/toggle",color);
+
     case I_OPTIONS: return iconColorized(":/icons/properties",QApplication::palette().highlight().color());
     case I_QUIT: return iconColorized(":/icons/window-close",color);
     case I_Close: return iconColorized(":/icons/window-close",QApplication::palette().highlight().color());

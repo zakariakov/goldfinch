@@ -26,14 +26,19 @@
 //------------------------------------------------------
 QString myStyle()
 {
+    QColor sh_color=QApplication::palette().highlight().color();
+    QString shadow=QString("rgba(%1,%2,%3,100)")
+            .arg(QString::number(sh_color.red()))
+            .arg(QString::number(sh_color.green()))
+            .arg(QString::number(sh_color.blue())) ;
     QString mStyle=
-            " QSlider::groove:horizontal {"
+            " QSlider#SeekSlider::groove:horizontal {"
             " height: 8px;"
             " background: transparent;"
             " margin: 6px 0px;"
             " }"
 
-            " QSlider::handle:horizontal {"
+            " QSlider#SeekSlider::handle:horizontal {"
             "background:transparent;"/* لاتغير هذه */
             " width: 14px;"
             " margin: -3px 0px; "
@@ -41,29 +46,31 @@ QString myStyle()
             "}";
 
     if(QApplication::isLeftToRight()){
-        mStyle+=   " QSlider::add-page:horizontal {"
-                   " background: palette(base ) ;"
+        mStyle+= QString(" QSlider#SeekSlider::add-page:horizontal {"
+                   " background: %1 ;"
                    " margin: 8px 0; "
                    " border-radius: 2px;"
                    " }"
 
-                   " QSlider::sub-page:horizontal {"
+                   " QSlider#SeekSlider::sub-page:horizontal {"
                    " background: palette(Highlight );"
                    " margin: 8px 0; "
                    " border-radius: 2px;"
-                   " }";
+                   " }").arg(shadow);
     }else{
-        mStyle+=   " QSlider::add-page:horizontal {"
+        mStyle+=QString(" QSlider#SeekSlider::add-page:horizontal {"
                    " background: palette(Highlight ) ;"
-                   " margin: 8px 0; "
-                   "border-radius: 2px;"
+                   " margin: 8px 0px; "
+                   "border-top-right-radius: 2px;"
+                   "border-bottom-right-radius: 2px;"
                    " }"
 
-                   " QSlider::sub-page:horizontal {"
-                   " background: palette(base );"
-                   " margin: 8px 0; "
-                   " border-radius: 2px;"
-                   " }";
+                   " QSlider#SeekSlider::sub-page:horizontal {"
+                   " background: %1 ;"
+                   " margin: 8px 0px; "
+                   "border-top-left-radius: 2px;"
+                   "border-bottom-left-radius: 2px;"
+                   " }").arg(shadow);
     }
     return mStyle;
 
@@ -71,9 +78,10 @@ QString myStyle()
 
 Slider::Slider()
 {
+    setObjectName("SeekSlider");
     setOrientation(Qt::Horizontal);
     setContentsMargins(0,0,0,0);
-
+    setCursor(Qt::PointingHandCursor);
     setStyleSheet(myStyle());
 }
 void Slider::wheelEvent(QWheelEvent *event)
@@ -81,7 +89,7 @@ void Slider::wheelEvent(QWheelEvent *event)
     int num = event->delta();
     int val=num<0 ? -pageStep():pageStep();
      setSliderPosition(value()+val);
-  //  emit seekChanged(value()+val);
+    emit seekChanged(value()+val);
      QMetaObject::invokeMethod(parent()->parent(), "setSeek",Q_ARG(int,value()+val));
    //qDebug()<<"Slider::wheelEvent:"<<value()+val;
 
@@ -101,6 +109,8 @@ void Slider::wheelEvent(QWheelEvent *event)
          val=maximum()-val;
         setValue(val);
     //  setSliderPosition(val);
+   emit   seekChanged(val);
+
      QMetaObject::invokeMethod(parent()->parent(), "setSeek",Q_ARG(int,val));
      setSliderDown(false);
      //qDebug()<<" Slider::mouseReleaseEvent:"<<val;
@@ -160,8 +170,7 @@ void Slider::mousePressEvent(QMouseEvent *ev)
      if(val<0)val=0;
      if(val>maximum())val=maximum();
 
-     // qDebug()<<"Slider::keyPressEvent:"<<val;
-     //
+      emit   seekChanged(val);
        QMetaObject::invokeMethod(parent()->parent(), "setSeek",Q_ARG(int,val));
 
  }
@@ -170,7 +179,7 @@ void Slider::mousePressEvent(QMouseEvent *ev)
 void Slider::enterEvent(QEvent *event)
 {
     Q_UNUSED(event)
-   // setStyleSheet(myStyle(true));
+
 setStyleSheet(styleSheet().replace("background:transparent;","background:palette(Highlight);"));
 }
 
@@ -178,7 +187,7 @@ setStyleSheet(styleSheet().replace("background:transparent;","background:palette
 void Slider::leaveEvent(QEvent *event)
 {
     Q_UNUSED(event)
-   // setStyleSheet(myStyle(false));
+ // setCursor(Qt::ArrowCursor);
 setStyleSheet(styleSheet().replace("background:palette(Highlight);","background:transparent;"));
 }
 

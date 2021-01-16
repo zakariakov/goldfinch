@@ -111,6 +111,8 @@ private slots:
     void showRaise(){showNormal();raise();}
     //! تغيير العرض بين مصغر وكامل
     void switchViewMode(bool mini);
+    //!
+     void showHideMenu(bool show);
     //! تحميل الاعدادات السابقة
     void chargeRecent();
     //! تحميل الايقونات
@@ -146,9 +148,11 @@ private slots:
     //!
     void onListViewActivated(const QModelIndex &index);
     //!
-    void on_tb_paneContent_toggled(bool checked);
+//    void on_tb_paneContent_toggled(bool checked);
+//    //!
+//    void on_tb_panePlaylist_toggled(bool checked);
     //!
-    void on_tb_panePlaylist_toggled(bool checked);
+    void playlist_toggled(bool checked);
     //!
     void on_tb_addAlbum_clicked();
     //!

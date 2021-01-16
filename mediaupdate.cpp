@@ -81,9 +81,9 @@ void MediaUpdate::chargeDirectoryWatcher()
 // الملفات المعتمدة
 QStringList supportedMimeTypes()
 {
-    return  QStringList()<<"*.mp4"<<"*.wmv"<<"*.avi"<<"*.ogv"<<"*.mov"
-                        <<"*.mp3"<<"*.ogg"<<"*.wma"<<"*.wav"<<"*.aac"
-                       <<"*.opus"<<"*.amr"<<"*.m4a";
+    return  QStringList() <<"*.mp4"<<"*.wmv"<<"*.avi"<<"*.ogv"<<"*.mov"
+                          <<"*.mp3"<<"*.ogg"<<"*.wma"<<"*.wav"<<"*.aac"
+                          <<"*.opus"<<"*.amr"<<"*.m4a"<<"*.webm";
 }
 
 //--------------------------------------------------------------------

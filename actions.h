@@ -21,10 +21,15 @@ public:
     //--  playBack
     static QAction  *PlayAct()       {return instance()-> actPlay;}
     static QAction  *PauseAct()      {return  instance()->actPause;}
+    //--Seek
+    static QAction  *seekPlusAct()       {return instance()-> actSeekPlus;}
+    static QAction  *seekMinusAct()      {return  instance()->actSeekMinus;}
+
     static QAction  *NextAct()       {return  instance()->actNext;}
     static QAction  *PrevAct()       {return  instance()->actPrev;}
     static QAction  *PlayPauseAct()  {return  instance()->actPlayPause;}
     static QAction  *StopAct()       {return  instance()->actStop;}
+    static QAction  *toggleLibreryAct()       {return  instance()->actToggleLibrery;}
 
     //-- Volume
     static QAction  *volumeAct()     {return  instance()->actVolume;}
@@ -44,6 +49,8 @@ public:
     static QAction  *updateAllAct(){return instance()->actUpdateAll;}
     static QAction  *searchAct(){return instance()->actSearch;}
     static QAction  *rmNonExistAct(){return instance()->actRmNonExist;}
+    static QAction  *showMenuAct(){return instance()->actShowMenu;}
+
     //-- Paylist
     static QMenu  *menuPlayBackMode(){return instance()->mnuPlayMode;}
     static QAction  *modeAct(){return instance()->actMode;}
@@ -66,6 +73,11 @@ signals:
     void previous();
     void next();
     void playPause();
+    void toggleLibreryChanged(bool);
+    //--seek
+    void seekPlusChanged();
+    void seekMinusChanged();
+
    //--Volume
     void volumeUpChanged();
      void volumeDownChanged();
@@ -78,6 +90,7 @@ signals:
     void swichMimiPlayer(bool);
      void updateAll();
      void rmNonExist();
+     void showMenuChanged(bool);
     void quit();
 void showSearchChanged();
 void showOptions();
@@ -95,11 +108,15 @@ private:
     QAction *actPrev;
     QAction *actPlayPause;
     QAction *actStop;
+ //-- seek
+    QAction *actSeekPlus;
+    QAction *actSeekMinus;
     //-Volume
     QAction *actVolumeUp;
     QAction *actVolumeDown;
     QAction *actMuteUnmute;
    QAction *actVolume;
+
     //-- Main
     QAction *actOpenFile;
     QAction *actOpenUrl;
@@ -109,7 +126,7 @@ private:
    QAction *actUpdateAll;
   QAction *actSearch;
    QAction *actRmNonExist;
-   // QAction *actOptions;
+    QAction *actShowMenu;
     //-- PlayList Mode
     QMenu *mnuPlayMode;
     QActionGroup *actGroup;
@@ -129,12 +146,15 @@ private:
     QAction *actAbout;
     QAction *actAboutQt;
 
+    QAction *actToggleLibrery;
+
     QIcon playIcon;
     QIcon pauseIcon;
 public slots:
     void setupIcons();
 private slots:
     void setPlayMode(QAction *action);
+    void toggleLibreryIcon(bool checked);
     void about();
     void help();
 
