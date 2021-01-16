@@ -53,6 +53,12 @@ QVariantMap TagId::mediaTags(const QString &file)
         QString genre=tag->genre() .toCString(true) ;
         map[COL_S_GENRE]= !genre.isEmpty() ? genre:tr("Unknown");
 
+    }else{
+        map[COL_S_TITLE]=fi.fileName();
+        map[COL_S_ARTIST]=tr("Unknown");
+        map[COL_S_ALBUM]= fi.dir().dirName();
+        map[COL_S_GENRE]= tr("Unknown");
+
     }
 
     if(!f.isNull() && f.audioProperties()) {
@@ -79,7 +85,10 @@ QVariantMap TagId::mediaTags(const QString &file)
         map[COL_S_CHANNELS]=  properties->channels() ;
 
         //  qDebug() << "length      - " << minutes << ":" << setfill('0') << setw(2) << seconds << endl;
+    }else{
+         map[COL_S_TIME]="00:00:00";
     }
+
 
 #endif
 

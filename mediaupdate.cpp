@@ -333,6 +333,7 @@ void Thread::run()
    if(  !DataBase::fileExist(mFile)){
 
          //-----------------------------------------------------------------             GET METADATA
+
        QVariantMap map=TagId::mediaTags(mFile);
        //----------------------------------------------------------------- GET DURATION FFMPEG
        QString duration= map.value(COL_S_TIME).toString();
